@@ -1,4 +1,4 @@
-const puppeteer = require("puppeteer");
+/*const puppeteer = require("puppeteer");*/
 const httpRequest = require("request");
 const jschardet = require("jschardet");
 const fetch = require("node-fetch");
@@ -102,7 +102,7 @@ const apiGetLinks = async (request, res) => {
 
 const getLinkFromHtml = async html => {
   const browser = await puppeteer.launch({
-    /*headless: false , 
+    /*headless: false ,
         ignoreDefaultArgs: true, */
 
     executablePath:

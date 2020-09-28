@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3e6c8689-18b3-4b05-a558-7453dddcfa9d" name="Default Changelist" comment="" />
+    <list default="true" id="3e6c8689-18b3-4b05-a558-7453dddcfa9d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/client/src/assets/play.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/pages/Anime.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/pages/Anime.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controllers/kodik.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/kodik.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -66,7 +74,7 @@
       <updated>1600069616810</updated>
       <workItem from="1600069617905" duration="140112000" />
       <workItem from="1601247983365" duration="2463000" />
-      <workItem from="1601277351975" duration="1363000" />
+      <workItem from="1601277351975" duration="7881000" />
     </task>
     <servers />
   </component>
@@ -142,10 +150,10 @@
       <screen x="0" y="0" width="2560" height="1040" />
     </state>
     <state x="294" y="186" width="1815" height="711" key="SettingsEditor/0.0.2560.1040/-1920.0.1920.1040@0.0.2560.1040" timestamp="1600605660284" />
-    <state x="988" y="95" width="583" height="849" key="find.popup" timestamp="1600962564115">
+    <state x="988" y="95" width="583" height="849" key="find.popup" timestamp="1601283761702">
       <screen x="0" y="0" width="2560" height="1040" />
     </state>
-    <state x="988" y="95" width="583" height="849" key="find.popup/0.0.2560.1040/-1920.0.1920.1040@0.0.2560.1040" timestamp="1600962564115" />
+    <state x="988" y="95" width="583" height="849" key="find.popup/0.0.2560.1040/-1920.0.1920.1040@0.0.2560.1040" timestamp="1601283761702" />
     <state x="936" y="240" key="run.anything.popup" timestamp="1600644927553">
       <screen x="0" y="0" width="2560" height="1040" />
     </state>

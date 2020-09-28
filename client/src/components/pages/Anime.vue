@@ -9,22 +9,29 @@
     <b-container class="bv-example-row">
       <filter_anime msg="test-pars" @filterTop="filterTop" @lastUpdate="lastUpdate"/>
 
-      <b-row class="text-center">
+      <div class="anime-list">
 
-        <div v-for="(item,index) in mainList.results" v-if="item.material_data" :key="index" class="card col-sm-6 col-md-3" >
-          <img v-bind:src="item.material_data.poster_url" class="card-img-top" alt="">
-          <div class="card-body" v-if="item.title">
-            <h5 class="card-title"> {{ item.title }} </h5>
-            <!--<p class="card-text">{{ item.translation.title }}</p>-->
-            <!-- <a v-bind:href="/play/++" class="btn btn-primary"></a>-->
-            <router-link  class="btn btn-primary"
-                         :to="{ name: 'play', params: { shiki_id: item.shikimori_id,name:(item.title_orig.replaceAll(' ', '_')) }}">
-              Смотреть
-            </router-link>
-          </div>
+        <div v-for="(item,index) in mainList.results" v-if="item.material_data" :key="index"
+             class="card ">
+          <router-link
+            :to="{ name: 'play', params: { shiki_id: item.shikimori_id,name:(item.title_orig.replaceAll(' ', '_')) }}">
+            <div class="poster" :style="{ backgroundImage: `url('${item.material_data.poster_url}')` }">
+              <img v-bind:src="require(`@/assets/play.svg`)" alt="">
+            </div>
+            <!-- <img v-bind:src="item.material_data.poster_url" class="card-img-top" alt="">-->
+
+
+            <div class="card-body" v-if="item.title">
+              <div class="card-title"> {{ item.title }} </div>
+              <!--<p class="card-text">{{ item.translation.title }}</p>-->
+              <!-- <a v-bind:href="/play/++" class="btn btn-primary"></a>-->
+
+
+            </div>
+          </router-link>
         </div>
 
-      </b-row>
+      </div>
 
 
     </b-container>
@@ -33,11 +40,77 @@
 
 </template>
 
-<style>
+<style lang="scss" rel="stylesheet/scss">
+
 .card-img-top {
   height: 300px;
   object-fit: contain;
 }
+
+.anime-list {
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  .card {
+    margin-bottom: 1rem;
+    box-shadow: 0 0 3rem -1rem rgba(0, 0, 0, 0.5);
+    transition: transform 0.1s ease-in-out, box-shadow 0.1s;
+   /* flex-direction: column-reverse;*/
+    width: 16%;
+
+    .poster {
+     /* width: 225px;*/
+      height: 247px;
+      margin: 0 auto;
+      position: relative;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    &-body{
+      padding: 0.65rem;
+    }
+    &-title{
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      display: block;
+      font-weight: bold;
+      line-height: 1.65;
+      margin-top: 5px;
+    }
+    a {
+      color: #1d2124;
+    }
+
+    img {
+      width: 32px;
+      opacity: 0.5;
+      transition: all 0.2s ease;
+      bottom: 0;
+      left: 0;
+      margin: auto;
+      position: absolute;
+      right: 0;
+      top: 0;
+      cursor: pointer;
+    }
+
+    &:hover svg {
+      opacity: 1;
+      width: 48px;
+    }
+    &:hover {
+      transform: translateY(-0.5rem) scale(1.0125);
+      box-shadow: 0 0.5em 3rem -1rem rgba(0, 0, 0, 0.5);
+    }
+  }
+}
+
+
 </style>
 
 <script>
