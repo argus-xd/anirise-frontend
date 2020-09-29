@@ -22,7 +22,7 @@
 
 
             <div class="card-body" v-if="item.title">
-              <div class="card-title"> {{ item.title }} </div>
+              <div class="card-title"> {{ item.title }}</div>
               <!--<p class="card-text">{{ item.translation.title }}</p>-->
               <!-- <a v-bind:href="/play/++" class="btn btn-primary"></a>-->
 
@@ -57,22 +57,49 @@
     margin-bottom: 1rem;
     box-shadow: 0 0 3rem -1rem rgba(0, 0, 0, 0.5);
     transition: transform 0.1s ease-in-out, box-shadow 0.1s;
-   /* flex-direction: column-reverse;*/
+    /* flex-direction: column-reverse;*/
     width: 16%;
 
     .poster {
-     /* width: 225px;*/
+      /* width: 225px;*/
       height: 247px;
       margin: 0 auto;
       position: relative;
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
+      overflow: hidden;
+
+      &:before {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        top: -22px;
+        right: -62px;
+        margin: 0px auto;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 50%;
+        transform: scale(0, 0);
+        transition: all 0.3s ease-in-out;
+        width: 300px;
+        height: 300px;
+      }
+
+
+      &:hover:before, {
+        transform: scale(2, 2);
+      }
     }
-    &-body{
-      padding: 0.65rem;
+
+    &-body {
+      padding: 0.45rem;
+      position: absolute;
+      bottom: 0px;
+      background: #00000094;
+      width: 100%;
     }
-    &-title{
+
+    &-title {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -82,8 +109,10 @@
       line-height: 1.65;
       margin-top: 5px;
     }
+
     a {
-      color: #1d2124;
+      color: white;
+      text-decoration: none
     }
 
     img {
@@ -103,10 +132,19 @@
       opacity: 1;
       width: 48px;
     }
+
     &:hover {
       transform: translateY(-0.5rem) scale(1.0125);
       box-shadow: 0 0.5em 3rem -1rem rgba(0, 0, 0, 0.5);
     }
+
+    @media (max-width: 576px) {
+
+
+      width: 49%;
+
+    }
+
   }
 }
 

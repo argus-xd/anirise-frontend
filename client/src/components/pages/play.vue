@@ -7,30 +7,22 @@
       <div class="media row" v-if="animeInfo.material_data">
         <img v-bind:src="animeInfo.material_data.poster_url" class="mr-3 col-md-3 col-sm-12">
         <div class="media-body  col-md-9 col-sm-12">
-          <div class="toggle-desc" @click="toggleDesc()">
-              <span>Описание</span>
-              <span v-if="desc">скрыть</span>
-              <span v-if="!desc">открыть</span>
 
-            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down-short" fill="currentColor"
-                 xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd"
-                    d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
-            </svg>
+
+          <!-- <div class="player-container">
+             <vue-core-video-player  v-if="playList.length>0" @play="playFunc" v-bind:src="playList"></vue-core-video-player>
+           </div>-->
+          <anime-player v-if="playList.length>0" v-bind:playList="playList"></anime-player>
+          <div class="counter">
+            <button type="button" @click="setEpisode(-1)" class="btn btn-outline-primary">Предыдущая серия</button>
+            <button type="button" class="btn btn-outline-secondary">{{ this.episode }} серия</button>
+            <button type="button" @click="setEpisode(12,true)" class="btn btn-outline-secondary">из {{
+                this.maxEpisodes
+              }}
+            </button>
+            <button type="button" @click="setEpisode(1)" class="btn btn-outline-primary">Следующая серия</button>
           </div>
-          <div v-bind:class="{'d-none': desc!==true }" class="description">
-            <h5 class="mt-0"> {{ animeInfo.title }} / {{ animeInfo.title_orig }}</h5>
-            {{ animeInfo.material_data.description }}
-            <div><span>Год:</span> {{ animeInfo.material_data.year }}</div>
-            <div><span>Рейтин Shikimori:</span> {{ animeInfo.material_data.shikimori_rating }}</div>
-            <div><span>Жанры:</span> {{ animeInfo.material_data.anime_genres.join(", ") }}</div>
-            <div v-if="animeInfoShiki.next_episode_at"><span>Следующий эпизод:</span>
-              {{ new Date(animeInfoShiki.next_episode_at).toLocaleString() }}
-            </div>
-            <div><span>Кол-во эпизодов:</span> {{ animeInfoShiki.episodes }}</div>
-            <div><span>Последний эпизод:</span> {{ animeInfo.last_episode }}</div>
-            <div><span>Озвучено:</span> {{ this.minEpisodes }} - {{ this.maxEpisodes }}</div>
-          </div>
+
         </div>
       </div>
       <div class="row">
@@ -45,19 +37,32 @@
           </div>
         </div>
         <div class="col-md-9 col-sm-12">
-          <div class="counter">
-            <button type="button" @click="setEpisode(-1)" class="btn btn-outline-primary">Предыдущая серия</button>
-            <button type="button" class="btn btn-outline-secondary">{{ this.episode }} серия</button>
-            <button type="button" @click="setEpisode(12,true)" class="btn btn-outline-secondary">из {{
-                this.maxEpisodes
-              }}
-            </button>
-            <button type="button" @click="setEpisode(1)" class="btn btn-outline-primary">Следующая серия</button>
+
+          <div class="toggle-desc" @click="toggleDesc()">
+            <span>Описание</span>
+            <span v-if="desc">скрыть</span>
+            <span v-if="!desc">открыть</span>
+
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down-short" fill="currentColor"
+                 xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                    d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
+            </svg>
           </div>
-          <!-- <div class="player-container">
-             <vue-core-video-player  v-if="playList.length>0" @play="playFunc" v-bind:src="playList"></vue-core-video-player>
-           </div>-->
-          <anime-player v-if="playList.length>0" v-bind:playList="playList"></anime-player>
+          <div v-if="animeInfo.material_data" v-bind:class="{'d-none': desc!==true }" class="description">
+            <h5 class="mt-0"> {{ animeInfo.title }} / {{ animeInfo.title_orig }}</h5>
+            {{ animeInfo.material_data.description }}
+            <div><span>Год:</span> {{ animeInfo.material_data.year }}</div>
+            <div><span>Рейтин Shikimori:</span> {{ animeInfo.material_data.shikimori_rating }}</div>
+            <div><span>Жанры:</span> {{ animeInfo.material_data.anime_genres.join(", ") }}</div>
+            <div v-if="animeInfoShiki.next_episode_at"><span>Следующий эпизод:</span>
+              {{ new Date(animeInfoShiki.next_episode_at).toLocaleString() }}
+            </div>
+            <div><span>Кол-во эпизодов:</span> {{ animeInfoShiki.episodes }}</div>
+            <div><span>Последний эпизод:</span> {{ animeInfo.last_episode }}</div>
+            <div><span>Озвучено:</span> {{ this.minEpisodes }} - {{ this.maxEpisodes }}</div>
+          </div>
+
         </div>
       </div>
 
@@ -90,6 +95,9 @@
 
   .counter button:first-child, .counter button:last-child {
     width: 100%;
+  }
+  .card{
+    width: 49%;
   }
 
 }

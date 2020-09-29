@@ -1,7 +1,7 @@
 <template>
   <div>
-    <video width="100%"  ref="video" controls poster=" " >
-      <source v-bind:src="videoSrc" type="video/mp4">
+    <video width="100%" preload="metadata" ref="video" controls="controls" poster=" " >
+      <source v-bind:src="videoSrc+'#t=15.5'" type="video/mp4">
     </video>
 
   </div>
