@@ -19,14 +19,10 @@
               <img v-bind:src="require(`@/assets/play.svg`)" alt="">
             </div>
             <!-- <img v-bind:src="item.material_data.poster_url" class="card-img-top" alt="">-->
-
-
             <div class="card-body" v-if="item.title">
               <div class="card-title"> {{ item.title }}</div>
               <!--<p class="card-text">{{ item.translation.title }}</p>-->
               <!-- <a v-bind:href="/play/++" class="btn btn-primary"></a>-->
-
-
             </div>
           </router-link>
         </div>

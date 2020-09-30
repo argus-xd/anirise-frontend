@@ -54,7 +54,7 @@
             {{ animeInfo.material_data.description }}
             <div><span>Год:</span> {{ animeInfo.material_data.year }}</div>
             <div><span>Рейтин Shikimori:</span> {{ animeInfo.material_data.shikimori_rating }}</div>
-            <div><span>Жанры:</span> {{ animeInfo.material_data.anime_genres.join(", ") }}</div>
+            <div v-if="animeInfo.material_data.anime_genres"><span>Жанры:</span> {{ animeInfo.material_data.anime_genres.join(", ") }}</div>
             <div v-if="animeInfoShiki.next_episode_at"><span>Следующий эпизод:</span>
               {{ new Date(animeInfoShiki.next_episode_at).toLocaleString() }}
             </div>
