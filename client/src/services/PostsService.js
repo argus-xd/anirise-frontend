@@ -20,11 +20,16 @@ export default {
   fetcPlayList(serial_id,season,episode) {
     return api_Kodik().get(`api-get-url/${serial_id}/${season}/${episode}`)
   },
-
-  shikiAnime(shiki_id) {
-    return api_Shiki().get(`animes/${shiki_id}`)
+  shikiFranchise(shiki_id) {
+    return api_Kodik().get(`api-franchise/${shiki_id}`)
   },
   shikiAnimeTop() {
     return api_Kodik().get(`api-list-top/`)
   },
+
+  shikiAnime(shiki_id) {
+    return api_Shiki().get(`animes/${shiki_id}`)
+  },
+
+
 }

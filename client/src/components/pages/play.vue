@@ -38,30 +38,76 @@
         </div>
         <div class="col-md-9 col-sm-12">
 
-          <div class="toggle-desc" @click="toggleDesc()">
-            <span>Описание</span>
-            <span v-if="desc">скрыть</span>
-            <span v-if="!desc">открыть</span>
+          <!-- Using value -->
+          <b-button @click="visible===1?visible=0:visible=1" class="m-1">Описание</b-button>
+          <b-button @click="()=>{visible=2}" class="m-1">Хронология</b-button>
+          <div :class="{'d-none' :visible!==1}" id="collapse-1">
+            <div class="toggle-desc" @click="toggleDesc()">
+              <span>Описание</span>
+              <span v-if="desc">скрыть</span>
+              <span v-if="!desc">открыть</span>
 
-            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down-short" fill="currentColor"
-                 xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd"
-                    d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
-            </svg>
-          </div>
-          <div v-if="animeInfo.material_data" v-bind:class="{'d-none': desc!==true }" class="description">
-            <h5 class="mt-0"> {{ animeInfo.title }} / {{ animeInfo.title_orig }}</h5>
-            {{ animeInfo.material_data.description }}
-            <div><span>Год:</span> {{ animeInfo.material_data.year }}</div>
-            <div><span>Рейтин Shikimori:</span> {{ animeInfo.material_data.shikimori_rating }}</div>
-            <div v-if="animeInfo.material_data.anime_genres"><span>Жанры:</span> {{ animeInfo.material_data.anime_genres.join(", ") }}</div>
-            <div v-if="animeInfoShiki.next_episode_at"><span>Следующий эпизод:</span>
-              {{ new Date(animeInfoShiki.next_episode_at).toLocaleString() }}
+              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down-short" fill="currentColor"
+                   xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
+              </svg>
             </div>
-            <div><span>Кол-во эпизодов:</span> {{ animeInfoShiki.episodes }}</div>
-            <div><span>Последний эпизод:</span> {{ animeInfo.last_episode }}</div>
-            <div><span>Озвучено:</span> {{ this.minEpisodes }} - {{ this.maxEpisodes }}</div>
+            <div v-if="animeInfo.material_data" v-bind:class="{'d-none': desc!==true }" class="description">
+              <h5 class="mt-0"> {{ animeInfo.title }} / {{ animeInfo.title_orig }}</h5>
+              {{ animeInfo.material_data.description }}
+              <div><span>Год:</span> {{ animeInfo.material_data.year }}</div>
+              <div><span>Рейтин Shikimori:</span> {{ animeInfo.material_data.shikimori_rating }}</div>
+              <div v-if="animeInfo.material_data.anime_genres"><span>Жанры:</span>
+                {{ animeInfo.material_data.anime_genres.join(", ") }}
+              </div>
+              <div v-if="animeInfoShiki.next_episode_at"><span>Следующий эпизод:</span>
+                {{ new Date(animeInfoShiki.next_episode_at).toLocaleString() }}
+              </div>
+              <div><span>Кол-во эпизодов:</span> {{ animeInfoShiki.episodes }}</div>
+              <div><span>Последний эпизод:</span> {{ animeInfo.last_episode }}</div>
+              <div><span>Озвучено:</span> {{ this.minEpisodes }} - {{ this.maxEpisodes }}</div>
+            </div>
           </div>
+          <div :class="{'d-none' :visible!==2}" id="collapse-2">
+
+            <!-- <div class="anime-list">
+               <div v-for="(item,index) in animeFranchise" v-if="animeFranchise" :key="index" class="card ">
+                 <router-link
+                   :to="{ name: 'play', params: { shiki_id: item.id,name:(item.name.replaceAll(' ', '_')) }}">
+                   <div class="poster" :style="{ backgroundImage: `url('${item.image_url.replaceAll('x96', 'original')}')` }">
+                     <img v-bind:src="require(`@/assets/play.svg`)" alt="">
+                   </div>
+                   <div class="card-body" v-if="item.name">
+                     <div class="card-title"> {{ item.name }}</div>
+                   </div>
+
+               </div>
+             </div>-->
+            <div class="fran-list">
+              <div v-for="(item,index) in animeFranchise" v-if="animeFranchise" :key="index" class="card">
+                <div class="row no-gutters">
+                  <div class="col-md-4">
+                    <router-link v-if="item.inBase"
+                      :to="{ name: 'play', params: { shiki_id: item.id,name:(item.name.replaceAll(' ', '_')) }}">
+                    <img v-bind:src="item.image_url.replaceAll('x96', 'original')" class="card-img" alt="">
+                    </router-link>
+                    <img v-else v-bind:src="item.image_url.replaceAll('x96', 'original')" class="card-img" alt="">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ item.name }}</h5>
+                      <p class="card-text">{{ item.year }} </p>
+                      <p class="card-text">{{ item.inBase }} </p>
+                      <p class="card-text"><small class="text-muted">{{ item.kind }}</small></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
 
         </div>
       </div>
@@ -73,7 +119,7 @@
 
 </template>
 
-<style>
+<style lang="scss" rel="stylesheet/scss">
 .card-img-top {
   height: 300px;
   object-fit: contain;
@@ -88,6 +134,14 @@
   font-weight: bold;
 }
 
+.fran-list{
+  display: flex;
+  flex-wrap: wrap;
+  >div{
+    width: 50%;
+  }
+}
+
 @media (max-width: 576px) {
   .counter {
     flex-wrap: wrap;
@@ -96,9 +150,33 @@
   .counter button:first-child, .counter button:last-child {
     width: 100%;
   }
-  .card{
+
+  .card {
     width: 49%;
   }
+
+}
+
+.anime-list {
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+
+  @media (max-width: 576px) {
+
+
+    width: 49%;
+
+  }
+
+}
+
+@media (max-width: 576px) {
+
+
+  width: 49%;
 
 }
 
@@ -119,6 +197,7 @@ export default {
     return {
       posts: [],
       desc: '',
+      visible: 1,
       serialId: [],
       text: ["123", "asd"],
       active_el: 0,
@@ -127,6 +206,7 @@ export default {
       animeInfoShiki: [],
       minEpisodes: 0,
       maxEpisodes: 0,
+      animeFranchise: [],
       playList: [/*
         {
           src: 'https://media.vued.vanthink.cn/y2mate.com%20-%20Sparkle%20_%20Your%20Name%20AMV_K_7To_y9IAM_240p.mp4',
@@ -147,6 +227,7 @@ export default {
     } else {
       console.log('Не получен список озвучки')
     }
+    this.animeFranchise = await this.getShikiFranchise();
   },
   methods: {
     async getListDubbing() {
@@ -165,6 +246,10 @@ export default {
     },
     async getPlayList(serial_id, season, episode) {
       const response = await PostsService.fetcPlayList(serial_id, season, episode)
+      return response.data;
+    },
+    async getShikiFranchise() {
+      const response = await PostsService.shikiFranchise(this.$route.params.shiki_id)
       return response.data;
     },
     async setPlayer() {

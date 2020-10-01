@@ -163,6 +163,14 @@ const getAnimeById = async function (id) {
     return text;
 };
 
+const apiSearchIdShiki = async function (shikimori_id) {
+    const url = `https://kodikapi.com/search?token=${token}&shikimori_id=${shikimori_id}`;
+    let promise = await fetch(url);
+    let text = await promise.text();
+    text = await JSON.parse(text);
+    return text;
+};
+
 const ApiGetAnimeById = async (request, res) => {
     let serial_id = request.params.serial_id;
     const url = `https://kodikapi.com/search?token=${token}&id=${serial_id}&with_episodes=true&with_material_data=true&episode=1`;
@@ -318,14 +326,25 @@ const apiSearch = function (request, res, next) {
     res.set({"content-type": "application/json; charset=utf-8"});
     httpRequest.get(url, (error, response, body) => res.end(body));
 };
-const apiFranchise = function (request, res, next) {
+
+const apiFranchise = async function (request, res, next) {
     let serial_id = request.params.serial_id;
     const url = `https://shikimori.one/api/animes/${serial_id}/franchise`;
     res.set({"content-type": "application/json; charset=utf-8"});
 
-    httpRequest.get(url, (error, response, body) => {
+    httpRequest.get(url, async (error, response, body) => {
         body = JSON.parse(body);
-        let bodyNodes = JSON.stringify(body['nodes']);
+
+        const promises = Object.keys(body['nodes']).map(async function(key, index) {
+            let id = body['nodes'][key].id;
+            let inDBkodik = await apiSearchIdShiki(id).then(e=>{
+                return e.total > 0;
+            });
+            body['nodes'][key].inBase = inDBkodik
+        });
+        await Promise.all(promises);
+
+        let bodyNodes = JSON.stringify(body['nodes'].reverse());
         res.end(bodyNodes)
     });
 };
