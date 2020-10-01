@@ -5,7 +5,10 @@
     <div class="container">
       <!-- <router-link  to="/" class="btn btn-primary">Главная</router-link>-->
       <div class="media row" v-if="animeInfo.material_data">
-        <img v-bind:src="animeInfo.material_data.poster_url" class="mr-3 col-md-3 col-sm-12">
+        <div class="mr-3 col-md-3 col-sm-12">
+          <img v-bind:src="animeInfo.material_data.poster_url" alt="">
+          {{ animeInfo.title }}
+        </div>
         <div class="media-body  col-md-9 col-sm-12">
 
 
@@ -89,8 +92,8 @@
                 <div class="row no-gutters">
                   <div class="col-md-4">
                     <router-link v-if="item.inBase"
-                      :to="{ name: 'play', params: { shiki_id: item.id,name:(item.name.replaceAll(' ', '_')) }}">
-                    <img v-bind:src="item.image_url.replaceAll('x96', 'original')" class="card-img" alt="">
+                                 :to="{ name: 'play', params: { shiki_id: item.id,name:(item.name.replaceAll(' ', '_')) }}">
+                      <img v-bind:src="item.image_url.replaceAll('x96', 'original')" class="card-img" alt="">
                     </router-link>
                     <img v-else v-bind:src="item.image_url.replaceAll('x96', 'original')" class="card-img" alt="">
                   </div>
@@ -134,10 +137,11 @@
   font-weight: bold;
 }
 
-.fran-list{
+.fran-list {
   display: flex;
   flex-wrap: wrap;
-  >div{
+
+  > div {
     width: 50%;
   }
 }
@@ -223,7 +227,7 @@ export default {
       await this.getSerialById(this.posts.results[0].id)
       this.getInfoShiki().then(r => {
         this.animeInfoShiki = r;
-      }); // без Await
+      });
     } else {
       console.log('Не получен список озвучки')
     }
@@ -265,6 +269,7 @@ export default {
       this.playList = newPlayLists;
     },
     activate: function (el) {
+      this.animeEpisodeUpdate();
       this.active_el = el;
       this.getSerialById(this.active_el)
 
@@ -285,6 +290,29 @@ export default {
         this.setPlayer();
       }
     },
+    animeEpisodeUpdate() {
+      let season = this.animeInfo.last_season;
+      if(this.animeInfo.seasons){
+        let Episodes = this.animeInfo.seasons[season]['episodes']
+        let keysEpisodes = Object.keys(Episodes)
+        this.minEpisodes = keysEpisodes[0];
+        this.maxEpisodes = keysEpisodes[keysEpisodes.length - 1];
+        this.episode = parseInt(keysEpisodes[0]);
+      }else{
+        this.minEpisodes = 1
+        this.maxEpisodes = 1
+      }
+
+      if (this.$route.query.eppisose && this.$route.query.dubbing) {
+        this.active_el = this.$route.query.dubbing;
+        this.episode = parseInt(this.$route.query.eppisose)
+      }
+
+      if (this.episode > this.maxEpisodes)
+        this.episode = this.maxEpisodes
+      else if (this.episode < this.minEpisodes)
+        this.episode = this.minEpisodes;
+    },
     toggleDesc() {
       this.desc = !this.desc
       localStorage.desc = this.desc;
@@ -293,26 +321,22 @@ export default {
     }
   },
   watch: {
+    async $route(to, from) {
+      await this.getListDubbing();
+      await this.getSerialById(this.posts.results[0].id)
+
+      this.animeEpisodeUpdate();
+
+    },
     text: async function (val) {
       console.log(val);
     },
     animeInfo: function () {
-      let season = this.animeInfo.last_season;
-      let Episodes = this.animeInfo.seasons[season]['episodes']
-      let keysEpisodes = Object.keys(Episodes)
-      this.minEpisodes = keysEpisodes[0];
-      this.maxEpisodes = keysEpisodes[keysEpisodes.length - 1];
+
       this.active_el = this.animeInfo.id;
-
-      if (this.$route.query.eppisose && this.$route.query.dubbing) {
-        this.active_el = this.$route.query.dubbing;
-        this.episode = parseInt(this.$route.query.eppisose)
-      } else {
-        this.episode = parseInt(keysEpisodes[0]);
-      }
-
-      if (this.episode > this.maxEpisodes)
-        this.episode = this.maxEpisodes
+      this.animeEpisodeUpdate();
+      /*   if (this.episode > this.maxEpisodes)
+           this.episode = this.maxEpisodes*/
 
       this.setPlayer();
     }

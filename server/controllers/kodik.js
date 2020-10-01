@@ -58,7 +58,7 @@ const apiGetLinks = async (request, res) => {
     let episode = request.params.episode;
 
     let json = await getAnimeById(id);
-    /*console.log(json);*/
+   /* console.log(json);*/
     let link = json["results"][0]["seasons"]
         ? json["results"][0]["seasons"][season]["episodes"][episode]
         : json["results"][0]["link"];
@@ -68,7 +68,7 @@ const apiGetLinks = async (request, res) => {
     let idSeria = "";
     let hash = "";
     if (link && link.length > 0) {
-        type = link.split("/")[3] == "serial" ? "seria" : link.split("/")[3];
+        type = link.split("/")[3]; // type = link.split("/")[3] == "serial" ? "seria" : link.split("/")[3];
         idSeria = link.split("/")[4];
         hash = link.split("/")[5];
     } else {
@@ -336,11 +336,11 @@ const apiFranchise = async function (request, res, next) {
         body = JSON.parse(body);
 
         const promises = Object.keys(body['nodes']).map(async function(key, index) {
-            let id = body['nodes'][key].id;
-            let inDBkodik = await apiSearchIdShiki(id).then(e=>{
+            const id = body['nodes'][key].id;
+            let inKodikDB = await apiSearchIdShiki(id).then(e=>{
                 return e.total > 0;
             });
-            body['nodes'][key].inBase = inDBkodik
+            body['nodes'][key].inBase = inKodikDB
         });
         await Promise.all(promises);
 
