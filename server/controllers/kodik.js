@@ -7,6 +7,7 @@ localStorage = new LocalStorage("./scratch");
 require("dotenv").config();
 const token = process.env.KODIK_AUTH_TOKEN;
 
+
 const createFrameUrl = request => {
     const {episode, link, season} = request.params;
 
@@ -58,7 +59,7 @@ const apiGetLinks = async (request, res) => {
     let episode = request.params.episode;
 
     let json = await getAnimeById(id);
-   /* console.log(json);*/
+    /* console.log(json);*/
     let link = json["results"][0]["seasons"]
         ? json["results"][0]["seasons"][season]["episodes"][episode]
         : json["results"][0]["link"];
@@ -186,7 +187,7 @@ const kinoposk = async (request, res) => {
 
     let text = await promise.text();
     text = await JSON.parse(text);
-    if (text && text["results"] && text["results"][0])
+    if (text && text["results"] && text["results"][0] && text["results"][0]["material_data"])
         res.redirect(text["results"][0]["material_data"]["poster_url"]);
 };
 const animeList = body => {
@@ -335,9 +336,9 @@ const apiFranchise = async function (request, res, next) {
     httpRequest.get(url, async (error, response, body) => {
         body = JSON.parse(body);
 
-        const promises = Object.keys(body['nodes']).map(async function(key, index) {
+        const promises = Object.keys(body['nodes']).map(async function (key, index) {
             const id = body['nodes'][key].id;
-            let inKodikDB = await apiSearchIdShiki(id).then(e=>{
+            let inKodikDB = await apiSearchIdShiki(id).then(e => {
                 return e.total > 0;
             });
             body['nodes'][key].inBase = inKodikDB

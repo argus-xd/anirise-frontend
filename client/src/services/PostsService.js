@@ -26,6 +26,9 @@ export default {
   shikiAnimeTop() {
     return api_Kodik().get(`api-list-top/`)
   },
+  searchInDB(name) {
+    return api_Kodik().get(`api-search-link/${name}`)
+  },
 
   shikiAnime(shiki_id) {
     return api_Shiki().get(`animes/${shiki_id}`)

@@ -7,6 +7,15 @@
     </div>
 
     <b-container class="bv-example-row">
+
+     <!-- <model-list-select :list="getInDB"
+                         v-model="objectItem"
+                         option-value="name"
+                         option-text="name"
+                         @searchchange="searchchange"
+                         :custom-text="codeAndNameAndDesc"
+                         placeholder="select item">
+      </model-list-select>-->
       <filter_anime msg="test-pars" @filterTop="filterTop" @lastUpdate="lastUpdate"/>
 
       <div class="anime-list">
@@ -15,14 +24,11 @@
              class="card ">
           <router-link
             :to="{ name: 'play', params: { shiki_id: item.shikimori_id,name:(item.title_orig.replaceAll(' ', '_')) }}">
-            <div class="poster" :style="{ backgroundImage: `url('${item.material_data.poster_url}')` }">
+            <div class="poster" :class="posterCover" :style="{ backgroundImage: `url('${item.material_data.poster_url}')` }">
               <img v-bind:src="require(`@/assets/play.svg`)" alt="">
             </div>
-            <!-- <img v-bind:src="item.material_data.poster_url" class="card-img-top" alt="">-->
             <div class="card-body" v-if="item.title">
               <div class="card-title"> {{ item.title }}</div>
-              <!--<p class="card-text">{{ item.translation.title }}</p>-->
-              <!-- <a v-bind:href="/play/++" class="btn btn-primary"></a>-->
             </div>
           </router-link>
         </div>
@@ -47,8 +53,16 @@
 
   display: flex;
   flex-wrap: wrap;
+/*  display: grid;
+  grid-template-columns: repeat(auto-fill, 16%);
+  grid-gap: 0rem;*/
+
   justify-content: space-between;
 
+  /*&::after {
+    content: "";
+    flex: auto;
+  }*/
   .card {
     margin-bottom: 1rem;
     box-shadow: 0 0 3rem -1rem rgba(0, 0, 0, 0.5);
@@ -57,15 +71,16 @@
     width: 16%;
 
     .poster {
-      /* width: 225px;*/
       height: 247px;
       margin: 0 auto;
       position: relative;
-      background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
+      background-color: #f1f2f3;
       overflow: hidden;
-
+      &--cover{
+        background-size: cover;
+      }
       &:before {
         content: "";
         position: absolute;
@@ -93,6 +108,7 @@
       bottom: 0px;
       background: #00000094;
       width: 100%;
+      z-index: 2;
     }
 
     &-title {
@@ -104,6 +120,7 @@
       font-weight: bold;
       line-height: 1.65;
       margin-top: 5px;
+      height: 26px;
     }
 
     a {
@@ -150,30 +167,44 @@
 <script>
 import PostsService from '@/services/PostsService'
 import filter_anime from '@/components/pages/filter.vue'
+import 'vue-search-select/dist/VueSearchSelect.css'
+import {ModelListSelect } from 'vue-search-select'
+import _ from 'lodash'
 
 export default {
   components: {
-    filter_anime
+    filter_anime,
+    ModelListSelect
   },
   name: 'posts',
   data() {
     return {
       mainList: function () {
         console.log("asd")
-
         return arr;
       },
+      objectItem: {},
       defaultList: [],
       topShiki: [],
       timer: null,
       text: "",
+      posterCover:"",
+      searchText: '', // If value is falsy, reset searchText & searchItem
+      getInDB: [
+        {name: "боруто: новое поколение наруто", name_orig: "boruto: naruto next generations", year: "2017"},
+        {name: "боруто: новое поколение наруто", name_orig: "boruto: naruto next generations", year: "2017"}
+        ],
+      item: {}
 
     }
   },
   async mounted() {
 
     this.mainList = this.preLoadArr();
-    this.defaultList = await this.getMainPageList()
+    this.defaultList = await this.getMainPageList().then(e=>{
+      this.posterCover="poster--cover"
+      return e;
+    })
     this.mainList = this.defaultList;
 
 
@@ -184,6 +215,10 @@ export default {
     })
   },
   methods: {
+     async searchInDB(name) {
+      const response = await PostsService.searchInDB(name)
+      return response.data
+    },
     async getMainPageList() {
       const response = await PostsService.fetchMainPage()
       return this.deleteDuplicate(response.data) /* */
@@ -213,8 +248,8 @@ export default {
       let inArr = [];
       for (let i = 0; i < 20; i++) {
         inArr.push({
-          'title': "Anime name",
-          'title_orig': "test",
+          'title': "........................................",
+          'title_orig': "",
           'material_data': {'poster_url': require(`@/assets/preLoader.svg`)}
         })
       }
@@ -245,6 +280,17 @@ export default {
     },
     doSomething() {
       alert("asd");
+    },
+    codeAndNameAndDesc (item) {
+      return `${item.name} - ${item.name_orig} - ${item.year}`
+    },
+    searchchange(searchText) {
+      this.searchText = searchText || this.objectItem.name;
+
+      this.searchInDB(this.searchText).then(e=>{
+        console.log(this.searchText)
+        this.getInDB= e;
+      })
     }
   },
   watch: {

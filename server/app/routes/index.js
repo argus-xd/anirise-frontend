@@ -18,6 +18,12 @@ const {
     kinoposk
 } = require("../../controllers/kodik");
 
+const {
+    searchLink,
+    serialsAdd,
+} = require("../../controllers/search");
+
+
 module.exports = function (app, db) {
     noteRoutes(app, db);
 
@@ -55,4 +61,7 @@ module.exports = function (app, db) {
     app.get("/api-serial-id/:serial_id", ApiGetAnimeById);
     app.get("/api-get-url/:serial_id/:season/:episode", apiGetLinks);
     app.get("/api-franchise/:serial_id", apiFranchise);
+
+    app.get("/api-search-link/:name", searchLink);
+    app.get("/api-db-update/", serialsAdd);
 };
