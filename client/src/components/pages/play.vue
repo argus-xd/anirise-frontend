@@ -219,10 +219,9 @@
     async mounted() {
 
       this.desc = localStorage.desc === 'false' ? false : true;
-
       await this.getListDubbing();
       if (this.posts.results[0].id) {
-        await this.getSerialById(this.posts.results[0].id)
+        await this.getSerialById( this.$route.query.dubbing||this.posts.results[0].id)
         this.getInfoShiki().then(r => {
           this.animeInfoShiki = r;
         });
@@ -324,7 +323,7 @@
     watch: {
       async $route(to, from) {
         await this.getListDubbing();
-        await this.getSerialById(this.posts.results[0].id)
+      /*  await this.getSerialById(from.query.dubbing)*/
 
         this.animeEpisodeUpdate();
 

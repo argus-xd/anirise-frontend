@@ -34,19 +34,18 @@ const getLinks = async (id, episode, season) => {
     console.log(idSeria);
     console.log(hash);
 
-    let get = await fetch("http://aniqit.com/get-vid", {
-        credentials: "include",
+    let get = await fetch("http://kodik.cc/get-vid", {
         headers: {
-            accept: "application/json, text/javascript, */*; q=0.01",
-            "accept-language":
-                "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,cy;q=0.6,und;q=0.5,sr;q=0.4",
+            "accept": "application/json, text/javascript, *!/!*; q=0.01",
+            "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,cy;q=0.6,und;q=0.5,sr;q=0.4",
             "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
             "x-requested-with": "XMLHttpRequest"
         },
-        referrerPolicy: "no-referrer-when-downgrade",
-        body: `bad_user=true&hash2=OErmnYyYA4wHwOP&type=${type}&hash=${hash}&id=${idSeria}`,
+        referrerPolicy: "strict-origin-when-cross-origin",
+        body: `&ref=&ref_sign=208d2a75f78d8afe7a1c73c2d97fd3ce07534666ab4405369f4f8705a9741144&bad_user=false&hash2=OErmnYyYA4wHwOP&type=${type}&hash=${hash}&id=${idSeria}`,
         method: "POST",
-        mode: "cors"
+        mode: "cors",
+        credentials: "omit",
     });
     text = await get.text();
     text = await JSON.parse(text);
@@ -60,7 +59,7 @@ const apiGetLinks = async (request, res) => {
 
     let json = await getAnimeById(id);
     /* console.log(json);*/
-    let link = json["results"][0]["seasons"]
+let link = json["results"][0]["seasons"]
         ? json["results"][0]["seasons"][season]["episodes"][episode]
         : json["results"][0]["link"];
 
@@ -82,18 +81,17 @@ const apiGetLinks = async (request, res) => {
     console.log(hash);*/
 
     let get = await fetch("http://aniqit.com/get-vid", {
-        credentials: "include",
         headers: {
-            accept: "application/json, text/javascript, */*; q=0.01",
-            "accept-language":
-                "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,cy;q=0.6,und;q=0.5,sr;q=0.4",
+            "accept": "application/json, text/javascript, *!/!*; q=0.01",
+            "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,cy;q=0.6,und;q=0.5,sr;q=0.4",
             "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
             "x-requested-with": "XMLHttpRequest"
         },
-        referrerPolicy: "no-referrer-when-downgrade",
-        body: `bad_user=true&hash2=OErmnYyYA4wHwOP&type=${type}&hash=${hash}&id=${idSeria}`,
+        referrerPolicy: "strict-origin-when-cross-origin",
+        body: `&ref=&ref_sign=208d2a75f78d8afe7a1c73c2d97fd3ce07534666ab4405369f4f8705a9741144&bad_user=false&hash2=OErmnYyYA4wHwOP&type=${type}&hash=${hash}&id=${idSeria}`,
         method: "POST",
-        mode: "cors"
+        mode: "cors",
+        credentials: "omit",
     });
     text = await get.text();
     text = await JSON.parse(text);
