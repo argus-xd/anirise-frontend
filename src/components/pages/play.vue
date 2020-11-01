@@ -1,54 +1,101 @@
 <template>
-
   <div class="">
-
     <div class="container">
       <!-- <router-link  to="/" class="btn btn-primary">Главная</router-link>-->
       <div class="media row" v-if="animeInfo.material_data">
         <div class="mr-3 col-md-3 col-sm-12">
-          <img v-bind:src="animeInfo.material_data.poster_url" class="poster" alt="">
+          <img
+            v-bind:src="animeInfo.material_data.poster_url"
+            class="poster"
+            alt=""
+          />
           {{ animeInfo.title }}
         </div>
         <div class="media-body col-md-9 col-sm-12">
-
           <!-- <div class="player-container">
              <vue-core-video-player  v-if="playList.length>0" @play="playFunc" v-bind:src="playList"></vue-core-video-player>
            </div>-->
-          <anime-player v-if="playList.length>0" v-bind:playList="playList"></anime-player>
+          <anime-player
+            v-if="playList.length > 0"
+            v-bind:playList="playList"
+          ></anime-player>
           <div class="counter">
-            <button type="button" @click="setEpisode(-1)" class="btn btn-outline-primary">Предыдущая серия</button>
-            <button type="button" class="btn btn-outline-secondary">{{ this.episode }} серия</button>
-            <button type="button" @click="setEpisode(maxEpisodes,true)" class="btn btn-outline-secondary">из {{
-              this.maxEpisodes
-              }}
+            <button
+              type="button"
+              @click="setEpisode(-1)"
+              class="btn btn-outline-primary"
+            >
+              Предыдущая серия
             </button>
-            <button type="button" @click="setEpisode(1)" class="btn btn-outline-primary">Следующая серия</button>
+            <button type="button" class="btn btn-outline-secondary">
+              {{ this.episode }} серия
+            </button>
+            <button
+              type="button"
+              @click="setEpisode(maxEpisodes, true)"
+              class="btn btn-outline-secondary"
+            >
+              из {{ this.maxEpisodes }}
+            </button>
+            <button
+              type="button"
+              @click="setEpisode(1)"
+              class="btn btn-outline-primary"
+            >
+              Следующая серия
+            </button>
           </div>
 
-          <input type="range" class="custom-range" v-on:click="setEpisode(episode,true)" v-bind:min="minEpisodes"
-                 v-bind:max="maxEpisodes" id="customRange3" v-model="episode">
-
+          <input
+            type="range"
+            class="custom-range"
+            v-on:click="setEpisode(episode, true)"
+            v-bind:min="minEpisodes"
+            v-bind:max="maxEpisodes"
+            id="customRange3"
+            v-model="episode"
+          />
         </div>
       </div>
       <div class="row">
-
         <div class="col-md-3 col-sm-12">
           <div class="list-group">
-            <a v-for="(item,index) in posts.results" v-if="item.translation" :key="index"
-               class="list-group-item list-group-item-action" v-bind:class="{active:active_el === item.id   }"
-               @click="changeDubbing(item.id) ">
+            <a
+              v-for="(item, index) in posts.results"
+              v-if="item.translation"
+              :key="index"
+              class="list-group-item list-group-item-action"
+              v-bind:class="{ active: active_el === item.id }"
+              @click="changeDubbing(item.id)"
+            >
               {{ item.translation.title }}
             </a>
           </div>
         </div>
         <div class="col-md-9 col-sm-12">
-
           <!-- Using value -->
-          <b-button @click="visible===1?visible=0:visible=1" class="m-1">Описание</b-button>
-          <b-button @click="()=>{visible=2}" class="m-1">Хронология</b-button>
-          <a :href="'https://shikimori.one'+animeInfoShiki.url" target="_blank" type="button" class=" btn btn-primary">Shikimori
-            - info</a>
-          <div :class="{'d-none' :visible!==1}" id="collapse-1">
+          <b-button
+            @click="visible === 1 ? (visible = 0) : (visible = 1)"
+            class="m-1"
+            >Описание</b-button
+          >
+          <b-button
+            @click="
+              () => {
+                visible = 2
+              }
+            "
+            class="m-1"
+            >Хронология</b-button
+          >
+          <a
+            :href="'https://shikimori.one' + animeInfoShiki.url"
+            target="_blank"
+            type="button"
+            class="btn btn-primary"
+            >Shikimori - info</a
+          >
+          <div :class="{ 'd-none': visible !== 1 }" id="collapse-1">
             <!-- <div class="toggle-desc" @click="toggleDesc()">
                <span>Описание</span>
                <span v-if="desc">скрыть</span>
@@ -60,135 +107,165 @@
                        d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
                </svg>
              </div>-->
-            <div v-if="animeInfo.material_data" v-bind:class="{'d-none': desc!==true }" class="description">
-              <h5 class="mt-0"> {{ animeInfo.title }} / {{ animeInfo.title_orig }}</h5>
+            <div
+              v-if="animeInfo.material_data"
+              v-bind:class="{ 'd-none': desc !== true }"
+              class="description"
+            >
+              <h5 class="mt-0">
+                {{ animeInfo.title }} / {{ animeInfo.title_orig }}
+              </h5>
               {{ animeInfo.material_data.description }}
               <div><span>Год:</span> {{ animeInfo.material_data.year }}</div>
-              <div><span>Рейтин Shikimori:</span> {{ animeInfo.material_data.shikimori_rating }}</div>
-              <div v-if="animeInfo.material_data.anime_genres"><span>Жанры:</span>
+              <div>
+                <span>Рейтин Shikimori:</span>
+                {{ animeInfo.material_data.shikimori_rating }}
+              </div>
+              <div v-if="animeInfo.material_data.anime_genres">
+                <span>Жанры:</span>
                 {{ animeInfo.material_data.anime_genres.join(', ') }}
               </div>
-              <div v-if="animeInfoShiki.next_episode_at"><span>Следующий эпизод:</span>
+              <div v-if="animeInfoShiki.next_episode_at">
+                <span>Следующий эпизод:</span>
                 {{ new Date(animeInfoShiki.next_episode_at).toLocaleString() }}
               </div>
-              <div><span>Кол-во эпизодов:</span> {{ animeInfoShiki.episodes }}</div>
-              <div><span>Последний эпизод:</span> {{ animeInfo.last_episode }}</div>
-              <div><span>Озвучено:</span> {{ this.minEpisodes }} - {{ this.maxEpisodes }}</div>
+              <div>
+                <span>Кол-во эпизодов:</span> {{ animeInfoShiki.episodes }}
+              </div>
+              <div>
+                <span>Последний эпизод:</span> {{ animeInfo.last_episode }}
+              </div>
+              <div>
+                <span>Озвучено:</span> {{ this.minEpisodes }} -
+                {{ this.maxEpisodes }}
+              </div>
             </div>
           </div>
-          <div :class="{'d-none' :visible!==2}" id="collapse-2">
-
+          <div :class="{ 'd-none': visible !== 2 }" id="collapse-2">
             <div class="fran-list">
-              <div v-for="(item,index) in animeFranchise" v-if="animeFranchise" :key="index" class="card">
+              <div
+                v-for="(item, index) in animeFranchise"
+                v-if="animeFranchise"
+                :key="index"
+                class="card"
+              >
                 <div class="row no-gutters">
                   <div class="col-md-4">
-                    <router-link v-if="item.inBase"
-                                 :to="{ name: 'play', params: { shiki_id: item.id,name:(item.name.replaceAll(' ', '_')) }}">
-                      <img v-bind:src="item.image_url.replaceAll('x96', 'original')" class="card-img" alt="">
+                    <router-link
+                      v-if="item.inBase"
+                      :to="{
+                        name: 'play',
+                        params: {
+                          shiki_id: item.id,
+                          name: item.name.replaceAll(' ', '_')
+                        }
+                      }"
+                    >
+                      <img
+                        v-bind:src="
+                          item.image_url.replaceAll('x96', 'original')
+                        "
+                        class="card-img"
+                        alt=""
+                      />
                     </router-link>
-                    <img v-else v-bind:src="item.image_url.replaceAll('x96', 'original')" class="card-img" alt="">
+                    <img
+                      v-else
+                      v-bind:src="item.image_url.replaceAll('x96', 'original')"
+                      class="card-img"
+                      alt=""
+                    />
                   </div>
                   <div class="col-md-8">
                     <div class="card-body">
                       <h5 class="card-title">{{ item.name }}</h5>
-                      <p class="card-text">{{ item.year }} </p>
-                      <p class="card-text">{{ item.inBase }} </p>
-                      <p class="card-text"><small class="text-muted">{{ item.kind }}</small></p>
+                      <p class="card-text">{{ item.year }}</p>
+                      <p class="card-text">{{ item.inBase }}</p>
+                      <p class="card-text">
+                        <small class="text-muted">{{ item.kind }}</small>
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
-
         </div>
       </div>
-
     </div>
-
   </div>
-
 </template>
 
 <style lang="scss" rel="stylesheet/scss">
-  .card-img-top {
-    height: 300px;
-    object-fit: contain;
+.card-img-top {
+  height: 300px;
+  object-fit: contain;
+}
+
+.poster {
+  width: 100%;
+}
+
+.description {
+  padding: 0.4rem;
+}
+
+.counter {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.media-body span {
+  font-weight: bold;
+}
+
+.fran-list {
+  display: flex;
+  flex-wrap: wrap;
+
+  > div {
+    width: 50%;
+  }
+}
+
+@media (max-width: 576px) {
+  .counter {
+    flex-wrap: wrap;
   }
 
-  .poster {
+  .counter button:first-child,
+  .counter button:last-child {
     width: 100%;
   }
 
-  .description {
-    padding: 0.4rem;
+  .card {
+    width: 49%;
   }
+}
 
-  .counter {
-    display: flex;
-    justify-content: center;
-    padding: 1rem;
-  }
-
-  .media-body span {
-    font-weight: bold;
-  }
-
-  .fran-list {
-    display: flex;
-    flex-wrap: wrap;
-
-    > div {
-      width: 50%;
-    }
-  }
+.anime-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 
   @media (max-width: 576px) {
-    .counter {
-      flex-wrap: wrap;
-    }
-
-    .counter button:first-child, .counter button:last-child {
-      width: 100%;
-    }
-
-    .card {
-      width: 49%;
-    }
-
-  }
-
-  .anime-list {
-
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-
-    @media (max-width: 576px) {
-
-      width: 49%;
-
-    }
-
-  }
-
-  @media (min-width: 1280px) {
-    video{
-      width: 809px;
-      height: 455px;
-    }
-
-  }@media (max-width: 576px) {
-
     width: 49%;
-
   }
+}
 
+@media (min-width: 1280px) {
+  video {
+    width: 809px;
+    height: 455px;
+  }
+}
+@media (max-width: 576px) {
+  width: 49%;
+}
 </style>
 
 <script>
-
 import animePlayer from '@/components/pages/anime-player'
 import PostsService from '@/services/PostsService'
 
@@ -197,13 +274,12 @@ export default {
   components: {
     animePlayer
   },
-  data () {
+  data() {
     return {
       posts: [],
       desc: '',
       visible: 1,
       rangeValue: 0,
-      serialId: [],
       active_el: 0,
       episode: 1,
       animeInfo: [],
@@ -214,80 +290,87 @@ export default {
       playList: []
     }
   },
-  async mounted () {
+  async mounted() {
     this.desc = localStorage.desc !== 'false'
-    await this.getListDubbing()
+    this.posts = await PostsService.dubbingListByShikiId(
+      this.$route.params.shiki_id
+    )
     if (this.posts.results[0].id) {
-      await this.getSerialById(this.$route.query.dubbing || this.posts.results[0].id)
-      this.getInfoShiki(this.$route.params.shiki_id).then(r => {
+      await PostsService.fetcGetBySerialId(
+        this.$route.query.dubbing || this.posts.results[0].id
+      ).then(e => {
+        this.animeInfo = e.results[0]
+      })
+
+      PostsService.shikiInfoById(this.$route.params.shiki_id).then(r => {
         this.animeInfoShiki = r
       })
     } else {
       console.log('Не получен список озвучки')
     }
-    this.animeFranchise = await this.getShikiFranchise(this.$route.params.shiki_id)
+
+    this.animeFranchise = await PostsService.shikiFranchise(
+      this.$route.params.shiki_id
+    )
   },
   methods: {
-    async getListDubbing () {
-      const response = await PostsService.fetcGetByIdShiki(this.$route.params.shiki_id)
-      this.posts = response.data
-      return response.data
-    },
-    async getSerialById (id) {
-      const response = await PostsService.fetcGetBySerialId(id)
-      this.animeInfo = response.data.results[0]
-      this.serialId = response.data
-    },
-    async getInfoShiki (id) {
-      const response = await PostsService.shikiAnime(id)
-      return response.data
-    },
-    async getPlayList (serial_id, season, episode) {
-      const response = await PostsService.fetcPlayList(serial_id, season, episode)
-      return response.data
-    },
-    async getShikiFranchise (id) {
-      const response = await PostsService.shikiFranchise(id)
-      return response.data
-    },
-    async setPlayer () {
-      let list = await this.getPlayList(this.active_el, this.animeInfo.last_season, this.episode)
-      let playListParse = (JSON.parse(JSON.stringify(list)))
+    async setPlayer() {
+      let list = await PostsService.fetcPlayList(
+        this.active_el,
+        this.animeInfo.last_season,
+        this.episode
+      )
+      let playListParse = JSON.parse(JSON.stringify(list))
       let newPlayLists = []
       Object.keys(playListParse).forEach(function (key) {
         newPlayLists.push({
-          src: playListParse[key][0].src.split(':hls:manifest.m3u8')[0].replaceAll('//', 'https://'),
+          src: playListParse[key][0].src
+            .split(':hls:manifest.m3u8')[0]
+            .replaceAll('//', 'https://'),
           resolution: key + 'p'
         })
       })
       this.playList = newPlayLists
     },
-    changeDubbing: function (el) {
+    changeDubbing(el) {
       this.animeEpisodeUpdate()
       this.active_el = el
       if (this.$route.query.dubbing !== el) {
-        this.getSerialById(this.active_el)
-        this.$router.push({name: 'play', query: {dubbing: this.active_el, eppisose: this.episode}})
+        PostsService.fetcGetBySerialId(this.active_el).then(e => {
+          this.animeInfo = e.results[0]
+        })
+
+        this.$router.push({
+          name: 'play',
+          query: { dubbing: this.active_el, eppisose: this.episode }
+        })
       }
     },
-    playFunc () {
+    playFunc() {
       console.log('play!')
     },
-    setEpisode (next, goTo = false) {
+    setEpisode(next, goTo = false) {
       next = parseInt(next)
       this.episode = parseInt(this.episode)
-      if (this.episode + next <= this.maxEpisodes && this.episode + next >= this.minEpisodes || goTo) {
+      if (
+        (this.episode + next <= this.maxEpisodes &&
+          this.episode + next >= this.minEpisodes) ||
+        goTo
+      ) {
         if (goTo) {
           this.episode = next
         } else {
           this.episode += next
         }
 
-        this.$router.push({name: 'play', query: {dubbing: this.active_el, eppisose: this.episode}})
+        this.$router.push({
+          name: 'play',
+          query: { dubbing: this.active_el, eppisose: this.episode }
+        })
         this.setPlayer()
       }
     },
-    animeEpisodeUpdate () {
+    animeEpisodeUpdate() {
       let season = this.animeInfo.last_season
       if (this.animeInfo.seasons) {
         let Episodes = this.animeInfo.seasons[season]['episodes']
@@ -311,7 +394,7 @@ export default {
         this.episode = this.minEpisodes
       }
     },
-    toggleDesc () {
+    toggleDesc() {
       this.desc = !this.desc
       localStorage.desc = this.desc
 
@@ -319,8 +402,10 @@ export default {
     }
   },
   watch: {
-    async $route (to, from) {
-      await this.getListDubbing()
+    async $route(to, from) {
+      this.posts = await PostsService.dubbingListByShikiId(
+        this.$route.params.shiki_id
+      )
       /*  await this.getSerialById(from.query.dubbing) */
 
       this.animeEpisodeUpdate()
@@ -332,5 +417,4 @@ export default {
     }
   }
 }
-
 </script>

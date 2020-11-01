@@ -3,7 +3,6 @@
     <div class="posts">
       <div class="container mb-3">
         <b-form-input
-          v-on:keypress="doSomething"
           v-model="text"
           placeholder="Поиск аниме..."
         ></b-form-input>
@@ -184,7 +183,7 @@
 </style>
 
 <script>
-import PostsService from '@/services/PostsService'
+import api from '@/services/PostsService'
 import filterAnime from '@/components/pages/filter.vue'
 import 'vue-search-select/dist/VueSearchSelect.css'
 import { ModelListSelect } from 'vue-search-select'
@@ -222,14 +221,14 @@ export default {
   },
   async mounted() {
     this.mainList = this.preLoadArr()
-    this.defaultList = await PostsService.fetchMainPage().then(e => {
+    this.defaultList = await api.fetchMainPage().then(e => {
       e = this.deleteDuplicate(e)
       this.posterCover = 'poster--cover'
       return e
     })
     this.mainList = this.defaultList
 
-    PostsService.shikiAnimeTop().then(e => {
+    api.shikiAnimeTop().then(e => {
       e = this.deleteDuplicate(e)
       e = this.sortRatings(e)
       this.topShiki = e
@@ -283,11 +282,9 @@ export default {
       for (const item of resultsArray) {
         if (item.material_data.poster_url.indexOf('no-poster.gif') > 0) {
           await this.sleep(40)
-          await PostsService.shikiInfoById(item.shikimori_id).then(
-            shikiItem => {
-              item.material_data.poster_url = `https://shikimori.one/${shikiItem.image.original}`
-            }
-          )
+          await api.shikiInfoById(item.shikimori_id).then(shikiItem => {
+            item.material_data.poster_url = `https://shikimori.one/${shikiItem.image.original}`
+          })
         }
       }
     },
@@ -298,8 +295,8 @@ export default {
       }
       this.timer = setTimeout(() => {
         if (this.text !== '') {
-          PostsService.fetchSearchName(this.text).then(e => {
-            this.mainList = this.deleteDuplicate(e.data)
+          api.fetchSearchName(this.text).then(e => {
+            this.mainList = this.deleteDuplicate(e)
           })
         } else {
           this.mainList = this.defaultList
@@ -314,16 +311,13 @@ export default {
       this.text = ''
       this.mainList = this.defaultList
     },
-    doSomething() {
-      alert('asd')
-    },
     codeAndNameAndDesc(item) {
       return `${item.name} - ${item.name_orig} - ${item.year}`
     },
     searchchange(searchText) {
       this.searchText = searchText || this.objectItem.name
 
-      PostsService.searchInDB(this.searchText).then(e => {
+      api.searchInDB(this.searchText).then(e => {
         console.log(this.searchText)
         this.getInDB = e
       })

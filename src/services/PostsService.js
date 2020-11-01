@@ -13,7 +13,7 @@ export default {
     const response = await service().get('api-search/' + name)
     return response.data
   },
-  async fetcGetByIdShiki(id) {
+  async dubbingListByShikiId(id) {
     const response = await service().get('api-search-id/' + id)
     return response.data
   },
