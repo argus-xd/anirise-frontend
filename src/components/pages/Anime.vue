@@ -269,14 +269,17 @@
           'results': inArr
         }
       },
+      sleep(time){
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve()
+          }, time)
+        })
+      },
       async replaceEmptyPosterByShiki () {
         for (const item of this.defaultList.results) {
           if (item.material_data.poster_url.indexOf('no-poster.gif') > 0) {
-            await new Promise(resolve => {
-              setTimeout(() => {
-                resolve()
-              }, 40)
-            })
+            await this.sleep(40)
             await this.getInfoShiki(item.shikimori_id).then(shikiItem => {
               item.material_data.poster_url = `https://shikimori.one/${shikiItem.image.original}`
 
