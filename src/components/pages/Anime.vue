@@ -212,11 +212,12 @@
         return e
       })
       this.mainList = this.defaultList
-      this.replaceEmptyPosterByShiki()
+      await this.replaceEmptyPosterByShiki(this.defaultList.results)
 
       this.shikiAnimeTop().then(e => {
         e = this.deleteDuplicate(e)
         e = this.sortRatings(e)
+        this.replaceEmptyPosterByShiki(e.results)
         this.topShiki = e
       })
     },
@@ -269,15 +270,15 @@
           'results': inArr
         }
       },
-      sleep(time){
+      sleep (time) {
         return new Promise(resolve => {
           setTimeout(() => {
             resolve()
           }, time)
         })
       },
-      async replaceEmptyPosterByShiki () {
-        for (const item of this.defaultList.results) {
+      async replaceEmptyPosterByShiki (resultsArray) {
+        for (const item of resultsArray) {
           if (item.material_data.poster_url.indexOf('no-poster.gif') > 0) {
             await this.sleep(40)
             await this.getInfoShiki(item.shikimori_id).then(shikiItem => {
