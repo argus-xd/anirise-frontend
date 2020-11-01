@@ -171,7 +171,7 @@
 </style>
 
 <script>
-  /* eslint-disable */
+/* eslint-disable */
   import PostsService from '@/services/PostsService'
   import filter_anime from '@/components/pages/filter.vue'
   import 'vue-search-select/dist/VueSearchSelect.css'

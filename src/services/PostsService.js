@@ -1,37 +1,37 @@
-import api_Kodik from '@/services/apiKodik'
-import api_Shiki from '@/services/apiShiki'
+/* eslint-disable */
+import service from '@/services/config'
 
 export default {
   fetchPosts () {
-    return api_Kodik().get('posts')
+    return service().get('posts')
   },
   fetchMainPage () {
-    return api_Kodik().get('api-list/')
+    return service().get('api-list/')
   },
   fetchSearchName (name) {
-    return api_Kodik().get('api-search/'+name)
+    return service().get('api-search/'+name)
   },
   fetcGetByIdShiki(id) {
-    return api_Kodik().get('api-search-id/'+id)
+    return service().get('api-search-id/'+id)
   },
   fetcGetBySerialId(id) {
-    return api_Kodik().get('api-serial-id/'+id)
+    return service().get('api-serial-id/'+id)
   },
   fetcPlayList(serial_id,season,episode) {
-    return api_Kodik().get(`api-get-url/${serial_id}/${season}/${episode}`)
+    return service().get(`api-get-url/${serial_id}/${season}/${episode}`)
   },
   shikiFranchise(shiki_id) {
-    return api_Kodik().get(`api-franchise/${shiki_id}`)
+    return service().get(`api-franchise/${shiki_id}`)
   },
   shikiAnimeTop() {
-    return api_Kodik().get(`api-list-top/`)
+    return service().get(`api-list-top/`)
   },
   searchInDB(name) {
-    return api_Kodik().get(`api-search-link/${name}`)
+    return service().get(`api-search-link/${name}`)
   },
 
   shikiAnime(shiki_id) {
-    return api_Shiki().get(`animes/${shiki_id}`)
+    return service().get(`/api-shiki-id/${shiki_id}`)
   },
 
 
