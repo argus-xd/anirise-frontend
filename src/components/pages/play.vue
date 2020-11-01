@@ -11,7 +11,6 @@
         </div>
         <div class="media-body col-md-9 col-sm-12">
 
-
           <!-- <div class="player-container">
              <vue-core-video-player  v-if="playList.length>0" @play="playFunc" v-bind:src="playList"></vue-core-video-player>
            </div>-->
@@ -28,7 +27,6 @@
 
           <input type="range" class="custom-range" v-on:click="setEpisode(episode,true)" v-bind:min="minEpisodes"
                  v-bind:max="maxEpisodes" id="customRange3" v-model="episode">
-
 
         </div>
       </div>
@@ -68,7 +66,7 @@
               <div><span>Год:</span> {{ animeInfo.material_data.year }}</div>
               <div><span>Рейтин Shikimori:</span> {{ animeInfo.material_data.shikimori_rating }}</div>
               <div v-if="animeInfo.material_data.anime_genres"><span>Жанры:</span>
-                {{ animeInfo.material_data.anime_genres.join(", ") }}
+                {{ animeInfo.material_data.anime_genres.join(', ') }}
               </div>
               <div v-if="animeInfoShiki.next_episode_at"><span>Следующий эпизод:</span>
                 {{ new Date(animeInfoShiki.next_episode_at).toLocaleString() }}
@@ -104,12 +102,10 @@
 
           </div>
 
-
         </div>
       </div>
 
     </div>
-
 
   </div>
 
@@ -169,9 +165,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
 
-
     @media (max-width: 576px) {
-
 
       width: 49%;
 
@@ -181,159 +175,156 @@
 
   @media (max-width: 576px) {
 
-
     width: 49%;
 
   }
-
 
 </style>
 
 <script>
 
-  import animePlayer from '@/components/pages/anime-player'
-  import PostsService from '@/services/PostsService'
+import animePlayer from '@/components/pages/anime-player'
+import PostsService from '@/services/PostsService'
 
-  export default {
-    name: 'posts',
-    components: {
-      animePlayer
+export default {
+  name: 'posts',
+  components: {
+    animePlayer
+  },
+  data () {
+    return {
+      posts: [],
+      desc: '',
+      visible: 1,
+      rangeValue: 0,
+      serialId: [],
+      active_el: 0,
+      episode: 1,
+      animeInfo: [],
+      animeInfoShiki: [],
+      minEpisodes: 0,
+      maxEpisodes: 0,
+      animeFranchise: [],
+      playList: []
+    }
+  },
+  async mounted () {
+    this.desc = localStorage.desc !== 'false'
+    await this.getListDubbing()
+    if (this.posts.results[0].id) {
+      await this.getSerialById(this.$route.query.dubbing || this.posts.results[0].id)
+      this.getInfoShiki(this.$route.params.shiki_id).then(r => {
+        this.animeInfoShiki = r
+      })
+    } else {
+      console.log('Не получен список озвучки')
+    }
+    this.animeFranchise = await this.getShikiFranchise(this.$route.params.shiki_id)
+  },
+  methods: {
+    async getListDubbing () {
+      const response = await PostsService.fetcGetByIdShiki(this.$route.params.shiki_id)
+      this.posts = response.data
+      return response.data
     },
-    data() {
-      return {
-        posts: [],
-        desc: '',
-        visible: 1,
-        rangeValue: 0,
-        serialId: [],
-        active_el: 0,
-        episode: 1,
-        animeInfo: [],
-        animeInfoShiki: [],
-        minEpisodes: 0,
-        maxEpisodes: 0,
-        animeFranchise: [],
-        playList: []
+    async getSerialById (id) {
+      const response = await PostsService.fetcGetBySerialId(id)
+      this.animeInfo = response.data.results[0]
+      this.serialId = response.data
+    },
+    async getInfoShiki (id) {
+      const response = await PostsService.shikiAnime(id)
+      return response.data
+    },
+    async getPlayList (serial_id, season, episode) {
+      const response = await PostsService.fetcPlayList(serial_id, season, episode)
+      return response.data
+    },
+    async getShikiFranchise (id) {
+      const response = await PostsService.shikiFranchise(id)
+      return response.data
+    },
+    async setPlayer () {
+      let list = await this.getPlayList(this.active_el, this.animeInfo.last_season, this.episode)
+      let playListParse = (JSON.parse(JSON.stringify(list)))
+      let newPlayLists = []
+      Object.keys(playListParse).forEach(function (key) {
+        newPlayLists.push({
+          src: playListParse[key][0].src.split(':hls:manifest.m3u8')[0].replaceAll('//', 'https://'),
+          resolution: key + 'p'
+        })
+      })
+      this.playList = newPlayLists
+    },
+    changeDubbing: function (el) {
+      this.animeEpisodeUpdate()
+      this.active_el = el
+      if (this.$route.query.dubbing !== el) {
+        this.getSerialById(this.active_el)
+        this.$router.push({name: 'play', query: {dubbing: this.active_el, eppisose: this.episode}})
       }
     },
-    async mounted() {
-
-      this.desc = localStorage.desc === 'false' ? false : true;
-      await this.getListDubbing();
-      if (this.posts.results[0].id) {
-        await this.getSerialById( this.$route.query.dubbing||this.posts.results[0].id)
-        this.getInfoShiki().then(r => {
-          this.animeInfoShiki = r;
-        });
-      } else {
-        console.log('Не получен список озвучки')
-      }
-      this.animeFranchise = await this.getShikiFranchise();
+    playFunc () {
+      console.log('play!')
     },
-    methods: {
-      async getListDubbing() {
-        const response = await PostsService.fetcGetByIdShiki(this.$route.params.shiki_id)
-        this.posts = response.data
-        return response.data;
-      },
-      async getSerialById(id) {
-        const response = await PostsService.fetcGetBySerialId(id)
-        this.animeInfo = response.data.results[0];
-        this.serialId = response.data
-      },
-      async getInfoShiki(id) {
-        const response = await PostsService.shikiAnime(this.$route.params.shiki_id)
-        return response.data
-      },
-      async getPlayList(serial_id, season, episode) {
-        const response = await PostsService.fetcPlayList(serial_id, season, episode)
-        return response.data;
-      },
-      async getShikiFranchise() {
-        const response = await PostsService.shikiFranchise(this.$route.params.shiki_id)
-        return response.data;
-      },
-      async setPlayer() {
-        let list = await this.getPlayList(this.active_el, this.animeInfo.last_season, this.episode);
-        let playListParse = (JSON.parse(JSON.stringify(list)));
-        let newPlayLists = [];
-        Object.keys(playListParse).forEach(function (key) {
-          newPlayLists.push({
-            src: playListParse[key][0].src.split(":hls:manifest.m3u8")[0].replaceAll('//', 'https://'),
-            resolution: key + "p"
-          })
-        });
-        this.playList = newPlayLists;
-      },
-      changeDubbing: function (el) {
-        this.animeEpisodeUpdate();
-        this.active_el = el;
-        if (this.$route.query.dubbing !== el) {
-          this.getSerialById(this.active_el)
-          this.$router.push({name: 'play', query: {dubbing: this.active_el, eppisose: this.episode}})
-        }
-      },
-      playFunc() {
-        console.log('play!')
-      },
-      setEpisode(next, goTo = false) {
-        next = parseInt(next)
-        this.episode = parseInt(this.episode);
-        if (this.episode + next <= this.maxEpisodes && this.episode + next >= this.minEpisodes || goTo) {
-
-          if (goTo)
-            this.episode = next;
-          else
-            this.episode += next;
-
-          this.$router.push({name: 'play', query: {dubbing: this.active_el, eppisose: this.episode}})
-          this.setPlayer();
-        }
-      },
-      animeEpisodeUpdate() {
-        let season = this.animeInfo.last_season;
-        if (this.animeInfo.seasons) {
-          let Episodes = this.animeInfo.seasons[season]['episodes']
-          let keysEpisodes = Object.keys(Episodes)
-          this.minEpisodes = keysEpisodes[0];
-          this.maxEpisodes = keysEpisodes[keysEpisodes.length - 1];
-          this.episode = parseInt(keysEpisodes[0]);
+    setEpisode (next, goTo = false) {
+      next = parseInt(next)
+      this.episode = parseInt(this.episode)
+      if (this.episode + next <= this.maxEpisodes && this.episode + next >= this.minEpisodes || goTo) {
+        if (goTo) {
+          this.episode = next
         } else {
-          this.minEpisodes = 1
-          this.maxEpisodes = 1
+          this.episode += next
         }
 
-        if (this.$route.query.eppisose && this.$route.query.dubbing) {
-          this.active_el = this.$route.query.dubbing;
-          this.episode = parseInt(this.$route.query.eppisose)
-        }
-
-        if (this.episode > this.maxEpisodes)
-          this.episode = this.maxEpisodes
-        else if (this.episode < this.minEpisodes)
-          this.episode = this.minEpisodes;
-      },
-      toggleDesc() {
-        this.desc = !this.desc
-        localStorage.desc = this.desc;
-
-        console.log(localStorage.desc)
+        this.$router.push({name: 'play', query: {dubbing: this.active_el, eppisose: this.episode}})
+        this.setPlayer()
       }
     },
-    watch: {
-      async $route(to, from) {
-        await this.getListDubbing();
-      /*  await this.getSerialById(from.query.dubbing)*/
-
-        this.animeEpisodeUpdate();
-
-      },
-      animeInfo: function () {
-        this.active_el = this.animeInfo.id;
-        this.animeEpisodeUpdate();
-        this.setPlayer();
+    animeEpisodeUpdate () {
+      let season = this.animeInfo.last_season
+      if (this.animeInfo.seasons) {
+        let Episodes = this.animeInfo.seasons[season]['episodes']
+        let keysEpisodes = Object.keys(Episodes)
+        this.minEpisodes = keysEpisodes[0]
+        this.maxEpisodes = keysEpisodes[keysEpisodes.length - 1]
+        this.episode = parseInt(keysEpisodes[0])
+      } else {
+        this.minEpisodes = 1
+        this.maxEpisodes = 1
       }
+
+      if (this.$route.query.eppisose && this.$route.query.dubbing) {
+        this.active_el = this.$route.query.dubbing
+        this.episode = parseInt(this.$route.query.eppisose)
+      }
+
+      if (this.episode > this.maxEpisodes) {
+        this.episode = this.maxEpisodes
+      } else if (this.episode < this.minEpisodes) {
+        this.episode = this.minEpisodes
+      }
+    },
+    toggleDesc () {
+      this.desc = !this.desc
+      localStorage.desc = this.desc
+
+      console.log(localStorage.desc)
+    }
+  },
+  watch: {
+    async $route (to, from) {
+      await this.getListDubbing()
+      /*  await this.getSerialById(from.query.dubbing) */
+
+      this.animeEpisodeUpdate()
+    },
+    animeInfo: function () {
+      this.active_el = this.animeInfo.id
+      this.animeEpisodeUpdate()
+      this.setPlayer()
     }
   }
+}
 
 </script>
