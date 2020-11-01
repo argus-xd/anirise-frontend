@@ -2,37 +2,46 @@
 import service from '@/services/config'
 
 export default {
-  fetchPosts () {
+  fetchPosts() {
     return service().get('posts')
   },
-  fetchMainPage () {
-    return service().get('api-list/')
+  async fetchMainPage() {
+    const response = await service().get('api-list/')
+    return response.data
   },
-  fetchSearchName (name) {
-    return service().get('api-search/'+name)
+  async fetchSearchName(name) {
+    const response = await service().get('api-search/' + name)
+    return response.data
   },
-  fetcGetByIdShiki(id) {
-    return service().get('api-search-id/'+id)
+  async fetcGetByIdShiki(id) {
+    const response = await service().get('api-search-id/' + id)
+    return response.data
   },
-  fetcGetBySerialId(id) {
-    return service().get('api-serial-id/'+id)
+  async fetcGetBySerialId(id) {
+    const response = await service().get('api-serial-id/' + id)
+    return response.data
   },
-  fetcPlayList(serial_id,season,episode) {
-    return service().get(`api-get-url/${serial_id}/${season}/${episode}`)
+  async fetcPlayList(serial_id, season, episode) {
+    const response = await service().get(
+      `api-get-url/${serial_id}/${season}/${episode}`
+    )
+    return response.data
   },
-  shikiFranchise(shiki_id) {
-    return service().get(`api-franchise/${shiki_id}`)
+  async shikiFranchise(shiki_id) {
+    const response = await service().get(`api-franchise/${shiki_id}`)
+    return response.data
   },
-  shikiAnimeTop() {
-    return service().get(`api-list-top/`)
+  async shikiAnimeTop() {
+    const response = await service().get(`api-list-top/`)
+    return response.data
   },
-  searchInDB(name) {
-    return service().get(`api-search-link/${name}`)
+  async searchInDB(name) {
+    const response = await service().get(`api-search-link/${name}`)
+    return response.data
   },
 
-  shikiAnime(shiki_id) {
-    return service().get(`/api-shiki-id/${shiki_id}`)
-  },
-
-
+  async shikiInfoById(shiki_id) {
+    const response = await service().get(`/api-shiki-id/${shiki_id}`)
+    return response.data
+  }
 }

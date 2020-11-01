@@ -22,6 +22,7 @@
     "bootstrap-vue": "^2.0.0-rc.11",
     "gsap": "^3.5.1",
     "lodash": "^4.17.20",
+    "prettier": "^2.1.2",
     "videojs-resolution-switcher": "^0.4.2",
     "vue": "^2.5.2",
     "vue-core-video-player": "^0.1.9",
