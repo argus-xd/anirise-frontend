@@ -173,7 +173,13 @@
 
   }
 
-  @media (max-width: 576px) {
+  @media (min-width: 1280px) {
+    video{
+      width: 809px;
+      height: 455px;
+    }
+
+  }@media (max-width: 576px) {
 
     width: 49%;
 

@@ -212,14 +212,15 @@
         return e
       })
       this.mainList = this.defaultList
-      await this.replaceEmptyPosterByShiki(this.defaultList.results)
 
       this.shikiAnimeTop().then(e => {
         e = this.deleteDuplicate(e)
         e = this.sortRatings(e)
-        this.replaceEmptyPosterByShiki(e.results)
         this.topShiki = e
       })
+
+      await this.replaceEmptyPosterByShiki(this.defaultList.results)
+      await this.replaceEmptyPosterByShiki(this.topShiki.results)
     },
     methods: {
       async searchInDB (name) {
@@ -304,9 +305,11 @@
         }, 200)
       },
       filterTop () {
+        this.text = ''
         this.mainList = this.topShiki
       },
       lastUpdate () {
+        this.text = ''
         this.mainList = this.defaultList
       },
       doSomething () {
