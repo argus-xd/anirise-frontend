@@ -135,12 +135,8 @@ export default {
         };
       });
     },
-    sleep(time) {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          resolve();
-        }, time);
-      });
+    sleep(intervalMs = 1000) {
+      return new Promise(resolve => setTimeout(resolve, intervalMs));
     },
     async replaceEmptyPosterByShiki(resultsArray) {
       for (const item of resultsArray) {
