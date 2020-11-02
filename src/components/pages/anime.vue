@@ -11,11 +11,7 @@
     </div>
 
     <div class="bv-example-row container">
-      <animeFilter
-        msg="test-pars"
-        @filterTop="filterTop"
-        @lastUpdate="lastUpdate"
-      />
+      <animeFilter @filter="filter" />
 
       <div class="anime-list">
         <div v-for="(item, index) in this.animeList" :key="index" class="card">
@@ -73,7 +69,6 @@ export default {
   data() {
     return {
       mainList: { results: [] },
-      objectItem: {},
       defaultList: [],
       topShiki: [],
       posterCover: "",
@@ -81,19 +76,6 @@ export default {
         timeout: null,
         text: "",
       },
-      getInDB: [
-        {
-          name: "боруто: новое поколение наруто",
-          name_orig: "boruto: naruto next generations",
-          year: "2017",
-        },
-        {
-          name: "боруто: новое поколение наруто",
-          name_orig: "boruto: naruto next generations",
-          year: "2017",
-        },
-      ],
-      item: {},
     };
   },
   async mounted() {
@@ -167,13 +149,17 @@ export default {
         }
       }
     },
-    filterTop() {
-      this.searchText = "";
-      this.mainList = this.topShiki;
-    },
-    lastUpdate() {
-      this.searchText = "";
-      this.mainList = this.defaultList;
+    filter(filterType) {
+      this.search.text = "";
+
+      this.mainList = (() => {
+        switch (filterType) {
+          case "top":
+            return this.topShiki;
+        }
+
+        return this.defaultList;
+      })();
     },
   },
   watch: {

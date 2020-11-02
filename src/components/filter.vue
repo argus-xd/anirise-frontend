@@ -1,6 +1,6 @@
 <template>
   <div class="filter m-1">
-    <button type="button" class="btn btn-outline-info" @click="lastUpdate">
+    <button type="button" class="btn btn-outline-info" @click="filterNew">
       Недавно обновлённые
     </button>
     <button type="button" class="btn btn-outline-info" @click="filterTop">
@@ -11,16 +11,13 @@
 
 <script>
 export default {
-  name: "filter-anime",
-  props: {
-    msg: "",
-  },
+  name: "anime-filter",
   methods: {
     filterTop() {
-      this.$emit("filterTop");
+      this.$emit("filter", "top");
     },
-    lastUpdate() {
-      this.$emit("lastUpdate");
+    filterNew() {
+      this.$emit("filter", "new");
     },
   },
 };
