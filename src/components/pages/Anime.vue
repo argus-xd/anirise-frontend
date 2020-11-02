@@ -36,15 +36,15 @@
               name: 'play',
               params: {
                 shiki_id: item.shikimori_id,
-                name: item.title_orig.replaceAll(' ', '_')
-              }
+                name: item.title_orig.replaceAll(' ', '_'),
+              },
             }"
           >
             <div
               class="poster"
               :class="posterCover"
               :style="{
-                backgroundImage: `url('${item.material_data.poster_url}')`
+                backgroundImage: `url('${item.material_data.poster_url}')`,
               }"
             >
               <img v-bind:src="require(`@/assets/play.svg`)" alt="" />
@@ -107,7 +107,7 @@
       }
 
       &:before {
-        content: '';
+        content: "";
         position: absolute;
         z-index: 1;
         top: -22px;
@@ -183,17 +183,17 @@
 </style>
 
 <script>
-import api from '@/services/PostsService'
-import filterAnime from '@/components/pages/filter.vue'
-import 'vue-search-select/dist/VueSearchSelect.css'
-import { ModelListSelect } from 'vue-search-select'
+import api from "@/services/PostsService";
+import filterAnime from "@/components/pages/filter.vue";
+import "vue-search-select/dist/VueSearchSelect.css";
+import { ModelListSelect } from "vue-search-select";
 
 export default {
   components: {
     filter_anime: filterAnime,
-    ModelListSelect
+    ModelListSelect,
   },
-  name: 'posts',
+  name: "posts",
   data() {
     return {
       mainList: function () {},
@@ -201,132 +201,133 @@ export default {
       defaultList: [],
       topShiki: [],
       timer: null,
-      text: '',
-      posterCover: '',
-      searchText: '', // If value is falsy, reset searchText & searchItem
+      text: "",
+      posterCover: "",
+      searchText: "", // If value is falsy, reset searchText & searchItem
       getInDB: [
         {
-          name: 'боруто: новое поколение наруто',
-          name_orig: 'boruto: naruto next generations',
-          year: '2017'
+          name: "боруто: новое поколение наруто",
+          name_orig: "boruto: naruto next generations",
+          year: "2017",
         },
         {
-          name: 'боруто: новое поколение наруто',
-          name_orig: 'boruto: naruto next generations',
-          year: '2017'
-        }
+          name: "боруто: новое поколение наруто",
+          name_orig: "boruto: naruto next generations",
+          year: "2017",
+        },
       ],
-      item: {}
-    }
+      item: {},
+    };
   },
   async mounted() {
-    this.mainList = this.preLoadArr()
+    this.mainList = this.preLoadArr();
     this.defaultList = await api.fetchMainPage().then(e => {
-      e = this.deleteDuplicate(e)
-      this.posterCover = 'poster--cover'
-      return e
-    })
-    this.mainList = this.defaultList
+      e = this.deleteDuplicate(e);
+      this.posterCover = "poster--cover";
+      return e;
+    });
+    this.mainList = this.defaultList;
 
     api.shikiAnimeTop().then(e => {
-      e = this.deleteDuplicate(e)
-      e = this.sortRatings(e)
-      this.topShiki = e
-    })
+      e = this.deleteDuplicate(e);
+      e = this.sortRatings(e);
+      this.topShiki = e;
+    });
 
-    await this.replaceEmptyPosterByShiki(this.defaultList.results)
-    await this.replaceEmptyPosterByShiki(this.topShiki.results)
+    await this.replaceEmptyPosterByShiki(this.defaultList.results);
+    await this.replaceEmptyPosterByShiki(this.topShiki.results);
   },
   methods: {
     sortRatings(arr) {
-      arr = JSON.parse(JSON.stringify(arr))
+      arr = JSON.parse(JSON.stringify(arr));
       arr.results = arr.results.sort(function (a, b) {
         return (
           b.material_data.shikimori_rating - a.material_data.shikimori_rating
-        )
-      })
-      return arr
+        );
+      });
+      return arr;
     },
     deleteDuplicate(arr) {
-      let arrJson = JSON.parse(JSON.stringify(arr.results))
+      let arrJson = JSON.parse(JSON.stringify(arr.results));
       if (arrJson) {
         arr.results = arrJson.filter(
           (thing, index, self) =>
-            index === self.findIndex(t => t.shikimori_id === thing.shikimori_id)
-        )
+            index ===
+            self.findIndex(t => t.shikimori_id === thing.shikimori_id),
+        );
       }
-      return arr
+      return arr;
     },
     preLoadArr() {
       let inArr = Array.from({ length: 20 }, () => {
         return {
-          title: '........................................',
-          title_orig: '',
+          title: "........................................",
+          title_orig: "",
           material_data: {
-            poster_url: require(`@/assets/preLoader.svg`)
-          }
-        }
-      })
+            poster_url: require(`@/assets/preLoader.svg`),
+          },
+        };
+      });
       return {
-        results: inArr
-      }
+        results: inArr,
+      };
     },
     sleep(time) {
       return new Promise(resolve => {
         setTimeout(() => {
-          resolve()
-        }, time)
-      })
+          resolve();
+        }, time);
+      });
     },
     async replaceEmptyPosterByShiki(resultsArray) {
       for (const item of resultsArray) {
-        if (item.material_data.poster_url.indexOf('no-poster.gif') > 0) {
-          await this.sleep(40)
+        if (item.material_data.poster_url.indexOf("no-poster.gif") > 0) {
+          await this.sleep(40);
           await api.shikiInfoById(item.shikimori_id).then(shikiItem => {
-            item.material_data.poster_url = `https://shikimori.one/${shikiItem.image.original}`
-          })
+            item.material_data.poster_url = `https://shikimori.one/${shikiItem.image.original}`;
+          });
         }
       }
     },
     search() {
       if (this.timer) {
-        clearTimeout(this.timer)
-        this.timer = null
+        clearTimeout(this.timer);
+        this.timer = null;
       }
       this.timer = setTimeout(() => {
-        if (this.text !== '') {
+        if (this.text !== "") {
           api.fetchSearchName(this.text).then(e => {
-            this.mainList = this.deleteDuplicate(e)
-          })
+            this.mainList = this.deleteDuplicate(e);
+          });
         } else {
-          this.mainList = this.defaultList
+          this.mainList = this.defaultList;
         }
-      }, 200)
+      }, 200);
     },
     filterTop() {
-      this.text = ''
-      this.mainList = this.topShiki
+      this.text = "";
+      this.mainList = this.topShiki;
     },
     lastUpdate() {
-      this.text = ''
-      this.mainList = this.defaultList
+      this.text = "";
+      this.mainList = this.defaultList;
     },
     codeAndNameAndDesc(item) {
-      return `${item.name} - ${item.name_orig} - ${item.year}`
+      return `${item.name} - ${item.name_orig} - ${item.year}`;
     },
     searchchange(searchText) {
-      this.searchText = searchText || this.objectItem.name
+      this.searchText = searchText || this.objectItem.name;
 
       api.searchInDB(this.searchText).then(e => {
-        console.log(this.searchText)
-        this.getInDB = e
-      })
-    }
+        console.log(this.searchText);
+        this.getInDB = e;
+      });
+    },
   },
   watch: {
     text: function () {
-      this.search()
-    }
-  }
-}
+      this.search();
+    },
+  },
+};
 </script>

@@ -6,10 +6,7 @@ module.exports = {
   env: {
     browser: true,
   },
-  extends: [
-    "plugin:vue/essential",
-    "standard",
-  ],
+  extends: ["plugin:vue/essential", "standard"],
   plugins: ["vue"],
   rules: {
     // allow async-await

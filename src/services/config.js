@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios from "axios";
 export default () => {
   return axios.create({
-    baseURL: 'http://animerise.ddns.net:3000'
-  })
-}
+    baseURL: "http://animerise.ddns.net:3000",
+  });
+};
