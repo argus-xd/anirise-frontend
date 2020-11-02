@@ -1,7 +1,6 @@
 <template>
   <div class="">
     <div class="container">
-      <!-- <router-link  to="/" class="btn btn-primary">Главная</router-link>-->
       <div class="media row" v-if="animeInfo.material_data">
         <div class="mr-3 col-md-3 col-sm-12">
           <img
@@ -194,7 +193,7 @@
 </template>
 
 <script>
-import animePlayer from "./anime-player";
+import animePlayer from "../anime-player";
 import PostsService from "../../services/PostsService";
 
 export default {

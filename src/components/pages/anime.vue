@@ -6,7 +6,7 @@
           class="form-control"
           v-model="text"
           placeholder="Поиск аниме..."
-        >
+        />
       </div>
     </div>
 
@@ -51,7 +51,7 @@
 
 <script>
 import api from "../../services/PostsService";
-import animeFilter from "./filter.vue";
+import animeFilter from "../filter.vue";
 
 export default {
   components: {
@@ -207,27 +207,18 @@ export default {
 .anime-list {
   display: flex;
   flex-wrap: wrap;
-  /*  display: grid;
-                grid-template-columns: repeat(auto-fill, 16%);
-                grid-gap: 0rem;*/
-
   justify-content: space-between;
 
-  /*&::after {
-                content: "";
-                flex: auto;
-              }*/
   .card {
     margin-bottom: 1rem;
     box-shadow: 0 0 3rem -1rem rgba(0, 0, 0, 0.5);
     transition: transform 0.1s ease-in-out, box-shadow 0.1s;
-    /* flex-direction: column-reverse;*/
     width: 16%;
 
     &:hover .card-title {
       white-space: unset;
       height: auto;
-      word-break: keep-all; /*word-break: break-all;*/
+      word-break: keep-all;
     }
 
     .poster {

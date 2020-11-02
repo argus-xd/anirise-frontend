@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router";
-import mainPage from "./components/pages/Anime";
+import mainPage from "./components/pages/anime";
 import titlePage from "./components/pages/play";
 
 const routes = [
