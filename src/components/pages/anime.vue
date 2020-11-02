@@ -54,26 +54,20 @@ import api from "../../services/PostsService";
 import animeFilter from "../filter.vue";
 
 export default {
+  name: "posts",
   components: {
     animeFilter,
-  },
-  name: "posts",
-  computed: {
-    shownAnimeList() {
-      return this.animeList.shown.map(anime => {
-        return {
-          title: anime.title,
-          shikimoriId: anime.shikimori_id || 0,
-          name: anime.title_orig.replaceAll(" ", "_"),
-          poster: anime.material_data?.poster_url,
-        };
-      });
-    },
   },
   data() {
     return {
       animeList: {
-        shown: [],
+        shown: Array.from({ length: 20 }, () => ({
+          title: "...",
+          title_orig: "...",
+          material_data: {
+            poster_url: require(`@/assets/preLoader.svg`),
+          },
+        })),
         new: [],
         top: [],
       },
@@ -85,7 +79,6 @@ export default {
     };
   },
   async mounted() {
-    this.animeList.shown = this.preLoadArr();
     this.animeList.new = await api.fetchMainPage().then(res => {
       this.posterCover = "poster--cover";
       return this.deleteDuplicate(res.results || []);
@@ -101,6 +94,18 @@ export default {
 
     await this.replaceEmptyPosterByShiki(this.animeList.new);
     await this.replaceEmptyPosterByShiki(this.animeList.top);
+  },
+  computed: {
+    shownAnimeList() {
+      return this.animeList.shown.map(anime => {
+        return {
+          title: anime.title,
+          shikimoriId: anime.shikimori_id || 0,
+          name: anime.title_orig.replaceAll(" ", "_"),
+          poster: anime.material_data?.poster_url,
+        };
+      });
+    },
   },
   methods: {
     deleteDuplicate(animeList) {
@@ -120,26 +125,15 @@ export default {
         );
       });
     },
-    preLoadArr() {
-      return Array.from({ length: 20 }, () => {
-        return {
-          title: "........................................",
-          title_orig: "..",
-          material_data: {
-            poster_url: require(`@/assets/preLoader.svg`),
-          },
-        };
-      });
-    },
     sleep(intervalMs = 1000) {
       return new Promise(resolve => setTimeout(resolve, intervalMs));
     },
-    async replaceEmptyPosterByShiki(resultsArray) {
-      for (const item of resultsArray) {
+    async replaceEmptyPosterByShiki(animeList) {
+      for (const item of animeList) {
         if (item.material_data.poster_url.indexOf("no-poster.gif") > 0) {
           await this.sleep(40);
-          await api.shikiInfoById(item.shikimori_id).then(shikiItem => {
-            item.material_data.poster_url = `https://shikimori.one/${shikiItem.image.original}`;
+          await api.shikiInfoById(item.shikimori_id).then(({ image }) => {
+            item.material_data.poster_url = `https://shikimori.one/${image.original}`;
           });
         }
       }
