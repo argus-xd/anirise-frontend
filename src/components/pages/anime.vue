@@ -4,7 +4,7 @@
       <div class="container mb-3">
         <input
           class="form-control"
-          v-model="text"
+          v-model="search.text"
           placeholder="Поиск аниме..."
         />
       </div>
@@ -76,10 +76,11 @@ export default {
       objectItem: {},
       defaultList: [],
       topShiki: [],
-      timer: null,
-      text: "",
       posterCover: "",
-      searchText: "", // If value is falsy, reset searchText & searchItem
+      search: {
+        timeout: null,
+        text: "",
+      },
       getInDB: [
         {
           name: "боруто: новое поколение наруто",
@@ -166,33 +167,30 @@ export default {
         }
       }
     },
-    search() {
-      if (this.timer) {
-        clearTimeout(this.timer);
-        this.timer = null;
-      }
-      this.timer = setTimeout(() => {
-        if (this.text !== "") {
-          api.fetchSearchName(this.text).then(e => {
-            this.mainList = this.deleteDuplicate(e);
-          });
-        } else {
-          this.mainList = this.defaultList;
-        }
-      }, 200);
-    },
     filterTop() {
-      this.text = "";
+      this.searchText = "";
       this.mainList = this.topShiki;
     },
     lastUpdate() {
-      this.text = "";
+      this.searchText = "";
       this.mainList = this.defaultList;
     },
   },
   watch: {
-    text: function () {
-      this.search();
+    "search.text"(searchTerm) {
+      clearTimeout(this.search.timeout);
+
+      if (searchTerm.length === 0) {
+        this.mainList = this.defaultList;
+        return;
+      }
+
+      this.search.timeout = setTimeout(async () => {
+        this.mainList = await api
+          .fetchSearchName(searchTerm)
+          .then(this.deleteDuplicate)
+          .catch(this.defaultList);
+      }, 100);
     },
   },
 };
