@@ -22,6 +22,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
 
   margin-top: 60px;
-  /*  background-image: url("https://sun9-9.userapi.com/c638526/v638526084/99fc/J2g1KtXFi6c.jpg");*/
 }
 </style>

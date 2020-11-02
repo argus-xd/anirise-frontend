@@ -28,14 +28,14 @@
               Предыдущая серия
             </button>
             <button type="button" class="btn btn-outline-secondary">
-              {{ this.episode }} серия
+              {{ episode }} серия
             </button>
             <button
               type="button"
               @click="setEpisode(maxEpisodes, true)"
               class="btn btn-outline-secondary"
             >
-              из {{ this.maxEpisodes }}
+              из {{ maxEpisodes }}
             </button>
             <button
               type="button"
@@ -136,8 +136,7 @@
                 <span>Последний эпизод:</span> {{ animeInfo.last_episode }}
               </div>
               <div>
-                <span>Озвучено:</span> {{ this.minEpisodes }} -
-                {{ this.maxEpisodes }}
+                <span>Озвучено:</span> {{ minEpisodes + " - " + maxEpisodes }}
               </div>
             </div>
           </div>
@@ -195,75 +194,6 @@
     </div>
   </div>
 </template>
-
-<style lang="scss" rel="stylesheet/scss">
-.card-img-top {
-  height: 300px;
-  object-fit: contain;
-}
-
-.poster {
-  width: 100%;
-}
-
-.description {
-  padding: 0.4rem;
-}
-
-.counter {
-  display: flex;
-  justify-content: center;
-  padding: 1rem;
-}
-
-.media-body span {
-  font-weight: bold;
-}
-
-.fran-list {
-  display: flex;
-  flex-wrap: wrap;
-
-  > div {
-    width: 50%;
-  }
-}
-
-@media (max-width: 576px) {
-  .counter {
-    flex-wrap: wrap;
-  }
-
-  .counter button:first-child,
-  .counter button:last-child {
-    width: 100%;
-  }
-
-  .card {
-    width: 49%;
-  }
-}
-
-.anime-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-
-  @media (max-width: 576px) {
-    width: 49%;
-  }
-}
-
-@media (min-width: 1280px) {
-  video {
-    width: 809px;
-    height: 455px;
-  }
-}
-@media (max-width: 576px) {
-  width: 49%;
-}
-</style>
 
 <script>
 import animePlayer from "@/components/pages/anime-player";
@@ -402,11 +332,10 @@ export default {
     },
   },
   watch: {
-    async $route(to, from) {
+    async $route() {
       this.posts = await PostsService.dubbingListByShikiId(
         this.$route.params.shiki_id,
       );
-      /*  await this.getSerialById(from.query.dubbing) */
 
       this.animeEpisodeUpdate();
     },
@@ -418,3 +347,70 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" rel="stylesheet/scss">
+.card-img-top {
+  height: 300px;
+  object-fit: contain;
+}
+
+.poster {
+  width: 100%;
+}
+
+.description {
+  padding: 0.4rem;
+}
+
+.counter {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.media-body span {
+  font-weight: bold;
+}
+
+.fran-list {
+  display: flex;
+  flex-wrap: wrap;
+
+  > div {
+    width: 50%;
+  }
+}
+
+@media (max-width: 576px) {
+  .counter {
+    flex-wrap: wrap;
+  }
+
+  .counter button:first-child,
+  .counter button:last-child {
+    width: 100%;
+  }
+
+  .card {
+    width: 49%;
+  }
+}
+
+.anime-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+@media (min-width: 1280px) {
+  video {
+    width: 809px;
+    height: 455px;
+  }
+}
+@media (max-width: 576px) {
+  .anime-list {
+    width: 49%;
+  }
+}
+</style>

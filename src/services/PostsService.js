@@ -1,5 +1,5 @@
 /* eslint-disable */
-import service from "@/services/config";
+import service from "./config";
 
 export default {
   fetchPosts() {
