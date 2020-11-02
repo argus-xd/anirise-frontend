@@ -14,7 +14,11 @@
       <animeFilter @filter="filter" />
 
       <div class="anime-list">
-        <div v-for="(item, index) in this.animeList" :key="index" class="card">
+        <div
+          v-for="(item, index) in this.shownAnimeList"
+          :key="index"
+          class="card"
+        >
           <router-link
             :to="{
               name: 'play',
@@ -55,8 +59,8 @@ export default {
   },
   name: "posts",
   computed: {
-    animeList() {
-      return this.mainList.results.map(anime => {
+    shownAnimeList() {
+      return this.animeList.shown.map(anime => {
         return {
           title: anime.title,
           shikimoriId: anime.shikimori_id || 0,
@@ -68,9 +72,11 @@ export default {
   },
   data() {
     return {
-      mainList: { results: [] },
-      defaultList: [],
-      topShiki: [],
+      animeList: {
+        shown: [],
+        new: [],
+        top: [],
+      },
       posterCover: "",
       search: {
         timeout: null,
@@ -79,23 +85,23 @@ export default {
     };
   },
   async mounted() {
-    this.mainList = this.preLoadArr();
-    this.defaultList = await api.fetchMainPage().then(e => {
+    this.animeList.shown = this.preLoadArr();
+    this.animeList.new = await api.fetchMainPage().then(e => {
       e = this.deleteDuplicate(e);
       this.posterCover = "poster--cover";
-      return e;
+      return e.results || [];
     });
 
-    this.mainList = this.defaultList;
+    this.animeList.shown = this.animeList.new;
 
     api.shikiAnimeTop().then(e => {
       e = this.deleteDuplicate(e);
       e = this.sortRatings(e);
-      this.topShiki = e;
+      this.animeList.top = e.results || [];
     });
 
-    await this.replaceEmptyPosterByShiki(this.defaultList.results);
-    await this.replaceEmptyPosterByShiki(this.topShiki.results);
+    await this.replaceEmptyPosterByShiki(this.animeList.new);
+    await this.replaceEmptyPosterByShiki(this.animeList.top);
   },
   methods: {
     sortRatings(arr) {
@@ -119,7 +125,7 @@ export default {
       return arr;
     },
     preLoadArr() {
-      let inArr = Array.from({ length: 20 }, () => {
+      return Array.from({ length: 20 }, () => {
         return {
           title: "........................................",
           title_orig: "..",
@@ -128,9 +134,6 @@ export default {
           },
         };
       });
-      return {
-        results: inArr,
-      };
     },
     sleep(time) {
       return new Promise(resolve => {
@@ -152,13 +155,13 @@ export default {
     filter(filterType) {
       this.search.text = "";
 
-      this.mainList = (() => {
+      this.animeList.shown = (() => {
         switch (filterType) {
           case "top":
-            return this.topShiki;
+            return this.animeList.top;
         }
 
-        return this.defaultList;
+        return this.animeList.new;
       })();
     },
   },
