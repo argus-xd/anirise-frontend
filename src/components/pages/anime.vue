@@ -86,43 +86,39 @@ export default {
   },
   async mounted() {
     this.animeList.shown = this.preLoadArr();
-    this.animeList.new = await api.fetchMainPage().then(e => {
-      e = this.deleteDuplicate(e);
+    this.animeList.new = await api.fetchMainPage().then(res => {
       this.posterCover = "poster--cover";
-      return e.results || [];
+      return this.deleteDuplicate(res.results || []);
     });
 
     this.animeList.shown = this.animeList.new;
 
-    api.shikiAnimeTop().then(e => {
-      e = this.deleteDuplicate(e);
-      e = this.sortRatings(e);
-      this.animeList.top = e.results || [];
+    api.shikiAnimeTop().then(res => {
+      res = this.deleteDuplicate(res.results || []);
+      res = this.sortByRating(res);
+      this.animeList.top = res;
     });
 
     await this.replaceEmptyPosterByShiki(this.animeList.new);
     await this.replaceEmptyPosterByShiki(this.animeList.top);
   },
   methods: {
-    sortRatings(arr) {
-      arr = JSON.parse(JSON.stringify(arr));
-      arr.results = arr.results.sort(function (a, b) {
+    deleteDuplicate(animeList) {
+      return animeList.filter(
+        (anime, index) =>
+          index ===
+          animeList.findIndex(
+            found => found.shikimori_id === anime.shikimori_id,
+          ),
+      );
+    },
+    sortByRating(animeList) {
+      return animeList.sort((curr, next) => {
         return (
-          b.material_data.shikimori_rating - a.material_data.shikimori_rating
+          next.material_data.shikimori_rating -
+          curr.material_data.shikimori_rating
         );
       });
-      return arr;
-    },
-    deleteDuplicate(arr) {
-      let arrJson = JSON.parse(JSON.stringify(arr.results));
-      if (arrJson) {
-        arr.results = arrJson.filter(
-          (thing, index, self) =>
-            index ===
-            self.findIndex(t => t.shikimori_id === thing.shikimori_id),
-        );
-      }
-      return arr;
     },
     preLoadArr() {
       return Array.from({ length: 20 }, () => {
@@ -166,16 +162,16 @@ export default {
       clearTimeout(this.search.timeout);
 
       if (searchTerm.length === 0) {
-        this.mainList = this.defaultList;
+        this.animeList.shown = this.animeList.new;
         return;
       }
 
       this.search.timeout = setTimeout(async () => {
-        this.mainList = await api
+        this.animeList.shown = await api
           .fetchSearchName(searchTerm)
-          .then(this.deleteDuplicate)
-          .catch(this.defaultList);
-      }, 100);
+          .then(r => this.deleteDuplicate(r.results || []))
+          .catch(this.animeList.new);
+      }, 200);
     },
   },
 };
