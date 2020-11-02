@@ -1,6 +1,6 @@
 import axios from "axios";
 export default () => {
   return axios.create({
-    baseURL: "http://animerise.ddns.net:3000",
+    baseURL: process.env.BACKEND_HOST || "http://127.0.0.1:8090",
   });
 };
