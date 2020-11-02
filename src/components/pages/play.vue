@@ -62,7 +62,6 @@
           <div class="list-group">
             <a
               v-for="(item, index) in posts.results"
-              v-if="item.translation"
               :key="index"
               class="list-group-item list-group-item-action"
               v-bind:class="{ active: active_el === item.id }"
@@ -74,20 +73,22 @@
         </div>
         <div class="col-md-9 col-sm-12">
           <!-- Using value -->
-          <b-button
+          <button
             @click="visible === 1 ? (visible = 0) : (visible = 1)"
-            class="m-1"
-            >Описание</b-button
+            class="btn m-1 btn-secondary"
           >
-          <b-button
+            Описание
+          </button>
+          <button
             @click="
               () => {
                 visible = 2;
               }
             "
-            class="m-1"
-            >Хронология</b-button
+            class="btn m-1 btn-secondary"
           >
+            Хронология
+          </button>
           <a
             :href="'https://shikimori.one' + animeInfoShiki.url"
             target="_blank"
@@ -196,8 +197,8 @@
 </template>
 
 <script>
-import animePlayer from "@/components/pages/anime-player";
-import PostsService from "@/services/PostsService";
+import animePlayer from "./anime-player";
+import PostsService from "../../services/PostsService";
 
 export default {
   name: "posts",
