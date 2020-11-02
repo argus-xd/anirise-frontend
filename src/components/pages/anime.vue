@@ -79,21 +79,18 @@ export default {
     };
   },
   async mounted() {
-    this.animeList.new = await api.fetchMainPage().then(res => {
+    api.fetchMainPage().then(res => {
       this.posterCover = "poster--cover";
-      return this.deleteDuplicate(res.results || []);
-    });
+      this.animeList.new = this.deleteDuplicate(res.results || []);
 
-    this.animeList.shown = this.animeList.new;
+      this.setShownAnimeList(this.animeList.new);
+    });
 
     api.shikiAnimeTop().then(res => {
       res = this.deleteDuplicate(res.results || []);
       res = this.sortByRating(res);
       this.animeList.top = res;
     });
-
-    await this.replaceEmptyPosterByShiki(this.animeList.new);
-    await this.replaceEmptyPosterByShiki(this.animeList.top);
   },
   computed: {
     shownAnimeList() {
@@ -108,6 +105,10 @@ export default {
     },
   },
   methods: {
+    setShownAnimeList(animeList) {
+      this.animeList.shown = animeList;
+      this.replaceEmptyPosterByShiki(this.animeList.shown);
+    },
     deleteDuplicate(animeList) {
       return animeList.filter(
         (anime, index) =>
@@ -141,7 +142,7 @@ export default {
     filter(filterType) {
       this.search.text = "";
 
-      this.animeList.shown = (() => {
+      const showAnimeList = (() => {
         switch (filterType) {
           case "top":
             return this.animeList.top;
@@ -149,6 +150,8 @@ export default {
 
         return this.animeList.new;
       })();
+
+      this.setShownAnimeList(showAnimeList);
     },
   },
   watch: {
@@ -156,15 +159,16 @@ export default {
       clearTimeout(this.search.timeout);
 
       if (searchTerm.length === 0) {
-        this.animeList.shown = this.animeList.new;
-        return;
+        return this.setShownAnimeList(this.animeList.new);
       }
 
       this.search.timeout = setTimeout(async () => {
-        this.animeList.shown = await api
+        const animeList = await api
           .fetchSearchName(searchTerm)
           .then(r => this.deleteDuplicate(r.results || []))
           .catch(this.animeList.new);
+
+        this.setShownAnimeList(animeList);
       }, 200);
     },
   },
