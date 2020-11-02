@@ -1,8 +1,6 @@
-
 <template>
   <div>
-
-<!--
+    <!--
     <div>
       <b-button-group>
         <b-button>  <router-link to="/posts">Posts</router-link> </b-button>
@@ -27,35 +25,30 @@
     <button v-on:click="counter++">Add 1</button>
     <p>The button above has been clicked {{ counter }} times.</p>
   </div>
-
 </template>
 
 <script>
-
-import PostsService from '@/services/PostsService'
+import PostsService from "@/services/PostsService";
 export default {
-  name: 'posts',
+  name: "posts",
 
-  data () {
+  data() {
     return {
-      counter:2,
-      posts: []
-    }
+      counter: 2,
+      posts: [],
+    };
   },
-  async mounted () {
-    await this.getPosts()
-
+  async mounted() {
+    await this.getPosts();
   },
   methods: {
-    yourFormSubmissionMethod(){
+    yourFormSubmissionMethod() {
       alert("asd");
     },
-    async getPosts () {
-      const response = await PostsService.fetchMainPage()
-      this.posts = response.data
-
-    }
-  }
-}
-
+    async getPosts() {
+      const response = await PostsService.fetchMainPage();
+      this.posts = response.data;
+    },
+  },
+};
 </script>

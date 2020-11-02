@@ -19,7 +19,7 @@ export default new Router({
       component: Anime
     },
     {
-      path: '/play/:shiki_id/:name/', //:dubbing/:episode/
+      path: '/play/:shiki_id/:name/', // :dubbing/:episode/
       name: 'play',
       component: play
     }
