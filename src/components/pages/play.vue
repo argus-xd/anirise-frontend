@@ -12,9 +12,6 @@
           {{ animeInfo.title }}
         </div>
         <div class="media-body col-md-9 col-sm-12">
-          <!-- <div class="player-container">
-             <vue-core-video-player  v-if="playList.length>0" @play="playFunc" v-bind:src="playList"></vue-core-video-player>
-           </div>-->
           <anime-player
             v-if="playList.length > 0"
             v-bind:playList="playList"
