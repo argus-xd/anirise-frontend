@@ -179,7 +179,7 @@
 
 <script>
 import animePlayer from "../anime-player";
-import PostsService from "../../services/PostsService";
+import api from "../../services/anime-rise";
 
 export default {
   name: "posts",
@@ -204,30 +204,30 @@ export default {
   },
   async mounted() {
     this.desc = localStorage.desc !== "false";
-    this.posts = await PostsService.dubbingListByShikiId(
+    this.posts = await api.dubbingListByShikiId(
       this.$route.params.shiki_id,
     );
     if (this.posts.results[0].id) {
-      await PostsService.fetcGetBySerialId(
+      await api.fetchGetBySerialId(
         this.$route.query.dubbing || this.posts.results[0].id,
       ).then(e => {
         this.animeInfo = e.results[0];
       });
 
-      PostsService.shikiInfoById(this.$route.params.shiki_id).then(r => {
+      api.shikiInfoById(this.$route.params.shiki_id).then(r => {
         this.animeInfoShiki = r;
       });
     } else {
       console.log("Не получен список озвучки");
     }
 
-    this.animeFranchise = await PostsService.shikiFranchise(
+    this.animeFranchise = await api.shikiFranchise(
       this.$route.params.shiki_id,
     );
   },
   methods: {
     async setPlayer() {
-      let list = await PostsService.fetcPlayList(
+      let list = await api.fetchPlayList(
         this.active_el,
         this.animeInfo.last_season,
         this.episode,
@@ -248,7 +248,7 @@ export default {
       this.animeEpisodeUpdate();
       this.active_el = el;
       if (this.$route.query.dubbing !== el) {
-        PostsService.fetcGetBySerialId(this.active_el).then(e => {
+        api.fetchGetBySerialId(this.active_el).then(e => {
           this.animeInfo = e.results[0];
         });
 
@@ -315,7 +315,7 @@ export default {
   },
   watch: {
     async $route() {
-      this.posts = await PostsService.dubbingListByShikiId(
+      this.posts = await api.dubbingListByShikiId(
         this.$route.params.shiki_id,
       );
 

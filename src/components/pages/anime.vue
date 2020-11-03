@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import api from "../../services/PostsService";
+import api from "../../services/anime-rise";
 import animeFilter from "../filter.vue";
 
 export default {
