@@ -79,17 +79,15 @@ export default {
     };
   },
   async mounted() {
-    api.fetchMainPage().then(res => {
+    api.fetchMainPage().then(({ results }) => {
       this.posterCover = "poster--cover";
-      this.animeList.new = this.deleteDuplicate(res.results || []);
+      this.animeList.new = this.deleteDuplicate(results || []);
 
       this.setShownAnimeList(this.animeList.new);
     });
 
-    api.shikiAnimeTop().then(res => {
-      res = this.deleteDuplicate(res.results || []);
-      res = this.sortByRating(res);
-      this.animeList.top = res;
+    api.shikiAnimeTop().then(({ results }) => {
+      this.animeList.top = this.deleteDuplicate(results || []);
     });
   },
   computed: {
@@ -117,14 +115,6 @@ export default {
             found => found.shikimori_id === anime.shikimori_id,
           ),
       );
-    },
-    sortByRating(animeList) {
-      return animeList.sort((curr, next) => {
-        return (
-          next.material_data.shikimori_rating -
-          curr.material_data.shikimori_rating
-        );
-      });
     },
     sleep(intervalMs = 1000) {
       return new Promise(resolve => setTimeout(resolve, intervalMs));
