@@ -205,16 +205,18 @@ export default {
   async mounted() {
     this.desc = localStorage.desc !== "false";
     this.posts = await api.dubbingListByShikiId(
-      this.$route.params.shiki_id,
+      this.$route.params.shikimori_id,
     );
     if (this.posts.results[0].id) {
-      await api.fetchGetBySerialId(
-        this.$route.query.dubbing || this.posts.results[0].id,
-      ).then(e => {
-        this.animeInfo = e.results[0];
-      });
+      await api
+        .fetchGetBySerialId(
+          this.$route.query.dubbing || this.posts.results[0].id,
+        )
+        .then(e => {
+          this.animeInfo = e.results[0];
+        });
 
-      api.shikiInfoById(this.$route.params.shiki_id).then(r => {
+      api.shikiInfoById(this.$route.params.shikimori_id).then(r => {
         this.animeInfoShiki = r;
       });
     } else {
@@ -222,7 +224,7 @@ export default {
     }
 
     this.animeFranchise = await api.shikiFranchise(
-      this.$route.params.shiki_id,
+      this.$route.params.shikimori_id,
     );
   },
   methods: {
@@ -254,12 +256,9 @@ export default {
 
         this.$router.push({
           name: "play",
-          query: { dubbing: this.active_el, eppisose: this.episode },
+          query: { dubbing: this.active_el, episode: this.episode },
         });
       }
-    },
-    playFunc() {
-      console.log("play!");
     },
     setEpisode(next, goTo = false) {
       next = parseInt(next);
@@ -277,7 +276,7 @@ export default {
 
         this.$router.push({
           name: "play",
-          query: { dubbing: this.active_el, eppisose: this.episode },
+          query: { dubbing: this.active_el, episode: this.episode },
         });
         this.setPlayer();
       }
@@ -295,9 +294,9 @@ export default {
         this.maxEpisodes = 1;
       }
 
-      if (this.$route.query.eppisose && this.$route.query.dubbing) {
+      if (this.$route.query.episode && this.$route.query.dubbing) {
         this.active_el = this.$route.query.dubbing;
-        this.episode = parseInt(this.$route.query.eppisose);
+        this.episode = parseInt(this.$route.query.episode);
       }
 
       if (this.episode > this.maxEpisodes) {
@@ -316,7 +315,7 @@ export default {
   watch: {
     async $route() {
       this.posts = await api.dubbingListByShikiId(
-        this.$route.params.shiki_id,
+        this.$route.params.shikimori_id,
       );
 
       this.animeEpisodeUpdate();

@@ -1,6 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 import mainPage from "./components/pages/anime";
-import titlePage from "./components/pages/play";
+import animePage from "./components/pages/play";
 
 const routes = [
   {
@@ -9,9 +9,9 @@ const routes = [
     component: mainPage,
   },
   {
-    path: "/play/:shiki_id/:name/",
+    path: "/animes/:shikimori_id/",
     name: "play",
-    component: titlePage,
+    component: animePage,
   },
 ];
 

@@ -23,8 +23,7 @@
             :to="{
               name: 'play',
               params: {
-                shiki_id: item.shikimoriId,
-                name: item.name,
+                shikimori_id: item.shikimoriId,
               },
             }"
           >
