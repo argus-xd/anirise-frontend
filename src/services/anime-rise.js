@@ -1,50 +1,46 @@
 import axios from "axios";
 
-const service = axios.create({
+const client = axios.create({
   baseURL: process.env.VUE_APP_BACKEND_HOST || "http://127.0.0.1:8090",
 });
 
+const simpleRequest = (endpoint, method = "get") => {
+  return client[method](endpoint)
+    .then(({ data }) => data)
+    .catch(() => {
+      console.error(`Backend respond with error on endpoint ${endpoint}`);
+    });
+};
+
 export default {
   fetchPosts() {
-    return service.get("/posts");
+    return simpleRequest("/posts");
   },
-  async fetchMainPage() {
-    const response = await service.get("/api-list");
-    return response.data;
+  fetchMainPage() {
+    return simpleRequest("/api-list");
   },
-  async fetchSearchName(name) {
-    const response = await service.get("/api-search/" + name);
-    return response.data;
+  fetchSearchName(name) {
+    return simpleRequest("/api-search/" + name);
   },
-  async dubbingListByShikiId(id) {
-    const response = await service.get("/api-search-id/" + id);
-    return response.data;
+  dubbingListByShikiId(id) {
+    return simpleRequest("/api-search-id/" + id);
   },
-  async fetchGetBySerialId(id) {
-    const response = await service.get("/api-serial-id/" + id);
-    return response.data;
+  fetchGetBySerialId(id) {
+    return simpleRequest("/api-serial-id/" + id);
   },
-  async fetchPlayList(serial_id, season, episode) {
-    const response = await service.get(
-      `/api-get-url/${serial_id}/${season}/${episode}`,
-    );
-    return response.data;
+  fetchPlayList(serial_id, season, episode) {
+    return simpleRequest(`/api-get-url/${serial_id}/${season}/${episode}`);
   },
-  async shikiFranchise(shiki_id) {
-    const response = await service.get(`/api-franchise/${shiki_id}`);
-    return response.data;
+  shikiFranchise(shiki_id) {
+    return simpleRequest(`/api-franchise/${shiki_id}`);
   },
-  async shikiAnimeTop() {
-    const response = await service.get(`/api-list-top/`);
-    return response.data;
+  shikiAnimeTop() {
+    return simpleRequest(`/api-list-top/`);
   },
-  async searchInDB(name) {
-    const response = await service.get(`/api-search-link/${name}`);
-    return response.data;
+  searchInDB(name) {
+    return simpleRequest(`/api-search-link/${name}`);
   },
-
-  async shikiInfoById(shiki_id) {
-    const response = await service.get(`/api-shiki-id/${shiki_id}`);
-    return response.data;
+  shikiInfoById(shiki_id) {
+    return simpleRequest(`/api-shiki-id/${shiki_id}`);
   },
 };
