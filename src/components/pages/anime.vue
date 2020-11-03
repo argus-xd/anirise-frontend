@@ -15,7 +15,7 @@
 
       <div class="anime-list">
         <div
-          v-for="(item, index) in this.shownAnimeList"
+          v-for="(item, index) in this.animeList.shown"
           :key="index"
           class="card"
         >
@@ -62,10 +62,7 @@ export default {
       animeList: {
         shown: Array.from({ length: 20 }, () => ({
           title: "...",
-          title_orig: "...",
-          material_data: {
-            poster_url: require(`@/assets/preLoader.svg`),
-          },
+          poster: require(`@/assets/preLoader.svg`),
         })),
         new: [],
         top: [],
@@ -78,52 +75,29 @@ export default {
     };
   },
   async mounted() {
-    api.fetchMainPage().then(({ results }) => {
+    api.animeList().then(animes => {
       this.posterCover = "poster--cover";
-      this.animeList.new = this.deleteDuplicate(results || []);
+      this.animeList.new = animes;
 
       this.setShownAnimeList(this.animeList.new);
     });
 
-    api.shikiAnimeTop().then(({ results }) => {
-      this.animeList.top = this.deleteDuplicate(results || []);
-    });
-  },
-  computed: {
-    shownAnimeList() {
-      return this.animeList.shown.map(anime => {
-        return {
-          title: anime.title,
-          shikimoriId: anime.shikimori_id || 0,
-          name: anime.title_orig.replaceAll(" ", "_"),
-          poster: anime.material_data?.poster_url,
-        };
-      });
-    },
+    api.animeList("rating").then(animes => (this.animeList.top = animes));
   },
   methods: {
     setShownAnimeList(animeList) {
       this.animeList.shown = animeList;
       this.replaceEmptyPosterByShiki(this.animeList.shown);
     },
-    deleteDuplicate(animeList) {
-      return animeList.filter(
-        (anime, index) =>
-          index ===
-          animeList.findIndex(
-            found => found.shikimori_id === anime.shikimori_id,
-          ),
-      );
-    },
     sleep(intervalMs = 1000) {
       return new Promise(resolve => setTimeout(resolve, intervalMs));
     },
     async replaceEmptyPosterByShiki(animeList) {
       for (const item of animeList) {
-        if (item.material_data.poster_url.indexOf("no-poster.gif") > 0) {
+        if (item.poster.indexOf("no-poster.gif") > 0) {
           await this.sleep(40);
-          await api.shikiInfoById(item.shikimori_id).then(({ image }) => {
-            item.material_data.poster_url = `https://shikimori.one/${image.original}`;
+          await api.shikiInfoById(item.shikimoriId).then(({ image }) => {
+            item.poster = `https://shikimori.one/${image.original}`;
           });
         }
       }

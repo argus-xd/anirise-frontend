@@ -13,6 +13,12 @@ const simpleGetRequest = (url, params = {}) => {
 };
 
 export default {
+  animeList(sortField = "date", sortDirection = "desc") {
+    return simpleGetRequest("/anime", {
+      ["sort-field"]: sortField,
+      ["sort-direction"]: sortDirection,
+    });
+  },
   searchAnime(searchTerm) {
     return simpleGetRequest("/anime/search", { title: searchTerm });
   },
