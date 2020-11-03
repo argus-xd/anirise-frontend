@@ -154,9 +154,8 @@ export default {
 
       this.search.timeout = setTimeout(async () => {
         const animeList = await api
-          .fetchSearchName(searchTerm)
-          .then(r => this.deleteDuplicate(r.results || []))
-          .catch(this.animeList.new);
+          .searchAnime(searchTerm)
+          .catch(() => this.animeList.new);
 
         this.setShownAnimeList(animeList);
       }, 200);
