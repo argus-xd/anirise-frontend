@@ -11,10 +11,7 @@
           {{ animeInfo.title }}
         </div>
         <div class="media-body col-md-9 col-sm-12">
-          <anime-player
-            v-if="playList.length > 0"
-            v-bind:playList="playList"
-          ></anime-player>
+          <anime-player v-bind:playList="playList"></anime-player>
           <div class="counter">
             <button
               type="button"
@@ -93,17 +90,6 @@
             >Shikimori - info</a
           >
           <div :class="{ 'd-none': visible !== 1 }" id="collapse-1">
-            <!-- <div class="toggle-desc" @click="toggleDesc()">
-               <span>Описание</span>
-               <span v-if="desc">скрыть</span>
-               <span v-if="!desc">открыть</span>
-
-               <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down-short" fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg">
-                 <path fill-rule="evenodd"
-                       d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
-               </svg>
-             </div>-->
             <div
               v-if="animeInfo.material_data"
               v-bind:class="{ 'd-none': desc !== true }"
@@ -141,7 +127,6 @@
             <div class="fran-list">
               <div
                 v-for="(item, index) in animeFranchise"
-                v-if="animeFranchise"
                 :key="index"
                 class="card"
               >

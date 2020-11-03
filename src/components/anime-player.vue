@@ -16,21 +16,22 @@
 export default {
   name: "anime-player",
   props: {
-    playList: "",
+    playList: Array,
   },
   data() {
     return {
-      videoSrc: this.playList[this.playList.length - 1].src,
+      videoSrc: "",
     };
   },
-  mounted() {
-    console.log("this is current player instance object", this.player);
-  },
+  mounted() {},
   watch: {
-    playList: function () {
+    playList() {
+      if (!this.playList.length) {
+        return;
+      }
+
       this.videoSrc = this.playList[this.playList.length - 1].src;
-      let vid = this.$refs.video;
-      vid.load();
+      this.$refs.video.load();
     },
   },
   methods: {},
