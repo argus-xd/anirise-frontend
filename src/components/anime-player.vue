@@ -1,13 +1,13 @@
 <template>
   <div>
-    <video
-      width="100%"
-      preload="metadata"
-      ref="video"
-      controls="controls"
-      poster=" "
-    >
-      <source v-bind:src="videoSrc + '#t=15.5'" type="video/mp4" />
+    <video preload="metadata" ref="video" controls="controls">
+      <source
+        v-for="video in playList"
+        :size="video.resolution"
+        :src="video.src"
+        v-bind:key="video"
+        type="video/mp4"
+      />
     </video>
   </div>
 </template>
@@ -26,11 +26,6 @@ export default {
   mounted() {},
   watch: {
     playList() {
-      if (!this.playList.length) {
-        return;
-      }
-
-      this.videoSrc = this.playList[this.playList.length - 1].src;
       this.$refs.video.load();
     },
   },

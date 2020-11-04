@@ -241,7 +241,7 @@ export default {
           src: playListParse[key][0].src
             .split(":hls:manifest.m3u8")[0]
             .replaceAll("//", "https://"),
-          resolution: key + "p",
+          resolution: key,
         });
       });
       this.playList = newPlayLists;
