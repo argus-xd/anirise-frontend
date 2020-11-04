@@ -1,11 +1,9 @@
 <template>
-  <div id="app">
-    <div class="container-fluid">
-      <h1>
-        <router-link to="/">AnimeRise</router-link>
-      </h1>
-      <router-view />
-    </div>
+  <div class="container-fluid">
+    <h1>
+      <router-link to="/">AnimeRise</router-link>
+    </h1>
+    <router-view />
   </div>
 </template>
 
