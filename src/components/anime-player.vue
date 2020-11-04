@@ -3,7 +3,7 @@
     <video preload="metadata" ref="video" controls="controls">
       <source
         v-for="video in playList"
-        :size="video.resolution"
+        :size="video.size"
         :src="video.src"
         v-bind:key="video"
         type="video/mp4"

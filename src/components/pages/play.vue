@@ -235,12 +235,14 @@ export default {
         this.episode,
       );
 
-      this.playList = Object.entries(playList).map(([size, [video]]) => ({
-        size,
-        src: video.src
-          .replace(":hls:manifest.m3u8", "")
-          .replace("//", "https://"),
-      }));
+      this.playList = Object.entries(playList)
+        .map(([size, [video]]) => ({
+          size,
+          src: video.src
+            .replace(":hls:manifest.m3u8", "")
+            .replace("//", "https://"),
+        }))
+        .reverse();
     },
     changeDubbing(el) {
       this.animeEpisodeUpdate();
