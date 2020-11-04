@@ -136,8 +136,7 @@
                     :to="{
                       name: 'play',
                       params: {
-                        shiki_id: item.id,
-                        name: item.name.replaceAll(' ', '_'),
+                        shikimori_id: item.id,
                       },
                     }"
                   >
@@ -203,6 +202,7 @@ export default {
     this.posts = await api.dubbingListByShikiId(
       this.$route.params.shikimori_id,
     );
+
     if (this.posts.results[0].id) {
       await api
         .fetchGetBySerialId(
@@ -212,9 +212,9 @@ export default {
           this.animeInfo = e.results[0];
         });
 
-      api.shikiInfoById(this.$route.params.shikimori_id).then(r => {
-        this.animeInfoShiki = r;
-      });
+      api
+        .shikiInfoById(this.$route.params.shikimori_id)
+        .then(res => (this.animeInfoShiki = res));
     } else {
       console.log("Не получен список озвучки");
     }
