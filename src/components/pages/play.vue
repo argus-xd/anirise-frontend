@@ -229,22 +229,18 @@ export default {
   },
   methods: {
     async setPlayer() {
-      let list = await api.fetchPlayList(
+      const playList = await api.fetchPlayList(
         this.active_el,
         this.animeInfo.last_season,
         this.episode,
       );
-      let playListParse = JSON.parse(JSON.stringify(list));
-      let newPlayLists = [];
-      Object.keys(playListParse).forEach(function (key) {
-        newPlayLists.push({
-          src: playListParse[key][0].src
-            .split(":hls:manifest.m3u8")[0]
-            .replaceAll("//", "https://"),
-          resolution: key,
-        });
-      });
-      this.playList = newPlayLists;
+
+      this.playList = Object.entries(playList).map(([size, [video]]) => ({
+        size,
+        src: video.src
+          .replace(":hls:manifest.m3u8", "")
+          .replace("//", "https://"),
+      }));
     },
     changeDubbing(el) {
       this.animeEpisodeUpdate();
