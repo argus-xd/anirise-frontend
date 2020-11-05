@@ -1,48 +1,44 @@
 <template>
+  <div class="posts">
+    <input
+      class="form-control"
+      v-model="search.text"
+      placeholder="Поиск аниме..."
+    />
+  </div>
+
   <div>
-    <div class="posts">
-      <div class="container mb-3">
-        <input
-          class="form-control"
-          v-model="search.text"
-          placeholder="Поиск аниме..."
-        />
-      </div>
-    </div>
+    <animeFilter @filter="filter" />
 
-    <div class="bv-example-row container">
-      <animeFilter @filter="filter" />
-
-      <div class="anime-list">
-        <div
-          v-for="(item, index) in this.animeList.shown"
-          :key="index"
-          class="card"
+    <div class="anime-list">
+      <div
+        v-for="(item, index) in this.animeList.shown"
+        :key="index"
+        class="card"
+      >
+        <router-link
+          :to="{
+            name: 'play',
+            params: {
+              shikimori_id: item.shikimoriId,
+            },
+          }"
         >
-          <router-link
-            :to="{
-              name: 'play',
-              params: {
-                shikimori_id: item.shikimoriId,
-              },
+          <div
+            class="poster"
+            :class="posterCover"
+            :style="{
+              backgroundImage: `url('${item.poster}')`,
             }"
           >
-            <div
-              class="poster"
-              :class="posterCover"
-              :style="{
-                backgroundImage: `url('${item.poster}')`,
-              }"
-            >
-              <img v-bind:src="require(`@/assets/play.svg`)" alt="" />
+            <img v-bind:src="require(`@/assets/play.svg`)" alt="" />
+          </div>
+          <div class="card-body" v-if="item.title">
+            <div class="card-title">
+              {{ item.title }}
             </div>
-            <div class="card-body" v-if="item.title">
-              <div class="card-title">
-                {{ item.title }}
-              </div>
-            </div>
-          </router-link>
-        </div>
+          </div>
+        </router-link>
       </div>
     </div>
   </div>

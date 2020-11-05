@@ -5,7 +5,7 @@ import animePage from "./components/pages/play";
 const routes = [
   {
     path: "/",
-    name: "MainPage",
+    name: "mainPage",
     component: mainPage,
   },
   {
