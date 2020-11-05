@@ -84,3 +84,15 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   font-size: 1.6rem;
 }
+
+a:visited {
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  font-family: inherit;
+  text-decoration: none;
+  transition: 0.15s;
+  outline: 0;
+}
