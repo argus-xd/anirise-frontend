@@ -1,11 +1,9 @@
 <template>
-  <div class="filter m-1">
-    <button type="button" class="btn btn-outline-info" @click="filterNew">
+  <div class="filter-buttons">
+    <a class="waves-effect waves-light btn" @click="filterNew">
       Недавно обновлённые
-    </button>
-    <button type="button" class="btn btn-outline-info" @click="filterTop">
-      Топ
-    </button>
+    </a>
+    <a class="waves-effect waves-light btn" @click="filterTop"> Топ </a>
   </div>
 </template>
 
@@ -23,13 +21,13 @@ export default {
 };
 </script>
 
-<style scoped>
-.filter {
-  display: flex;
-}
-
-.filter button,
-.filter select {
-  margin-right: 1rem;
+<style lang="scss" rel="stylesheet/scss">
+.filter-buttons {
+  .btn {
+    background: rgb(var(--color-blue-600));
+    &:not(:first-child) {
+      margin-left: 10px;
+    }
+  }
 }
 </style>

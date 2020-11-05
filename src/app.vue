@@ -52,7 +52,7 @@ nav {
 
   .brand-logo {
     font-family: var(--font-family-overpass);
-    font-size: 1.8rem;
+    font-size: 2.6rem;
     font-weight: 600;
     color: #fff;
   }
@@ -61,6 +61,6 @@ nav {
 .page-footer {
   background-color: #2b2d42;
   color: #bcbedc;
-  font-size: 1.2rem;
+  font-size: 1.8rem;
 }
 </style>
