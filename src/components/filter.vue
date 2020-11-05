@@ -1,9 +1,9 @@
 <template>
   <div class="filter-buttons">
     <a class="waves-effect waves-light btn" @click="filterNew">
-      Недавно обновлённые
+      New episodes
     </a>
-    <a class="waves-effect waves-light btn" @click="filterTop"> Топ </a>
+    <a class="waves-effect waves-light btn" @click="filterTop">Shikimori top</a>
   </div>
 </template>
 

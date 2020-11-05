@@ -3,7 +3,7 @@
     <input
       class="form-control"
       v-model="search.text"
-      placeholder="Поиск аниме..."
+      placeholder="Search..."
     />
   </div>
 
