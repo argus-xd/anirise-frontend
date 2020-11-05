@@ -1,167 +1,145 @@
 <template>
-  <div class="container">
-    <div class="media row" v-if="animeInfo.material_data">
-      <div class="mr-3 col-md-3 col-sm-12">
-        <img
-          v-bind:src="animeInfo.material_data.poster_url"
-          class="poster"
-          alt=""
-        />
-        {{ animeInfo.title }}
+  <div class="media row" v-if="animeInfo.material_data">
+    <h3>
+      {{ animeInfo.title }}
+    </h3>
+    <div>
+      <anime-player v-bind:playList="playList"></anime-player>
+      <div class="counter">
+        <button
+          type="button"
+          @click="setEpisode(-1)"
+          class="btn btn-outline-primary"
+        >
+          Предыдущая серия
+        </button>
+        <button type="button" class="btn btn-outline-secondary">
+          {{ episode }} серия
+        </button>
+        <button
+          type="button"
+          @click="setEpisode(maxEpisodes, true)"
+          class="btn btn-outline-secondary"
+        >
+          из {{ maxEpisodes }}
+        </button>
+        <button
+          type="button"
+          @click="setEpisode(1)"
+          class="btn btn-outline-primary"
+        >
+          Следующая серия
+        </button>
       </div>
-      <div class="media-body col-md-9 col-sm-12">
-        <anime-player v-bind:playList="playList"></anime-player>
-        <div class="counter">
-          <button
-            type="button"
-            @click="setEpisode(-1)"
-            class="btn btn-outline-primary"
-          >
-            Предыдущая серия
-          </button>
-          <button type="button" class="btn btn-outline-secondary">
-            {{ episode }} серия
-          </button>
-          <button
-            type="button"
-            @click="setEpisode(maxEpisodes, true)"
-            class="btn btn-outline-secondary"
-          >
-            из {{ maxEpisodes }}
-          </button>
-          <button
-            type="button"
-            @click="setEpisode(1)"
-            class="btn btn-outline-primary"
-          >
-            Следующая серия
-          </button>
-        </div>
 
-        <input
-          type="range"
-          class="custom-range"
-          v-on:click="setEpisode(episode, true)"
-          v-bind:min="minEpisodes"
-          v-bind:max="maxEpisodes"
-          id="customRange3"
-          v-model="episode"
-        />
+      <input
+        type="range"
+        class="custom-range"
+        v-on:click="setEpisode(episode, true)"
+        v-bind:min="minEpisodes"
+        v-bind:max="maxEpisodes"
+        id="customRange3"
+        v-model="episode"
+      />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 col-sm-12">
+      <div class="collection">
+        <a
+                v-for="(item, index) in posts.results"
+                :key="index"
+                class="collection-item"
+                v-bind:class="{ active: active_el === item.id }"
+                @click="changeDubbing(item.id)"
+        >
+          {{ item.translation.title }}
+        </a>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-3 col-sm-12">
-        <div class="list-group">
-          <a
-            v-for="(item, index) in posts.results"
-            :key="index"
-            class="list-group-item list-group-item-action"
-            v-bind:class="{ active: active_el === item.id }"
-            @click="changeDubbing(item.id)"
-          >
-            {{ item.translation.title }}
-          </a>
-        </div>
-      </div>
-      <div class="col-md-9 col-sm-12">
-        <!-- Using value -->
-        <button
-          @click="visible === 1 ? (visible = 0) : (visible = 1)"
-          class="btn m-1 btn-secondary"
+    <div class="col-md-9 col-sm-12">
+      <button @click="visible = 1" class="btn m-1 btn-secondary">
+        Описание
+      </button>
+      <button @click="visible = 2" class="btn m-1 btn-secondary">
+        Хронология
+      </button>
+      <a
+        :href="'https://shikimori.one' + animeInfoShiki.url"
+        target="_blank"
+        type="button"
+        class="btn btn-primary"
+        >Shikimori - info</a
+      >
+      <div :class="{ hide: visible !== 1 }" id="collapse-1">
+        <div
+          v-if="animeInfo.material_data"
+          v-bind:class="{ hide: desc !== true }"
+          class="description"
         >
-          Описание
-        </button>
-        <button
-          @click="
-            () => {
-              visible = 2;
-            }
-          "
-          class="btn m-1 btn-secondary"
-        >
-          Хронология
-        </button>
-        <a
-          :href="'https://shikimori.one' + animeInfoShiki.url"
-          target="_blank"
-          type="button"
-          class="btn btn-primary"
-          >Shikimori - info</a
-        >
-        <div :class="{ 'd-none': visible !== 1 }" id="collapse-1">
-          <div
-            v-if="animeInfo.material_data"
-            v-bind:class="{ 'd-none': desc !== true }"
-            class="description"
-          >
-            <h5 class="mt-0">
-              {{ animeInfo.title }} / {{ animeInfo.title_orig }}
-            </h5>
-            {{ animeInfo.material_data.description }}
-            <div><span>Год:</span> {{ animeInfo.material_data.year }}</div>
-            <div>
-              <span>Рейтин Shikimori:</span>
-              {{ animeInfo.material_data.shikimori_rating }}
-            </div>
-            <div v-if="animeInfo.material_data.anime_genres">
-              <span>Жанры:</span>
-              {{ animeInfo.material_data.anime_genres.join(", ") }}
-            </div>
-            <div v-if="animeInfoShiki.next_episode_at">
-              <span>Следующий эпизод:</span>
-              {{ new Date(animeInfoShiki.next_episode_at).toLocaleString() }}
-            </div>
-            <div>
-              <span>Кол-во эпизодов:</span> {{ animeInfoShiki.episodes }}
-            </div>
-            <div>
-              <span>Последний эпизод:</span> {{ animeInfo.last_episode }}
-            </div>
-            <div>
-              <span>Озвучено:</span> {{ minEpisodes + " - " + maxEpisodes }}
-            </div>
+          <h5 class="mt-0">
+            {{ animeInfo.title }} / {{ animeInfo.title_orig }}
+          </h5>
+          {{ animeInfo.material_data.description }}
+          <div><span>Год:</span> {{ animeInfo.material_data.year }}</div>
+          <div>
+            <span>Рейтин Shikimori:</span>
+            {{ animeInfo.material_data.shikimori_rating }}
+          </div>
+          <div v-if="animeInfo.material_data.anime_genres">
+            <span>Жанры:</span>
+            {{ animeInfo.material_data.anime_genres.join(", ") }}
+          </div>
+          <div v-if="animeInfoShiki.next_episode_at">
+            <span>Следующий эпизод:</span>
+            {{ new Date(animeInfoShiki.next_episode_at).toLocaleString() }}
+          </div>
+          <div><span>Кол-во эпизодов:</span> {{ animeInfoShiki.episodes }}</div>
+          <div><span>Последний эпизод:</span> {{ animeInfo.last_episode }}</div>
+          <div>
+            <span>Озвучено:</span> {{ minEpisodes + " - " + maxEpisodes }}
           </div>
         </div>
-        <div :class="{ 'd-none': visible !== 2 }" id="collapse-2">
-          <div class="fran-list">
-            <div
-              v-for="(item, index) in animeFranchise"
-              :key="index"
-              class="card"
-            >
-              <div class="row no-gutters">
-                <div class="col-md-4">
-                  <router-link
-                    v-if="item.inBase"
-                    :to="{
-                      name: 'play',
-                      params: {
-                        shikimori_id: item.id,
-                      },
-                    }"
-                  >
-                    <img
-                      v-bind:src="item.image_url.replaceAll('x96', 'original')"
-                      class="card-img"
-                      alt=""
-                    />
-                  </router-link>
+      </div>
+      <div :class="{ hide: visible !== 2 }" id="collapse-2">
+        <div class="fran-list">
+          <div
+            v-for="(item, index) in animeFranchise"
+            :key="index"
+            class="card"
+          >
+            <div class="row no-gutters">
+              <div class="col-md-4">
+                <router-link
+                  v-if="item.inBase"
+                  :to="{
+                    name: 'play',
+                    params: {
+                      shikimori_id: item.id,
+                    },
+                  }"
+                >
                   <img
-                    v-else
                     v-bind:src="item.image_url.replaceAll('x96', 'original')"
                     class="card-img"
                     alt=""
                   />
-                </div>
-                <div class="col-md-8">
-                  <div class="card-body">
-                    <h5 class="card-title">{{ item.name }}</h5>
-                    <p class="card-text">{{ item.year }}</p>
-                    <p class="card-text">{{ item.inBase }}</p>
-                    <p class="card-text">
-                      <small class="text-muted">{{ item.kind }}</small>
-                    </p>
-                  </div>
+                </router-link>
+                <img
+                  v-else
+                  v-bind:src="item.image_url.replaceAll('x96', 'original')"
+                  class="card-img"
+                  alt=""
+                />
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">{{ item.name }}</h5>
+                  <p class="card-text">{{ item.year }}</p>
+                  <p class="card-text">{{ item.inBase }}</p>
+                  <p class="card-text">
+                    <small class="text-muted">{{ item.kind }}</small>
+                  </p>
                 </div>
               </div>
             </div>
@@ -298,12 +276,6 @@ export default {
       } else if (this.episode < this.minEpisodes) {
         this.episode = this.minEpisodes;
       }
-    },
-    toggleDesc() {
-      this.desc = !this.desc;
-      localStorage.desc = this.desc;
-
-      console.log(localStorage.desc);
     },
   },
   watch: {

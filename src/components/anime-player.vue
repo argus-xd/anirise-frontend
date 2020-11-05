@@ -1,15 +1,13 @@
 <template>
-  <div>
-    <video preload="metadata" ref="video" controls="controls">
-      <source
-        v-for="video in playList"
-        :size="video.size"
-        :src="video.src"
-        v-bind:key="video"
-        type="video/mp4"
-      />
-    </video>
-  </div>
+  <video preload="metadata" ref="video" controls="controls">
+    <source
+      v-for="video in playList"
+      :size="video.size"
+      :src="video.src"
+      v-bind:key="video"
+      type="video/mp4"
+    />
+  </video>
 </template>
 
 <script>
@@ -29,12 +27,16 @@ export default {
       this.$refs.video.load();
     },
   },
-  methods: {},
 };
 </script>
 
-<style scoped>
-video:focus {
-  outline: none;
+<style lang="scss" rel="stylesheet/scss">
+video {
+  display: block;
+  margin: 0 auto;
+  background: #000;
+  &:focus {
+    outline: none;
+  }
 }
 </style>
