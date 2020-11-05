@@ -96,3 +96,19 @@ a {
   transition: 0.15s;
   outline: 0;
 }
+
+.container {
+  margin: 0 auto;
+  min-width: 320px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 100%;
+}
+
+@media (min-width: 1540px) {
+  .container {
+    max-width: 1520px;
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+}
