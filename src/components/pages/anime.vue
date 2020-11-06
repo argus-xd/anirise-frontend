@@ -1,10 +1,6 @@
 <template>
   <div class="search-wrap">
-    <input
-      class="form-control"
-      v-model="search.text"
-      placeholder="Search..."
-    />
+    <input class="form-control" v-model="search.text" placeholder="Search..." />
   </div>
 
   <animeFilter @filter="filter" />
@@ -36,7 +32,6 @@
 <script>
 import api from "../../services/anime-rise";
 import animeFilter from "../filter.vue";
-import sleep from "../../utils/sleep";
 
 export default {
   name: "posts",
@@ -72,17 +67,6 @@ export default {
   methods: {
     setShownAnimeList(animeList) {
       this.animeList.shown = animeList;
-      this.replaceEmptyPosterByShiki(this.animeList.shown);
-    },
-    async replaceEmptyPosterByShiki(animeList) {
-      for (const item of animeList) {
-        if (item.poster.indexOf("no-poster.gif") > 0) {
-          await sleep(40);
-          await api.shikiInfoById(item.shikimoriId).then(({ image }) => {
-            item.poster = `https://shikimori.one/${image.original}`;
-          });
-        }
-      }
     },
     filter(filterType) {
       this.search.text = "";
@@ -164,7 +148,7 @@ export default {
 
     .poster {
       background: rgba(var(--color-background-300), 0.8);
-      background-size: contain;
+      background-size: cover;
       border-radius: 4px;
       box-shadow: 0 14px 30px rgba(var(--color-shadow-blue), 0.15),
         0 4px 4px rgba(var(--color-shadow-blue), 0.05);
