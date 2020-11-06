@@ -3,7 +3,6 @@
     <input class="form-control" v-model="search.text" placeholder="Search..." />
   </div>
 
-  <animeFilter @filter="filter" />
   <div class="anime-list">
     <router-link
       v-for="(item, index) in this.animeList.shown"
@@ -31,13 +30,9 @@
 
 <script>
 import api from "../../services/anime-rise";
-import animeFilter from "../filter.vue";
 
 export default {
   name: "posts",
-  components: {
-    animeFilter,
-  },
   data() {
     return {
       animesPerCategory: 12,
@@ -61,26 +56,10 @@ export default {
 
       this.setShownAnimeList(this.animeList.new);
     });
-
-    this.animeList.top = await api.animeList(this.animesPerCategory, "rating");
   },
   methods: {
     setShownAnimeList(animeList) {
       this.animeList.shown = animeList;
-    },
-    filter(filterType) {
-      this.search.text = "";
-
-      const showAnimeList = (() => {
-        switch (filterType) {
-          case "top":
-            return this.animeList.top;
-        }
-
-        return this.animeList.new;
-      })();
-
-      this.setShownAnimeList(showAnimeList);
     },
   },
   watch: {
