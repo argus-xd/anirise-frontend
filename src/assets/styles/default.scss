@@ -107,10 +107,13 @@ a {
   padding-left: 20px;
   padding-right: 20px;
   width: 100%;
-}
 
-@media (min-width: 1540px) {
-  .container {
+  @media (max-width: 1540px) and (min-width: 1040px) {
+    max-width: 1140px;
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+  @media (min-width: 1540px) {
     max-width: 1520px;
     padding-left: 100px;
     padding-right: 100px;

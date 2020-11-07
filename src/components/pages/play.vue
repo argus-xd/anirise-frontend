@@ -48,11 +48,11 @@
       <div class="col-md-3 col-sm-12">
         <div class="collection">
           <a
-                  v-for="(item, index) in posts.results"
-                  :key="index"
-                  class="collection-item"
-                  v-bind:class="{ active: active_el === item.id }"
-                  @click="changeDubbing(item.id)"
+            v-for="(item, index) in posts.results"
+            :key="index"
+            class="collection-item"
+            v-bind:class="{ active: active_el === item.id }"
+            @click="changeDubbing(item.id)"
           >
             {{ item.translation.title }}
           </a>
@@ -95,8 +95,12 @@
               <span>Следующий эпизод:</span>
               {{ new Date(animeInfoShiki.next_episode_at).toLocaleString() }}
             </div>
-            <div><span>Кол-во эпизодов:</span> {{ animeInfoShiki.episodes }}</div>
-            <div><span>Последний эпизод:</span> {{ animeInfo.last_episode }}</div>
+            <div>
+              <span>Кол-во эпизодов:</span> {{ animeInfoShiki.episodes }}
+            </div>
+            <div>
+              <span>Последний эпизод:</span> {{ animeInfo.last_episode }}
+            </div>
             <div>
               <span>Озвучено:</span> {{ minEpisodes + " - " + maxEpisodes }}
             </div>
@@ -297,14 +301,10 @@ export default {
 };
 </script>
 
-<style lang="scss" rel="stylesheet/scss">
+<style lang="scss" rel="stylesheet/scss" scoped>
 .card-img-top {
   height: 300px;
   object-fit: contain;
-}
-
-.poster {
-  width: 100%;
 }
 
 .description {

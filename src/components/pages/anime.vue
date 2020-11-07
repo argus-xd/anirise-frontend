@@ -88,7 +88,7 @@ export default {
 };
 </script>
 
-<style lang="scss" rel="stylesheet/scss">
+<style lang="scss" rel="stylesheet/scss" scoped>
 .search-wrap {
   background: rgb(var(--color-background-100));
   border-radius: 6px;
@@ -114,6 +114,16 @@ export default {
     outline: 0;
     padding: 0;
     width: 100%;
+  }
+}
+
+.container {
+  @media (max-width: 1040px) {
+    padding: 0;
+  }
+  @media (max-width: 1540px) {
+    padding-left: 30px;
+    padding-right: 30px;
   }
 }
 
