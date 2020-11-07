@@ -6,7 +6,7 @@
       </div>
     </nav>
   </div>
-  <div class="container">
+  <div class="page-content">
     <router-view />
   </div>
   <footer class="page-footer">
@@ -56,6 +56,11 @@ nav {
     font-weight: 600;
     color: #fff;
   }
+}
+
+.page-content {
+  min-height: 100vh;
+  padding-bottom: 20px;
 }
 
 .page-footer {

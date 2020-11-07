@@ -1,30 +1,36 @@
 <template>
-  <div class="search-wrap">
-    <input class="form-control" v-model="search.text" placeholder="Search..." />
-  </div>
+  <div class="container">
+    <div class="search-wrap">
+      <input
+        class="form-control"
+        v-model="search.text"
+        placeholder="Search..."
+      />
+    </div>
 
-  <div class="anime-list">
-    <router-link
-      v-for="(item, index) in this.animeList.shown"
-      :key="index"
-      class="anime-card"
-      :to="{
-        name: 'play',
-        params: {
-          shikimori_id: item.shikimoriId,
-        },
-      }"
-    >
-      <div
-        class="poster"
-        :style="{
-          backgroundImage: `url('${item.poster}')`,
+    <div class="anime-list">
+      <router-link
+        v-for="(item, index) in this.animeList.shown"
+        :key="index"
+        class="anime-card"
+        :to="{
+          name: 'play',
+          params: {
+            shikimori_id: item.shikimoriId,
+          },
         }"
-      ></div>
-      <div class="title">
-        {{ item.title }}
-      </div>
-    </router-link>
+      >
+        <div
+          class="poster"
+          :style="{
+            backgroundImage: `url('${item.poster}')`,
+          }"
+        ></div>
+        <div class="title">
+          {{ item.title }}
+        </div>
+      </router-link>
+    </div>
   </div>
 </template>
 
