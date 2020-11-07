@@ -157,11 +157,10 @@
 </template>
 
 <script>
-import animePlayer from "../anime-player";
-import api from "../../services/anime-rise";
+import animePlayer from "../../anime-player";
+import api from "../../../services/anime-rise";
 
 export default {
-  name: "posts",
   components: {
     animePlayer,
   },
@@ -184,7 +183,7 @@ export default {
   async mounted() {
     this.desc = localStorage.desc !== "false";
     this.posts = await api.dubbingListByShikiId(
-      this.$route.params.shikimori_id,
+      this.$route.params.id,
     );
 
     if (this.posts.results[0].id) {

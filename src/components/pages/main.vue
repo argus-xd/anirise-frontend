@@ -14,9 +14,9 @@
         :key="index"
         class="anime-card"
         :to="{
-          name: 'play',
+          name: 'anime:view',
           params: {
-            shikimori_id: item.shikimoriId,
+            id: item.shikimoriId,
           },
         }"
       >
