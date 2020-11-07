@@ -44,6 +44,10 @@ export default {
 </script>
 
 <style lang="scss" rel="stylesheet/scss">
+#app {
+  margin-top: 64px;
+  overflow: hidden;
+}
 nav {
   position: fixed;
   top: 0;
