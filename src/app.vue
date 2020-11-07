@@ -1,11 +1,9 @@
 <template>
-  <div class="navbar-fixed">
-    <nav>
-      <div class="nav-wrapper container">
-        <router-link to="/" class="brand-logo">AnimeRise</router-link>
-      </div>
-    </nav>
-  </div>
+  <nav>
+    <div class="nav-wrapper container">
+      <router-link to="/" class="brand-logo">AnimeRise</router-link>
+    </div>
+  </nav>
   <div class="page-content">
     <router-view />
   </div>
@@ -47,8 +45,18 @@ export default {
 
 <style lang="scss" rel="stylesheet/scss">
 nav {
-  background-color: #2b2d42;
+  position: fixed;
+  top: 0;
+  z-index: 999;
+  background-color: rgb(var(--color-header));
   color: #bcbedc;
+  transition: background 0.8s ease 0s, top 0.5s ease 0s;
+  &.hidden {
+    top: -100px;
+  }
+  &.transparent {
+    background-color: rgba(var(--color-header), 0.8);
+  }
 
   .brand-logo {
     font-family: var(--font-family-overpass);
@@ -64,7 +72,7 @@ nav {
 }
 
 .page-footer {
-  background-color: #2b2d42;
+  background-color: rgb(var(--color-footer));
   color: #bcbedc;
   font-size: 1.8rem;
 }
