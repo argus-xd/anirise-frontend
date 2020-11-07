@@ -103,6 +103,17 @@ a {
   outline: 0;
 }
 
+h1,
+h2 {
+  color: rgb(var(--color-text));
+  margin: 0;
+  padding: 0;
+}
+h1 {
+  font-size: 1.9rem;
+  font-weight: 400;
+}
+
 .container {
   margin: 0 auto;
   min-width: 320px;

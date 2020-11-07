@@ -17,9 +17,7 @@ export default {
     playList: Array,
   },
   data() {
-    return {
-      videoSrc: "",
-    };
+    return {};
   },
   mounted() {},
   watch: {
@@ -35,6 +33,8 @@ video {
   display: block;
   margin: 0 auto;
   background: #000;
+  width: 100%;
+  height: 100%;
   &:focus {
     outline: none;
   }

@@ -13,15 +13,18 @@ const simpleGetRequest = (url, params = {}) => {
 };
 
 export default {
-  animeList(limit = 100, sortField = "date", sortDirection = "desc") {
+  animeList: (limit = 100, sortField = "date", sortDirection = "desc") => {
     return simpleGetRequest("/anime", {
       ["sort-field"]: sortField,
       ["sort-direction"]: sortDirection,
       limit,
     });
   },
-  searchAnime(searchTerm) {
+  searchAnime: searchTerm => {
     return simpleGetRequest("/anime/search", { title: searchTerm });
+  },
+  animeById: (id, episode, translation) => {
+    return simpleGetRequest("/anime/" + id, { episode, translation });
   },
   fetchPosts() {
     return simpleGetRequest("/posts");
