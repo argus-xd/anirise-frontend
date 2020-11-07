@@ -32,7 +32,7 @@
     <div
       ref="overlay"
       class="player-overlay"
-      @click="overlayShown = false"
+      @click.self="overlayShown = false"
       v-bind:class="{ shown: overlayShown }"
     >
       <anime-player v-bind:playList="anime.episodes.playList" />
@@ -55,17 +55,17 @@ export default {
     };
   },
   unmounted() {
-    window.removeEventListener("keyup", this.overlayListener);
+    window.removeEventListener("keyup", this.keyUpListener);
   },
   async mounted() {
-    window.addEventListener("keyup", this.overlayListener);
+    window.addEventListener("keyup", this.keyUpListener);
 
     const { id: animeId, episode, translation } = this.$route.params;
 
     this.anime = await api.animeById(animeId, episode, translation);
   },
   methods: {
-    overlayListener(event) {
+    keyUpListener(event) {
       if (!this.overlayShown) return;
       if (event.key === "Escape") {
         this.overlayShown = false;
