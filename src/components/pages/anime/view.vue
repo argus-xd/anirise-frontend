@@ -35,9 +35,7 @@
       @click="overlayShown = false"
       v-bind:class="{ shown: overlayShown }"
     >
-      <div class="player-wrapper">
-        <anime-player v-bind:playList="anime.episodes.playList" />
-      </div>
+      <anime-player v-bind:playList="anime.episodes.playList" />
     </div>
   </div>
 </template>
@@ -61,7 +59,10 @@ export default {
   },
   async mounted() {
     window.addEventListener("keyup", this.overlayListener);
-    this.anime = await api.animeById(this.$route.params.id);
+
+    const { id: animeId, episode, translation } = this.$route.params;
+
+    this.anime = await api.animeById(animeId, episode, translation);
   },
   methods: {
     overlayListener(event) {
@@ -158,16 +159,6 @@ export default {
   &.shown {
     opacity: 1;
     pointer-events: all;
-  }
-  .player-wrapper {
-    width: 70%;
-    height: 70%;
-    margin: auto;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
   }
 }
 

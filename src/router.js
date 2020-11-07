@@ -9,7 +9,7 @@ const routes = [
     component: main,
   },
   {
-    path: "/anime/:id/",
+    path: "/anime/:id/:episode?/:translation?",
     name: "anime:view",
     component: animeView,
   },
