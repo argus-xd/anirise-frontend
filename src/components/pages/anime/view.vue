@@ -66,7 +66,6 @@ export default {
   },
   methods: {
     keyUpListener(event) {
-      if (!this.overlayShown) return;
       if (event.key === "Escape") {
         this.overlayShown = false;
       }
