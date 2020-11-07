@@ -1,11 +1,20 @@
 <template>
   <div class="player-wrapper">
-    <video preload="metadata" ref="video" controls="controls">
+    <video
+      tabindex="-1"
+      preload="none"
+      playsinline
+      x-webkit-airplay="allow"
+      ref="video"
+      @contextmenu="ev => ev.preventDefault()"
+      @keydown.stop="videoKeyDownEvents"
+      @click="videoClickEvent"
+    >
       <source
-        v-for="video in playList"
-        :size="video.size"
-        :src="video.src"
-        v-bind:key="video"
+        v-for="source in playList"
+        v-bind:key="source"
+        :src="source.src"
+        :data-size="source.size"
         type="video/mp4"
       />
     </video>
@@ -22,24 +31,55 @@ export default {
     return {};
   },
   mounted() {},
-  watch: {
-    playList() {
-      this.$refs.video.load();
+  methods: {
+    videoClickEvent() {
+      this.changePlayState();
+    },
+    videoKeyDownEvents(event) {
+      if (event.code === "Space") {
+        this.changePlayState();
+        event.preventDefault();
+      } else if (event.code === "Enter" && event.altKey) {
+        this.changeFullscreenState();
+      }
+    },
+    changeFullscreenState() {
+      if (document.fullscreenElement) {
+        return document.exitFullscreen();
+      }
+      this.video.requestFullscreen();
+    },
+    changePlayState() {
+      if (this.video.paused) {
+        return this.playVideo();
+      }
+      this.pauseVideo();
+    },
+    focusVideoElement() {
+      this.video.focus();
+    },
+    playVideo() {
+      if (this.video.paused) this.video.play();
+    },
+    pauseVideo() {
+      if (!this.video.paused) this.video.pause();
+    },
+  },
+  computed: {
+    video() {
+      return this.$refs.video;
     },
   },
 };
 </script>
 
 <style lang="scss" rel="stylesheet/scss" scoped>
+//noinspection ALL
+::-webkit-media-controls {
+  display: none !important;
+}
 .player-wrapper {
-  width: 70%;
-  height: 70%;
-  margin: auto;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  position: relative;
   video {
     display: block;
     margin: 0 auto;

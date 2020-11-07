@@ -13,10 +13,7 @@
                 class="action shikimori-link waves-effect"
                 >Shikimori <span class="fa fa-external-link-alt"></span
               ></a>
-              <div
-                class="action play waves-effect"
-                @click="overlayShown = true"
-              >
+              <div class="action play waves-effect" @click="showPlayerOverlay">
                 <span class="fa fa-play"></span>
               </div>
             </div>
@@ -32,10 +29,13 @@
     <div
       ref="overlay"
       class="player-overlay"
-      @click.self="overlayShown = false"
+      @click.self="hidePlayerOverlay"
       v-bind:class="{ shown: overlayShown }"
     >
-      <anime-player v-bind:playList="anime.episodes.playList" />
+      <anime-player
+        ref="animePlayer"
+        v-bind:playList="anime.episodes.playList"
+      />
     </div>
   </div>
 </template>
@@ -67,8 +67,16 @@ export default {
   methods: {
     keyUpListener(event) {
       if (event.key === "Escape") {
-        this.overlayShown = false;
+        this.hidePlayerOverlay();
       }
+    },
+    showPlayerOverlay() {
+      this.overlayShown = true;
+      this.$refs.animePlayer.focusVideoElement();
+    },
+    hidePlayerOverlay() {
+      this.overlayShown = false;
+      this.$refs.animePlayer.pauseVideo();
     },
   },
 };
@@ -158,6 +166,16 @@ export default {
   &.shown {
     opacity: 1;
     pointer-events: all;
+  }
+  .player-wrapper {
+    width: 70%;
+    height: 70%;
+    margin: auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
   }
 }
 
