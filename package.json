@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.21.0",
     "core-js": "^3.6.5",
+    "hls.js": "^0.14.16",
     "materialize-css": "^1.0.0-rc.2",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-rc.1"

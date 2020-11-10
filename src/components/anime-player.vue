@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import Hls from "hls.js";
+
 export default {
   name: "anime-player",
   props: {
@@ -22,6 +24,7 @@ export default {
   },
   data() {
     return {
+      hls: new Hls(),
       preventDefaultKeys: [
         "Space",
         "ArrowDown",
@@ -31,7 +34,9 @@ export default {
       ],
     };
   },
-  mounted() {},
+  mounted() {
+    this.hls.attachMedia(this.video);
+  },
   methods: {
     videoClickEvent() {
       this.changePlayState();
@@ -75,8 +80,8 @@ export default {
     },
   },
   watch: {
-    episode({ current, source }) {
-      console.log(current, source);
+    episode({ source }) {
+      this.hls.loadSource(source);
     },
   },
 };
