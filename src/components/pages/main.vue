@@ -43,7 +43,7 @@ export default {
     return {
       animesPerCategory: 12,
       animeList: {
-        shown: Array.from({ length: 20 }, () => ({
+        shown: Array.from({ length: this.animesPerCategory }, () => ({
           title: "...",
           poster: require(`@/assets/preLoader.svg`),
         })),
