@@ -11,8 +11,9 @@
   },
   "dependencies": {
     "axios": "^0.21.0",
-    "bootstrap": "^4.5.3",
     "core-js": "^3.6.5",
+    "hls.js": "^0.14.16",
+    "materialize-css": "^1.0.0-rc.2",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-rc.1"
   },
@@ -27,8 +28,7 @@
     "eslint-plugin-vue": "^7.0.0-0",
     "prettier": "^2.1.2",
     "sass": "^1.28.0",
-    "sass-loader": "^10.0.5",
-    "vue-loader-v16": "^16.0.0-beta.5.4"
+    "sass-loader": "^10.0.5"
   },
   "browserslist": [
     "> 1%",

@@ -1,45 +1,130 @@
 <template>
-  <div>
+  <div class="player-wrapper">
     <video
-      width="100%"
-      preload="metadata"
+      tabindex="-1"
+      preload="none"
+      playsinline
+      x-webkit-airplay="allow"
       ref="video"
-      controls="controls"
-      poster=" "
-    >
-      <source v-bind:src="videoSrc + '#t=15.5'" type="video/mp4" />
-    </video>
+      @contextmenu="ev => ev.preventDefault()"
+      @keydown.stop="videoKeyDownEvents"
+    ></video>
+    <div class="controls" v-if="episode.source">
+      <div class="top-controls"></div>
+      <div
+        class="middle-controls"
+        @click.self.stop="
+          () => {
+            video.focus();
+            changePlayState();
+          }
+        "
+      ></div>
+      <div class="bottom-controls"></div>
+    </div>
   </div>
 </template>
 
 <script>
+import Hls from "hls.js";
+
 export default {
   name: "anime-player",
   props: {
-    playList: Array,
+    translations: Object,
+    episode: Object,
   },
   data() {
     return {
-      videoSrc: "",
+      hls: new Hls(),
+      preventDefaultKeys: [
+        "Space",
+        "ArrowDown",
+        "ArrowUp",
+        "ArrowLeft",
+        "ArrowRight",
+      ],
     };
   },
-  mounted() {},
-  watch: {
-    playList() {
-      if (!this.playList.length) {
-        return;
+  mounted() {
+    this.hls.attachMedia(this.video);
+  },
+  methods: {
+    videoKeyDownEvents(event) {
+      if (this.preventDefaultKeys.includes(event.code)) {
+        event.preventDefault();
       }
 
-      this.videoSrc = this.playList[this.playList.length - 1].src;
-      this.$refs.video.load();
+      if (event.code === "Space") {
+        this.changePlayState();
+      } else if (event.code === "Enter" && event.altKey) {
+        this.changeFullscreenState();
+      }
+    },
+    changeFullscreenState() {
+      if (document.fullscreenElement) {
+        return document.exitFullscreen();
+      }
+      this.video.requestFullscreen();
+    },
+    changePlayState() {
+      if (this.video.paused) {
+        return this.playVideo();
+      }
+      this.pauseVideo();
+    },
+    focusVideoElement() {
+      this.video.focus();
+    },
+    playVideo() {
+      if (this.video.paused) this.video.play();
+    },
+    pauseVideo() {
+      if (!this.video.paused) this.video.pause();
     },
   },
-  methods: {},
+  computed: {
+    video() {
+      return this.$refs.video;
+    },
+  },
+  watch: {
+    episode({ source }) {
+      this.pauseVideo();
+      this.hls.loadSource(source);
+    },
+  },
 };
 </script>
 
-<style scoped>
-video:focus {
-  outline: none;
+<style lang="scss" rel="stylesheet/scss" scoped>
+//noinspection ALL
+::-webkit-media-controls {
+  display: none !important;
+}
+.player-wrapper {
+  position: relative;
+  video {
+    position: absolute;
+    display: block;
+    background: #000;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .controls {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    display: grid;
+    grid-template-rows: 50px auto 50px;
+  }
 }
 </style>
