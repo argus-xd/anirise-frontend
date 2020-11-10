@@ -9,15 +9,7 @@
       @contextmenu="ev => ev.preventDefault()"
       @keydown.stop="videoKeyDownEvents"
       @click="videoClickEvent"
-    >
-      <source
-        v-for="source in playList"
-        v-bind:key="source"
-        :src="source.src"
-        :data-size="source.size"
-        type="video/mp4"
-      />
-    </video>
+    ></video>
   </div>
 </template>
 
@@ -25,10 +17,19 @@
 export default {
   name: "anime-player",
   props: {
-    playList: Array,
+    translations: Object,
+    episode: Object,
   },
   data() {
-    return {};
+    return {
+      preventDefaultKeys: [
+        "Space",
+        "ArrowDown",
+        "ArrowUp",
+        "ArrowLeft",
+        "ArrowRight",
+      ],
+    };
   },
   mounted() {},
   methods: {
@@ -36,9 +37,12 @@ export default {
       this.changePlayState();
     },
     videoKeyDownEvents(event) {
+      if (this.preventDefaultKeys.includes(event.code)) {
+        event.preventDefault();
+      }
+
       if (event.code === "Space") {
         this.changePlayState();
-        event.preventDefault();
       } else if (event.code === "Enter" && event.altKey) {
         this.changeFullscreenState();
       }

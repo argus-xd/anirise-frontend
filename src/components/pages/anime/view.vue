@@ -34,7 +34,8 @@
     >
       <anime-player
         ref="animePlayer"
-        v-bind:playList="anime.episodes.playList"
+        v-bind:translations="translations"
+        v-bind:episode="episode"
       />
     </div>
   </div>
@@ -51,20 +52,50 @@ export default {
   data() {
     return {
       anime: null,
+      episode: {
+        current: 1,
+        source: this.episodeSource,
+      },
+      translations: null,
       overlayShown: false,
     };
-  },
-  unmounted() {
-    window.removeEventListener("keyup", this.keyUpListener);
   },
   async mounted() {
     window.addEventListener("keyup", this.keyUpListener);
 
-    const { id: animeId, episode, translation } = this.$route.params;
+    const { id: animeId, translation } = this.$route.params;
 
-    this.anime = await api.animeById(animeId, episode, translation);
+    api.animeById(animeId).then(data => (this.anime = data));
+
+    this.translations = await api.animeTranslations(animeId, translation);
+    this.setEpisode(this.$route.params.episode);
+  },
+  unmounted() {
+    window.removeEventListener("keyup", this.keyUpListener);
+  },
+  computed: {
+    episodeSource() {
+      return api.episodeSource(
+        this.episode.current,
+        this.translations.current.name,
+      );
+    },
   },
   methods: {
+    setEpisode(episode) {
+      episode = Number(episode) || 1;
+
+      if (this.translations) {
+        const {
+          current: { episodes },
+        } = this.translations;
+
+        if (episodes.from > episode) episode = episodes.from;
+        else if (episodes.to < episode) episode = episodes.to;
+      }
+
+      return episode;
+    },
     keyUpListener(event) {
       if (event.key === "Escape") {
         this.hidePlayerOverlay();
