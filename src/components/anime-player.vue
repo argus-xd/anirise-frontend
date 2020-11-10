@@ -8,8 +8,20 @@
       ref="video"
       @contextmenu="ev => ev.preventDefault()"
       @keydown.stop="videoKeyDownEvents"
-      @click="videoClickEvent"
     ></video>
+    <div class="controls" v-if="episode.source">
+      <div class="top-controls"></div>
+      <div
+        class="middle-controls"
+        @click.self.stop="
+          () => {
+            video.focus();
+            changePlayState();
+          }
+        "
+      ></div>
+      <div class="bottom-controls"></div>
+    </div>
   </div>
 </template>
 
@@ -38,9 +50,6 @@ export default {
     this.hls.attachMedia(this.video);
   },
   methods: {
-    videoClickEvent() {
-      this.changePlayState();
-    },
     videoKeyDownEvents(event) {
       if (this.preventDefaultKeys.includes(event.code)) {
         event.preventDefault();
@@ -81,6 +90,7 @@ export default {
   },
   watch: {
     episode({ source }) {
+      this.pauseVideo();
       this.hls.loadSource(source);
     },
   },
@@ -95,14 +105,26 @@ export default {
 .player-wrapper {
   position: relative;
   video {
+    position: absolute;
     display: block;
-    margin: 0 auto;
     background: #000;
     width: 100%;
     height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
     &:focus {
       outline: none;
     }
+  }
+
+  .controls {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    display: grid;
+    grid-template-rows: 50px auto 50px;
   }
 }
 </style>

@@ -67,7 +67,7 @@ export default {
 
     api.animeById(animeId).then(data => (this.anime = data));
 
-    this.translations = await api.animeTranslations(animeId, translation);
+    this.loadTranslations(animeId, translation);
   },
   unmounted() {
     window.removeEventListener("keyup", this.keyUpListener);
@@ -78,6 +78,11 @@ export default {
     },
   },
   methods: {
+    loadTranslations(animeId, translation) {
+      api
+        .animeTranslations(animeId, translation)
+        .then(data => (this.translations = data));
+    },
     setEpisode(episode) {
       episode = Number(episode) || 1;
 
@@ -92,7 +97,7 @@ export default {
 
       this.episode = {
         current: episode,
-        source: api.episodeSource(episode, this.translations.current.name),
+        source: api.episodeSource(episode, this.translations.current.id),
       };
     },
     keyUpListener(event) {
