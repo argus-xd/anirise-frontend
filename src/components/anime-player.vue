@@ -74,6 +74,11 @@ export default {
       return this.$refs.video;
     },
   },
+  watch: {
+    episode({ current, source }) {
+      console.log(current, source);
+    },
+  },
 };
 </script>
 

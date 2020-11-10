@@ -53,8 +53,8 @@ export default {
     return {
       anime: null,
       episode: {
-        current: 1,
-        source: this.episodeSource,
+        current: this.$route.params.episode || 1,
+        source: null,
       },
       translations: null,
       overlayShown: false,
@@ -68,17 +68,13 @@ export default {
     api.animeById(animeId).then(data => (this.anime = data));
 
     this.translations = await api.animeTranslations(animeId, translation);
-    this.setEpisode(this.$route.params.episode);
   },
   unmounted() {
     window.removeEventListener("keyup", this.keyUpListener);
   },
-  computed: {
-    episodeSource() {
-      return api.episodeSource(
-        this.episode.current,
-        this.translations.current.name,
-      );
+  watch: {
+    translations() {
+      this.setEpisode(this.episode.current);
     },
   },
   methods: {
@@ -94,7 +90,10 @@ export default {
         else if (episodes.to < episode) episode = episodes.to;
       }
 
-      return episode;
+      this.episode = {
+        current: episode,
+        source: api.episodeSource(episode, this.translations.current.name),
+      };
     },
     keyUpListener(event) {
       if (event.key === "Escape") {
