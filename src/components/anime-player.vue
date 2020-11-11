@@ -26,9 +26,30 @@
               >
             </li>
           </ul>
+          <div>
+            episode: {{ episode.current }}
+          </div>
         </div>
       </div>
-      <div class="middle-controls"></div>
+      <div class="middle-controls">
+        <div>
+          <div
+            class="prev-episode button episode-button"
+            @click="$emit('episode-changed', this.episode.current - 1)"
+          >
+            <span class="fa fa-chevron-left"></span>
+          </div>
+        </div>
+        <div></div>
+        <div>
+          <div
+            class="next-episode button episode-button"
+            @click="$emit('episode-changed', this.episode.current + 1)"
+          >
+            <span class="fa fa-chevron-right"></span>
+          </div>
+        </div>
+      </div>
       <div class="bottom-controls">
         <div
           class="play-btn button"
@@ -134,14 +155,13 @@ export default {
 
       if (event.code === "Space") {
         this.changePlayState();
-      } else if (event.code === "ArrowLeft"){
+      } else if (event.code === "ArrowLeft") {
         let timeMark = this.video.currentTime - 5;
         if (timeMark < 0) {
           timeMark = 0;
         }
         this.video.currentTime = timeMark;
-      }
-      else if (event.code === "ArrowRight") {
+      } else if (event.code === "ArrowRight") {
         let timeMark = this.video.currentTime + 5;
         if (timeMark > this.video.duration) {
           timeMark = this.video.duration;
@@ -256,6 +276,39 @@ export default {
       cursor: pointer;
       &:hover {
         color: rgb(var(--color-blue));
+      }
+    }
+
+    .middle-controls {
+      display: grid;
+      grid-template-columns: 50px auto 50px;
+
+      > div {
+        position: relative;
+      }
+
+      .episode-button {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background: red;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 50px;
+        margin: auto;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+        &.prev-episode {
+          margin-left: -25px;
+        }
+
+        &.next-episode {
+          margin-right: -25px;
+        }
       }
     }
 
