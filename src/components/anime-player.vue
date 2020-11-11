@@ -10,7 +10,25 @@
       @keydown.stop="videoKeyDownEvents"
     ></video>
     <div class="controls" v-if="episode.source">
-      <div class="top-controls"></div>
+      <div class="top-controls">
+        <a class="dropdown btn" href="#" data-target="translations">{{
+          translations.current.translator
+        }}</a>
+        <div>
+          <ul id="translations" class="dropdown-content">
+            <li
+              v-for="translation in translations.list"
+              v-bind:key="translation.id"
+            >
+              <a
+                @click.stop="changeTranslation($event, translation.id)"
+                href="javascript: void(0);"
+                >{{ translation.translator }}</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
       <div
         class="middle-controls"
         @click.self.stop="
@@ -27,6 +45,7 @@
 
 <script>
 import Hls from "hls.js";
+import Materialize from "materialize-css";
 
 export default {
   name: "anime-player",
@@ -36,7 +55,7 @@ export default {
   },
   data() {
     return {
-      hls: new Hls(),
+      hls: null,
       preventDefaultKeys: [
         "Space",
         "ArrowDown",
@@ -47,8 +66,30 @@ export default {
     };
   },
   mounted() {},
+  updated() {
+    const elements = document.querySelectorAll(".dropdown");
+    Materialize.Dropdown.init(elements, {
+      coverTrigger: false,
+      closeOnClick: false,
+      constrainWidth: false,
+      // alignment: "right",
+    });
   },
   methods: {
+    changeTranslation(event, translation) {
+      for (const node of event.path) {
+        if (node.tagName === "UL") {
+          const instance = Materialize.Dropdown.getInstance(
+            node.previousSibling,
+          );
+          if (instance.isOpen) {
+            instance.close();
+          }
+          this.$emit("translation-changed", translation);
+          break;
+        }
+      }
+    },
     videoKeyDownEvents(event) {
       if (this.preventDefaultKeys.includes(event.code)) {
         event.preventDefault();

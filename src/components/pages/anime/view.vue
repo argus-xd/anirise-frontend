@@ -36,6 +36,7 @@
         ref="animePlayer"
         v-bind:translations="translations"
         v-bind:episode="episode"
+        v-on:translation-changed="loadTranslations(anime.id, $event)"
       />
     </div>
   </div>
