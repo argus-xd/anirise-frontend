@@ -6,6 +6,10 @@
       playsinline
       x-webkit-airplay="allow"
       ref="video"
+      @play="videoProperties.isPlaying = true"
+      @pause="videoProperties.isPlaying = false"
+      @timeupdate="videoProperties.currentTime = video.currentTime"
+      @durationchange="videoProperties.duration = video.duration"
       @keydown.stop="videoKeyDownEvents"
     ></video>
     <div class="controls" v-if="episode.source" @click.stop="focusVideo">
@@ -27,7 +31,11 @@
             </li>
           </ul>
           <div>
-            episode: {{ episode.current }}
+            episode: {{ episode.current }}<br />
+            volume: {{ video.volume * 100 }}<br />
+            speed: {{ video.playbackRate }}<br />
+            duration: {{ videoProperties.currentTime || 0 }} /
+            {{ videoProperties.duration || 0 }}
           </div>
         </div>
       </div>
@@ -40,7 +48,7 @@
             <span class="fa fa-chevron-left"></span>
           </div>
         </div>
-        <div></div>
+        <div @click.self.stop="changePlayState"></div>
         <div>
           <div
             class="next-episode button episode-button"
@@ -53,7 +61,7 @@
       <div class="bottom-controls">
         <div
           class="play-btn button"
-          v-bind:class="{ playing: videoIsPlaying }"
+          v-bind:class="{ playing: videoProperties.isPlaying }"
           @click="changePlayState"
         >
           <span class="fa fa-play"></span>
@@ -67,7 +75,6 @@
           <div class="expand-btn button" @click.stop="changeFullscreenState">
             <span class="fa fa-expand"></span>
           </div>
-          <div>{{ video.currentTime }} / {{ video.duration }}</div>
         </div>
       </div>
     </div>
@@ -88,14 +95,16 @@ export default {
     return {
       hls: null,
       video: null,
-      videoIsPlaying: false,
       fullscreen: false,
+      videoProperties: {},
       preventDefaultKeys: [
         "Space",
         "ArrowDown",
         "ArrowUp",
         "ArrowLeft",
         "ArrowRight",
+        "Home",
+        "End",
       ],
     };
   },
@@ -149,6 +158,7 @@ export default {
       }
     },
     videoKeyDownEvents(event) {
+      console.log(event.code);
       if (this.preventDefaultKeys.includes(event.code)) {
         event.preventDefault();
       }
@@ -190,11 +200,9 @@ export default {
     },
     playVideo() {
       if (this.video.paused) this.video.play();
-      this.videoIsPlaying = true;
     },
     pauseVideo() {
       if (!this.video.paused) this.video.pause();
-      this.videoIsPlaying = false;
     },
   },
   computed: {
