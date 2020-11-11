@@ -1,15 +1,14 @@
 <template>
-  <div class="player-wrapper">
+  <div class="player-wrapper" v-bind:class="{ fullscreen }">
     <video
       tabindex="-1"
       preload="none"
       playsinline
       x-webkit-airplay="allow"
       ref="video"
-      @contextmenu="ev => ev.preventDefault()"
       @keydown.stop="videoKeyDownEvents"
     ></video>
-    <div class="controls" v-if="episode.source">
+    <div class="controls" v-if="episode.source" @click.stop="focusVideo">
       <div class="top-controls">
         <a class="dropdown btn" href="#" data-target="translations">{{
           translations.current.translator
@@ -29,16 +28,26 @@
           </ul>
         </div>
       </div>
-      <div
-        class="middle-controls"
-        @click.self.stop="
-          () => {
-            video.focus();
-            changePlayState();
-          }
-        "
-      ></div>
-      <div class="bottom-controls"></div>
+      <div class="middle-controls"></div>
+      <div class="bottom-controls">
+        <div
+          class="play-btn button"
+          v-bind:class="{ playing: videoIsPlaying }"
+          @click="changePlayState"
+        >
+          <span class="fa fa-play"></span>
+          <span class="fa fa-pause"></span>
+        </div>
+        <div></div>
+        <div>
+          <div class="mute button">
+            <span class="fa fa-volume-mute"></span>
+          </div>
+          <div class="expand-btn button" @click.stop="changeFullscreenState">
+            <span class="fa fa-expand"></span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -56,6 +65,9 @@ export default {
   data() {
     return {
       hls: null,
+      video: null,
+      videoIsPlaying: false,
+      fullscreen: false,
       preventDefaultKeys: [
         "Space",
         "ArrowDown",
@@ -65,7 +77,28 @@ export default {
       ],
     };
   },
-  mounted() {},
+  mounted() {
+    this.video = this.$refs.video;
+    document.addEventListener("fullscreenchange", this.fullscreenListener);
+    document.addEventListener("msfullscreenchange", this.fullscreenListener);
+    document.addEventListener("mozfullscreenchange", this.fullscreenListener);
+    document.addEventListener(
+      "webkitfullscreenchange",
+      this.fullscreenListener,
+    );
+  },
+  unmounted() {
+    document.removeEventListener("fullscreenchange", this.fullscreenListener);
+    document.removeEventListener("msfullscreenchange", this.fullscreenListener);
+    document.removeEventListener(
+      "mozfullscreenchange",
+      this.fullscreenListener,
+    );
+    document.removeEventListener(
+      "webkitfullscreenchange",
+      this.fullscreenListener,
+    );
+  },
   updated() {
     const elements = document.querySelectorAll(".dropdown");
     Materialize.Dropdown.init(elements, {
@@ -76,6 +109,9 @@ export default {
     });
   },
   methods: {
+    fullscreenListener() {
+      this.fullscreen = !!document.fullscreenElement;
+    },
     changeTranslation(event, translation) {
       for (const node of event.path) {
         if (node.tagName === "UL") {
@@ -97,15 +133,19 @@ export default {
 
       if (event.code === "Space") {
         this.changePlayState();
+      } else if (event.code === "ArrowRight") {
+        console.log(this.hls);
       } else if (event.code === "Enter" && event.altKey) {
         this.changeFullscreenState();
       }
     },
     changeFullscreenState() {
       if (document.fullscreenElement) {
-        return document.exitFullscreen();
+        return this.exitFullScreenMethod.apply(document);
       }
-      this.video.requestFullscreen();
+
+      this.enterFullScreenMethod.apply(this.video);
+      this.focusVideo();
     },
     changePlayState() {
       if (this.video.paused) {
@@ -113,19 +153,35 @@ export default {
       }
       this.pauseVideo();
     },
-    focusVideoElement() {
+    focusVideo() {
       this.video.focus();
     },
     playVideo() {
       if (this.video.paused) this.video.play();
+      this.videoIsPlaying = true;
     },
     pauseVideo() {
       if (!this.video.paused) this.video.pause();
+      this.videoIsPlaying = false;
     },
   },
   computed: {
-    video() {
-      return this.$refs.video;
+    exitFullScreenMethod() {
+      return (
+        document.exitFullscreen ||
+        document.msExitFullscreen ||
+        document.mozCancelFullScreen ||
+        document.webkitCancelFullScreen
+      );
+    },
+    enterFullScreenMethod() {
+      return (
+        this.video.requestFullscreen ||
+        this.video.msRequestFullScreen ||
+        this.video.mozRequestFullScreen ||
+        this.video.webkitRequestFullscreen ||
+        this.video.webkitRequestFullScreen
+      );
     },
   },
   watch: {
@@ -149,6 +205,18 @@ export default {
 }
 .player-wrapper {
   position: relative;
+
+  &.fullscreen {
+    top: 0 !important;
+    left: 0 !important;
+    border: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    z-index: 99999 !important;
+  }
+
   video {
     position: absolute;
     display: block;
@@ -169,7 +237,37 @@ export default {
     height: 100%;
     z-index: 10;
     display: grid;
-    grid-template-rows: 50px auto 50px;
+    grid-template-rows: 44px auto 44px;
+    color: rgb(var(--color-gray-500));
+
+    .button {
+      cursor: pointer;
+      &:hover {
+        color: rgb(var(--color-blue));
+      }
+    }
+
+    .bottom-controls {
+      display: grid;
+      grid-template-columns: 44px auto 90px;
+
+      .play-btn {
+        line-height: 44px;
+        text-align: center;
+        .fa-pause {
+          display: none;
+        }
+
+        &.playing {
+          .fa-play {
+            display: none;
+          }
+          .fa-pause {
+            display: unset;
+          }
+        }
+      }
+    }
   }
 }
 </style>
