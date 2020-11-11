@@ -194,7 +194,6 @@ export default {
   background: rgba(0, 0, 0, 0.7);
   width: 100%;
   height: 100%;
-  min-height: 320px;
   top: 0;
   opacity: 0;
   z-index: 1001;
@@ -208,6 +207,7 @@ export default {
     width: 70%;
     height: 70%;
     margin: auto;
+    min-height: 320px;
     position: absolute;
     left: 0;
     right: 0;
