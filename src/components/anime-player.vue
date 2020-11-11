@@ -46,8 +46,7 @@ export default {
       ],
     };
   },
-  mounted() {
-    this.hls.attachMedia(this.video);
+  mounted() {},
   },
   methods: {
     videoKeyDownEvents(event) {
@@ -91,6 +90,11 @@ export default {
   watch: {
     episode({ source }) {
       this.pauseVideo();
+      if (this.hls) {
+        this.hls.destroy();
+      }
+      this.hls = new Hls();
+      this.hls.attachMedia(this.video);
       this.hls.loadSource(source);
     },
   },
