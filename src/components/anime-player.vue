@@ -46,6 +46,7 @@
           <div class="expand-btn button" @click.stop="changeFullscreenState">
             <span class="fa fa-expand"></span>
           </div>
+          <div>{{ video.currentTime }} / {{ video.duration }}</div>
         </div>
       </div>
     </div>
@@ -133,14 +134,25 @@ export default {
 
       if (event.code === "Space") {
         this.changePlayState();
-      } else if (event.code === "ArrowRight") {
-        console.log(this.hls);
+      } else if (event.code === "ArrowLeft"){
+        let timeMark = this.video.currentTime - 5;
+        if (timeMark < 0) {
+          timeMark = 0;
+        }
+        this.video.currentTime = timeMark;
+      }
+      else if (event.code === "ArrowRight") {
+        let timeMark = this.video.currentTime + 5;
+        if (timeMark > this.video.duration) {
+          timeMark = this.video.duration;
+        }
+        this.video.currentTime = timeMark;
       } else if (event.code === "Enter" && event.altKey) {
         this.changeFullscreenState();
       }
     },
     changeFullscreenState() {
-      if (document.fullscreenElement) {
+      if (this.fullscreen) {
         return this.exitFullScreenMethod.apply(document);
       }
 
