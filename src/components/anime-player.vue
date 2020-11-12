@@ -79,9 +79,7 @@
         </div>
         <div></div>
         <div>
-          <div class="mute button">
-            <span class="fa fa-volume-mute"></span>
-          </div>
+          <div class="mute button"></div>
           <div class="expand-btn button" @click.stop="changeFullscreenState">
             <span class="fa fa-expand"></span>
           </div>
