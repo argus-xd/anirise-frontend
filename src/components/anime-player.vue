@@ -1,5 +1,5 @@
 <template>
-  <div class="player-wrapper" v-bind:class="{ fullscreen }">
+  <div class="player-wrapper" v-bind:class="{ fullscreen }" ref="player">
     <video
       tabindex="-1"
       preload="none"
@@ -48,7 +48,10 @@
             <span class="fa fa-chevron-left"></span>
           </div>
         </div>
-        <div @click.self="changePlayState" @dblclick.self="changeFullscreenState"></div>
+        <div
+          @click.self="changePlayState"
+          @dblclick.self="changeFullscreenState"
+        ></div>
         <div>
           <div
             class="next-episode button episode-button"
@@ -186,7 +189,7 @@ export default {
         return this.exitFullScreenMethod.apply(document);
       }
 
-      this.enterFullScreenMethod.apply(this.video);
+      this.enterFullScreenMethod.apply(this.$refs.player);
       this.focusVideo();
     },
     changePlayState() {
@@ -215,12 +218,13 @@ export default {
       );
     },
     enterFullScreenMethod() {
+      const docElement = document.documentElement;
       return (
-        this.video.requestFullscreen ||
-        this.video.msRequestFullScreen ||
-        this.video.mozRequestFullScreen ||
-        this.video.webkitRequestFullscreen ||
-        this.video.webkitRequestFullScreen
+        docElement.requestFullscreen ||
+        docElement.msRequestFullScreen ||
+        docElement.mozRequestFullScreen ||
+        docElement.webkitRequestFullscreen ||
+        docElement.webkitRequestFullScreen
       );
     },
   },
@@ -245,27 +249,15 @@ export default {
 }
 .player-wrapper {
   position: relative;
-
-  &.fullscreen {
-    top: 0 !important;
-    left: 0 !important;
-    border: 0 !important;
-    margin: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 100% !important;
-    z-index: 99999 !important;
-  }
+  background: #000;
 
   video {
     position: absolute;
     display: block;
-    background: #000;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 1;
     &:focus {
       outline: none;
     }
