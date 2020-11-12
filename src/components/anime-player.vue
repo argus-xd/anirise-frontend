@@ -21,9 +21,12 @@
     ></video>
     <div class="controls" v-if="episode.source" @click.stop="focusVideo">
       <div class="top-controls">
-        <a class="dropdown btn" href="#" data-target="translations">{{
-          translations.current.translator
-        }}</a>
+        <a
+          class="dropdown translations-dropdown btn"
+          href="#"
+          data-target="translations"
+          >{{ translations.current.translator }}</a
+        >
         <div>
           <ul id="translations" class="dropdown-content">
             <li
@@ -72,7 +75,17 @@
           <span class="fa fa-play"></span>
           <span class="fa fa-pause"></span>
         </div>
-        <div class="timeline">
+        <div
+          class="timeline"
+          ref="timeline"
+          @mousedown="
+            event => {
+              this.timelineHold = true;
+              this.setVideoProgress(event);
+            }
+          "
+          @mouseup="timelineHold = false"
+        >
           <div
             class="progress"
             :style="{ width: playbackInfo.progress + '%' }"
@@ -106,6 +119,7 @@ export default {
       hls: null,
       video: null,
       fullscreen: false,
+      timelineHold: false,
       mouse: { calm: true, timeout: null },
       playbackInfo: { progress: 0 },
       preventDefaultKeys: [
@@ -121,6 +135,8 @@ export default {
   },
   mounted() {
     this.video = this.$refs.video;
+    document.addEventListener("mouseup", () => (this.timelineHold = false));
+    document.addEventListener("mousemove", this.setVideoProgress);
     document.addEventListener("fullscreenchange", this.fullscreenListener);
     document.addEventListener("msfullscreenchange", this.fullscreenListener);
     document.addEventListener("mozfullscreenchange", this.fullscreenListener);
@@ -130,6 +146,7 @@ export default {
     );
   },
   unmounted() {
+    document.removeEventListener("mousemove", this.setVideoProgress);
     document.removeEventListener("fullscreenchange", this.fullscreenListener);
     document.removeEventListener("msfullscreenchange", this.fullscreenListener);
     document.removeEventListener(
@@ -140,15 +157,6 @@ export default {
       "webkitfullscreenchange",
       this.fullscreenListener,
     );
-  },
-  updated() {
-    const elements = document.querySelectorAll(".dropdown");
-    Materialize.Dropdown.init(elements, {
-      coverTrigger: false,
-      closeOnClick: false,
-      constrainWidth: false,
-      // alignment: "right",
-    });
   },
   methods: {
     fullscreenListener() {
@@ -177,14 +185,29 @@ export default {
         }
       }
     },
+    setVideoProgress(event) {
+      if (this.timelineHold || event.type === "click") {
+        const timelineWidth = this.$refs.timeline.offsetWidth;
+        const timelinePos = this.$refs.timeline.getBoundingClientRect().left;
+        const cursorPos = event.clientX - timelinePos;
+
+        let percentage = (cursorPos * 100) / timelineWidth;
+
+        percentage = percentage > 100 ? 100 : percentage;
+        percentage = percentage < 0 ? 0 : percentage;
+
+        this.playbackInfo.progress = percentage;
+        this.video.currentTime = (this.video.duration / 100) * percentage;
+      }
+    },
     videoProgressHandler() {
       this.playbackInfo.currentTime = this.video.currentTime;
       this.playbackInfo.progress =
         (this.video.currentTime * 100) / this.video.duration;
     },
     videoKeyDownEvents(event) {
-      console.log(event.code);
       if (this.preventDefaultKeys.includes(event.code)) {
+        console.log(event.code);
         event.preventDefault();
         this.calmDisturb();
       }
@@ -252,6 +275,16 @@ export default {
     },
   },
   watch: {
+    translations() {
+      console.log("translation changed");
+      // const elements = document.querySelectorAll(".translations-dropdown");
+      // Materialize.Dropdown.init(elements, {
+      //   coverTrigger: false,
+      //   closeOnClick: false,
+      //   constrainWidth: false,
+      //   // alignment: "right",
+      // });
+    },
     episode({ source }) {
       this.pauseVideo();
       if (this.hls) {
@@ -273,6 +306,8 @@ export default {
 .player-wrapper {
   position: relative;
   background: #000;
+  user-select: none;
+  cursor: pointer;
 
   video {
     position: absolute;
@@ -304,7 +339,6 @@ export default {
     color: rgb(var(--color-gray-500));
 
     .button {
-      cursor: pointer;
       &:hover {
         color: rgb(var(--color-blue));
       }
@@ -387,7 +421,6 @@ export default {
           margin: 0;
           border-radius: 0;
           background: rgba(230, 230, 230, 0.3);
-          transition: width 250ms linear;
 
           &:after {
             content: "";
