@@ -15,8 +15,8 @@
       ref="video"
       @play="playbackInfo.isPlaying = true"
       @pause="playbackInfo.isPlaying = false"
-      @timeupdate="playbackInfo.currentTime = video.currentTime"
-      @durationchange="playbackInfo.duration = video.duration"
+      @timeupdate="videoProgressHandler"
+      @durationchange="this.playbackInfo.duration = this.video.duration"
       @keydown.stop="videoKeyDownEvents"
     ></video>
     <div class="controls" v-if="episode.source" @click.stop="focusVideo">
@@ -37,13 +37,6 @@
               >
             </li>
           </ul>
-          <div>
-            episode: {{ episode.current }}<br />
-            volume: {{ video.volume * 100 }}<br />
-            speed: {{ video.playbackRate }}<br />
-            duration: {{ playbackInfo.currentTime || 0 }} /
-            {{ playbackInfo.duration || 0 }}
-          </div>
         </div>
       </div>
       <div class="middle-controls">
@@ -73,18 +66,25 @@
       <div class="bottom-controls">
         <div
           class="play-btn button"
-          v-bind:class="{ playing: playbackInfo.isPlaying }"
+          v-bind:class="{ active: playbackInfo.isPlaying }"
           @click="changePlayState"
         >
           <span class="fa fa-play"></span>
           <span class="fa fa-pause"></span>
         </div>
-        <div></div>
-        <div>
-          <div class="mute button"></div>
-          <div class="expand-btn button" @click.stop="changeFullscreenState">
-            <span class="fa fa-expand"></span>
-          </div>
+        <div class="timeline">
+          <div
+            class="progress"
+            :style="{ width: playbackInfo.progress + '%' }"
+          ></div>
+        </div>
+        <div
+          class="expand-btn button"
+          :class="{ active: fullscreen }"
+          @click.stop="changeFullscreenState"
+        >
+          <span class="fa fa-expand"></span>
+          <span class="fa fa-compress"></span>
         </div>
       </div>
     </div>
@@ -107,7 +107,7 @@ export default {
       video: null,
       fullscreen: false,
       mouse: { calm: true, timeout: null },
-      playbackInfo: {},
+      playbackInfo: { progress: 0 },
       preventDefaultKeys: [
         "Space",
         "ArrowDown",
@@ -176,6 +176,11 @@ export default {
           break;
         }
       }
+    },
+    videoProgressHandler() {
+      this.playbackInfo.currentTime = this.video.currentTime;
+      this.playbackInfo.progress =
+        (this.video.currentTime * 100) / this.video.duration;
     },
     videoKeyDownEvents(event) {
       console.log(event.code);
@@ -344,21 +349,54 @@ export default {
 
     .bottom-controls {
       display: grid;
-      grid-template-columns: 44px auto 90px;
+      grid-template-columns: 44px auto 44px;
 
-      .play-btn {
+      > div {
+        height: 100%;
+        background: rgba(51, 51, 51, 0.8);
+      }
+
+      .button {
         line-height: 44px;
         text-align: center;
-        .fa-pause {
+
+        .fa:last-child {
           display: none;
         }
 
-        &.playing {
-          .fa-play {
+        &.active {
+          .fa:first-child {
             display: none;
           }
-          .fa-pause {
+          .fa:last-child {
             display: unset;
+          }
+        }
+      }
+
+      .timeline {
+        margin: 0 2px;
+        position: relative;
+
+        .progress {
+          min-width: 2px;
+          position: absolute;
+          height: 100%;
+          left: 0;
+          top: 0;
+          margin: 0;
+          border-radius: 0;
+          background: rgba(230, 230, 230, 0.3);
+          transition: width 250ms linear;
+
+          &:after {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            right: 0;
+            top: 0;
+            background-color: rgba(236, 236, 236, 0.3);
           }
         }
       }
