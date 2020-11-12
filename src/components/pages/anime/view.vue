@@ -112,6 +112,7 @@ export default {
       this.$refs.animePlayer.focusVideo();
     },
     hidePlayerOverlay() {
+      document.activeElement.blur();
       this.overlayShown = false;
       this.$refs.animePlayer.pauseVideo();
     },

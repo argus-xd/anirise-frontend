@@ -4,6 +4,7 @@
     v-bind:class="{ fullscreen, calm: mouse.calm && videoProperties.isPlaying }"
     ref="player"
     @mousemove="calmDisturb"
+    @mouseenter="focusVideo"
     @mouseleave="mouse.calm = true"
   >
     <video
@@ -49,7 +50,7 @@
         <div>
           <div
             class="prev-episode button episode-button"
-            @click="$emit('episode-changed', this.episode.current - 1)"
+            @click="requestEpisode(this.episode.current - 1)"
           >
             <span class="fa fa-chevron-left"></span>
           </div>
@@ -61,7 +62,7 @@
         <div>
           <div
             class="next-episode button episode-button"
-            @click="$emit('episode-changed', this.episode.current + 1)"
+            @click="requestEpisode(this.episode.current + 1)"
           >
             <span class="fa fa-chevron-right"></span>
           </div>
@@ -157,6 +158,10 @@ export default {
       this.mouse.calm = false;
       clearTimeout(this.mouse.timeout);
       this.mouse.timeout = setTimeout(() => (this.mouse.calm = true), 3000);
+    },
+    requestEpisode(episode) {
+      this.pauseVideo();
+      setTimeout(() => this.$emit("episode-changed", episode), 50);
     },
     changeTranslation(event, translation) {
       for (const node of event.path) {
