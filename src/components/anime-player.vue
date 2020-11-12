@@ -1,7 +1,7 @@
 <template>
   <div
     class="player-wrapper"
-    v-bind:class="{ fullscreen, calm: mouse.calm && videoProperties.isPlaying }"
+    v-bind:class="{ fullscreen, calm: mouse.calm && playbackInfo.isPlaying }"
     ref="player"
     @mousemove="calmDisturb"
     @mouseenter="focusVideo"
@@ -13,10 +13,10 @@
       playsinline
       x-webkit-airplay="allow"
       ref="video"
-      @play="videoProperties.isPlaying = true"
-      @pause="videoProperties.isPlaying = false"
-      @timeupdate="videoProperties.currentTime = video.currentTime"
-      @durationchange="videoProperties.duration = video.duration"
+      @play="playbackInfo.isPlaying = true"
+      @pause="playbackInfo.isPlaying = false"
+      @timeupdate="playbackInfo.currentTime = video.currentTime"
+      @durationchange="playbackInfo.duration = video.duration"
       @keydown.stop="videoKeyDownEvents"
     ></video>
     <div class="controls" v-if="episode.source" @click.stop="focusVideo">
@@ -41,8 +41,8 @@
             episode: {{ episode.current }}<br />
             volume: {{ video.volume * 100 }}<br />
             speed: {{ video.playbackRate }}<br />
-            duration: {{ videoProperties.currentTime || 0 }} /
-            {{ videoProperties.duration || 0 }}
+            duration: {{ playbackInfo.currentTime || 0 }} /
+            {{ playbackInfo.duration || 0 }}
           </div>
         </div>
       </div>
@@ -71,7 +71,7 @@
       <div class="bottom-controls">
         <div
           class="play-btn button"
-          v-bind:class="{ playing: videoProperties.isPlaying }"
+          v-bind:class="{ playing: playbackInfo.isPlaying }"
           @click="changePlayState"
         >
           <span class="fa fa-play"></span>
@@ -105,7 +105,7 @@ export default {
       video: null,
       fullscreen: false,
       mouse: { calm: true, timeout: null },
-      videoProperties: {},
+      playbackInfo: {},
       preventDefaultKeys: [
         "Space",
         "ArrowDown",
