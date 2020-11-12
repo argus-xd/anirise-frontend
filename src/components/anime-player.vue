@@ -49,8 +49,9 @@
       <div class="middle-controls">
         <div>
           <div
+            v-if="episode.current > translations.current.episodes.from"
             class="prev-episode button episode-button"
-            @click="requestEpisode(this.episode.current - 1)"
+            @click="requestEpisode(episode.current - 1)"
           >
             <span class="fa fa-chevron-left"></span>
           </div>
@@ -61,8 +62,9 @@
         ></div>
         <div>
           <div
+            v-if="episode.current < translations.current.episodes.to"
             class="next-episode button episode-button"
-            @click="requestEpisode(this.episode.current + 1)"
+            @click="requestEpisode(episode.current + 1)"
           >
             <span class="fa fa-chevron-right"></span>
           </div>
