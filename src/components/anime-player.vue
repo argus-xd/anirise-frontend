@@ -1,7 +1,7 @@
 <template>
   <div
     class="player-wrapper"
-    v-bind:class="{ fullscreen, calm: mouse.calm }"
+    v-bind:class="{ fullscreen, calm: mouse.calm && videoProperties.isPlaying }"
     ref="player"
     @mousemove="calmDisturb"
     @mouseleave="mouse.calm = true"
