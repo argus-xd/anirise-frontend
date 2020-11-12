@@ -1,5 +1,11 @@
 <template>
-  <div class="player-wrapper" v-bind:class="{ fullscreen }" ref="player">
+  <div
+    class="player-wrapper"
+    v-bind:class="{ fullscreen, calm: mouse.calm }"
+    ref="player"
+    @mousemove="calmDisturb"
+    @mouseleave="mouse.calm = true"
+  >
     <video
       tabindex="-1"
       preload="none"
@@ -99,6 +105,7 @@ export default {
       hls: null,
       video: null,
       fullscreen: false,
+      mouse: { calm: true, timeout: null },
       videoProperties: {},
       preventDefaultKeys: [
         "Space",
@@ -146,6 +153,11 @@ export default {
     fullscreenListener() {
       this.fullscreen = !!document.fullscreenElement;
     },
+    calmDisturb() {
+      this.mouse.calm = false;
+      clearTimeout(this.mouse.timeout);
+      this.mouse.timeout = setTimeout(() => (this.mouse.calm = true), 3000);
+    },
     changeTranslation(event, translation) {
       for (const node of event.path) {
         if (node.tagName === "UL") {
@@ -164,6 +176,7 @@ export default {
       console.log(event.code);
       if (this.preventDefaultKeys.includes(event.code)) {
         event.preventDefault();
+        this.calmDisturb();
       }
 
       if (event.code === "Space") {
@@ -263,7 +276,15 @@ export default {
     }
   }
 
+  &.calm {
+    cursor: none;
+    .controls {
+      opacity: 0;
+    }
+  }
+
   .controls {
+    transition: opacity 0.3s ease-in;
     position: absolute;
     width: 100%;
     height: 100%;
