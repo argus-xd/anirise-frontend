@@ -48,7 +48,7 @@
             <span class="fa fa-chevron-left"></span>
           </div>
         </div>
-        <div @click.self.stop="changePlayState"></div>
+        <div @click.self="changePlayState" @dblclick.self="changeFullscreenState"></div>
         <div>
           <div
             class="next-episode button episode-button"
@@ -299,8 +299,10 @@ export default {
         position: absolute;
         width: 50px;
         height: 50px;
-        background: red;
+        background: rgba(0, 0, 0, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 50%;
+        font-size: 18px;
         text-align: center;
         line-height: 50px;
         margin: auto;
@@ -311,11 +313,13 @@ export default {
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
         &.prev-episode {
-          margin-left: -25px;
+          margin-left: -20px;
+          padding-right: 4px;
         }
 
         &.next-episode {
-          margin-right: -25px;
+          margin-right: -20px;
+          padding-left: 4px;
         }
       }
     }
