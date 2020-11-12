@@ -186,10 +186,10 @@ export default {
       }
     },
     setVideoProgress(event) {
-      if (this.timelineHold || event.type === "click") {
+      if (this.timelineHold) {
         const timelineWidth = this.$refs.timeline.offsetWidth;
-        const timelinePos = this.$refs.timeline.getBoundingClientRect().left;
-        const cursorPos = event.clientX - timelinePos;
+        const timelineLeft = this.$refs.timeline.getBoundingClientRect().left;
+        const cursorPos = event.clientX - timelineLeft;
 
         let percentage = (cursorPos * 100) / timelineWidth;
 
