@@ -302,7 +302,11 @@ export default {
   },
 };
 </script>
-
+<style>
+:root {
+  --control-dimension: 44px;
+}
+</style>
 <style lang="scss" rel="stylesheet/scss" scoped>
 //noinspection ALL
 ::-webkit-media-controls {
@@ -340,7 +344,7 @@ export default {
     height: 100%;
     z-index: 10;
     display: grid;
-    grid-template-rows: 44px auto 44px;
+    grid-template-rows: var(--control-dimension) auto var(--control-dimension);
     color: rgb(var(--color-gray-400));
 
     .button {
@@ -359,13 +363,13 @@ export default {
 
       .episode-button {
         position: absolute;
-        width: 45px;
-        height: 45px;
+        width: var(--control-dimension);
+        height: var(--control-dimension);
         background: rgba(51, 51, 51, 0.7);
         border: 1px solid rgba(255, 255, 255, 0.1);
         font-size: 16px;
         text-align: center;
-        line-height: 45px;
+        line-height: var(--control-dimension);
         margin: auto;
         top: 0;
         bottom: 0;
@@ -396,7 +400,9 @@ export default {
 
     .bottom-controls {
       display: grid;
-      grid-template-columns: 44px auto 44px;
+      grid-template-columns: var(--control-dimension) auto var(
+          --control-dimension
+        );
 
       > div {
         height: 100%;
@@ -404,7 +410,7 @@ export default {
       }
 
       .button {
-        line-height: 44px;
+        line-height: var(--control-dimension);
         text-align: center;
 
         .fa:last-child {
@@ -433,7 +439,7 @@ export default {
           height: 100%;
           text-align: right;
           padding-right: 10px;
-          line-height: 44px;
+          line-height: var(--control-dimension);
         }
 
         .duration {
