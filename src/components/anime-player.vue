@@ -89,8 +89,8 @@
             }
           "
         >
-          <div class="elapsed">{{ Math.floor(playbackInfo.currentTime) }}</div>
-          <div class="duration">{{ Math.floor(playbackInfo.duration) }}</div>
+          <div class="elapsed">{{ elapsedTime }}</div>
+          <div class="duration">{{ durationTime }}</div>
           <div
             class="progress"
             :style="{ width: playbackInfo.progress + '%' }"
@@ -119,6 +119,7 @@
 
 <script>
 import Hls from "hls.js";
+import time from "../utils/time";
 import Materialize from "materialize-css";
 
 export default {
@@ -273,6 +274,12 @@ export default {
     },
   },
   computed: {
+    elapsedTime() {
+      return time.format(this.playbackInfo.currentTime);
+    },
+    durationTime() {
+      return time.format(this.playbackInfo.duration);
+    },
     exitFullScreenMethod() {
       return (
         document.exitFullscreen ||
