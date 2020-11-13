@@ -15,8 +15,9 @@
       ref="video"
       @play="playbackInfo.isPlaying = true"
       @pause="playbackInfo.isPlaying = false"
-      @timeupdate="videoProgressHandler"
+      @volumechange="playbackInfo.volume = video.volume"
       @durationchange="this.playbackInfo.duration = this.video.duration"
+      @timeupdate="videoProgressHandler"
       @keydown.stop="videoKeyDownEvents"
     ></video>
     <div class="controls" v-if="episode.source" @click.stop="focusVideo">
@@ -99,7 +100,7 @@
         <div
           class="mute-btn button"
           @click="video.volume = video.volume === 1 ? 0 : 1"
-          :class="{ active: video.volume !== 1 }"
+          :class="{ active: playbackInfo.volume !== 1 }"
         >
           <span class="fa fa-volume-up"></span>
           <span class="fa fa-volume-mute"></span>
@@ -209,8 +210,9 @@ export default {
         percentage = percentage > 100 ? 100 : percentage;
         percentage = percentage < 0 ? 0 : percentage;
 
-        this.playbackInfo.progress = percentage;
         this.video.currentTime = (this.video.duration / 100) * percentage;
+        this.playbackInfo.progress = percentage;
+        this.playbackInfo.currentTime = this.video.currentTime;
       }
     },
     videoProgressHandler() {
