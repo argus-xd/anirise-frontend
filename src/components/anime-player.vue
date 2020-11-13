@@ -226,7 +226,7 @@ export default {
     videoProgressHandler() {
       this.playbackInfo.currentTime = this.video.currentTime;
       this.playbackInfo.progress =
-        (this.video.currentTime * 100) / this.video.duration;
+        (this.video.currentTime * 100) / this.video.duration || 0;
     },
     videoKeyDownEvents(event) {
       if (this.preventDefaultKeys.includes(event.code)) {
