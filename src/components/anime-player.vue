@@ -97,6 +97,14 @@
           ></div>
         </div>
         <div
+          class="mute-btn button"
+          @click="video.volume = video.volume === 1 ? 0 : 1"
+          :class="{ active: video.volume !== 1 }"
+        >
+          <span class="fa fa-volume-up"></span>
+          <span class="fa fa-volume-mute"></span>
+        </div>
+        <div
           class="expand-btn button"
           :class="{ active: fullscreen }"
           @click.stop="changeFullscreenState"
@@ -400,9 +408,9 @@ export default {
 
     .bottom-controls {
       display: grid;
-      grid-template-columns: var(--control-dimension) auto var(
-          --control-dimension
-        );
+      grid-template-columns:
+        var(--control-dimension) auto var(--control-dimension)
+        var(--control-dimension);
 
       > div {
         height: 100%;
