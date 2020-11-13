@@ -102,7 +102,7 @@ export default {
         const params = { episode: episode };
 
         if (this.translations.current.id !== this.translations.list[0].id) {
-          params.translation = this.translations.current;
+          params.translation = this.translations.current.id;
         }
 
         this.$router.replace({
