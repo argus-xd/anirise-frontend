@@ -66,7 +66,7 @@
           </div>
         </div>
       </div>
-      <div class="bottom-controls">
+      <div class="bottom-controls" v-if="playbackInfo.duration">
         <div
           class="play-btn button"
           v-bind:class="{ active: playbackInfo.isPlaying }"
@@ -84,8 +84,9 @@
               this.setVideoProgress(event);
             }
           "
-          @mouseup="timelineHold = false"
         >
+          <div class="elapsed">{{ Math.floor(playbackInfo.currentTime) }}</div>
+          <div class="duration">{{ Math.floor(playbackInfo.duration) }}</div>
           <div
             class="progress"
             :style="{ width: playbackInfo.progress + '%' }"
@@ -121,7 +122,7 @@ export default {
       fullscreen: false,
       timelineHold: false,
       mouse: { calm: true, timeout: null },
-      playbackInfo: { progress: 0 },
+      playbackInfo: { progress: 0, currentTime: 0 },
       preventDefaultKeys: [
         "Space",
         "ArrowDown",
@@ -336,7 +337,7 @@ export default {
     z-index: 10;
     display: grid;
     grid-template-rows: 44px auto 44px;
-    color: rgb(var(--color-gray-500));
+    color: rgb(var(--color-gray-400));
 
     .button {
       &:hover {
@@ -411,6 +412,37 @@ export default {
       .timeline {
         margin: 0 2px;
         position: relative;
+
+        .elapsed,
+        .duration {
+          width: 70px;
+          position: absolute;
+          left: 0;
+          height: 100%;
+          text-align: right;
+          padding-right: 10px;
+          line-height: 44px;
+        }
+
+        .duration {
+          left: 70px;
+          text-align: left;
+          padding-right: 0;
+          padding-left: 10px;
+
+          &:before {
+            content: "";
+            display: block;
+            position: absolute;
+            height: 14px;
+            width: 2px;
+            left: -1px;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            background: rgb(var(--color-gray-400));
+          }
+        }
 
         .progress {
           min-width: 2px;
