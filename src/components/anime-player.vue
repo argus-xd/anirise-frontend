@@ -15,7 +15,6 @@
       ref="video"
       @play="playbackInfo.isPlaying = true"
       @pause="playbackInfo.isPlaying = false"
-      @volumechange="playbackInfo.volume = video.volume"
       @durationchange="this.playbackInfo.duration = this.video.duration"
       @timeupdate="videoProgressHandler"
       @keydown.stop="videoKeyDownEvents"
@@ -99,8 +98,8 @@
         </div>
         <div
           class="mute-btn button"
-          @click="video.volume = video.volume === 1 ? 0 : 1"
-          :class="{ active: playbackInfo.volume !== 1 }"
+          @click="changeMuteState"
+          :class="{ active: !!playbackInfo.volume }"
         >
           <span class="fa fa-volume-up"></span>
           <span class="fa fa-volume-mute"></span>
@@ -244,6 +243,10 @@ export default {
       } else if (event.code === "Enter" && event.altKey) {
         this.changeFullscreenState();
       }
+    },
+    changeMuteState() {
+      this.video.volume = this.video.volume === 1 ? 0 : 1;
+      this.playbackInfo.volume = this.video.volume;
     },
     changeFullscreenState() {
       if (this.fullscreen) {
