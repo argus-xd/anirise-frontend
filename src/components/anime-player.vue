@@ -45,8 +45,10 @@
       <div class="middle-controls">
         <div>
           <div
-            v-if="episode.current > translations.current.episodes.from"
-            class="prev-episode button episode-button"
+            class="prev-episode episode-button"
+            :class="{
+              disabled: episode.current <= translations.current.episodes.from,
+            }"
             @click="requestEpisode(episode.current - 1)"
           >
             <span class="fa fa-chevron-left"></span>
@@ -58,8 +60,10 @@
         ></div>
         <div>
           <div
-            v-if="episode.current < translations.current.episodes.to"
-            class="next-episode button episode-button"
+            class="next-episode episode-button"
+            :class="{
+              disabled: episode.current >= translations.current.episodes.to,
+            }"
             @click="requestEpisode(episode.current + 1)"
           >
             <span class="fa fa-chevron-right"></span>
@@ -355,14 +359,13 @@ export default {
 
       .episode-button {
         position: absolute;
-        width: 50px;
-        height: 50px;
-        background: rgba(0, 0, 0, 0.8);
+        width: 45px;
+        height: 45px;
+        background: rgba(51, 51, 51, 0.7);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        font-size: 18px;
+        font-size: 16px;
         text-align: center;
-        line-height: 50px;
+        line-height: 45px;
         margin: auto;
         top: 0;
         bottom: 0;
@@ -370,13 +373,22 @@ export default {
         right: 0;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
+        &.disabled {
+          pointer-events: none;
+          color: dimgray;
+        }
+
+        &:hover {
+          background: rgba(51, 51, 51, 1);
+        }
+
         &.prev-episode {
-          margin-left: -20px;
+          margin-right: -10px;
           padding-right: 4px;
         }
 
         &.next-episode {
-          margin-right: -20px;
+          margin-left: -10px;
           padding-left: 4px;
         }
       }
