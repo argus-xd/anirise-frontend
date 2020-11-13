@@ -122,6 +122,8 @@ import Hls from "hls.js";
 import time from "../utils/time";
 import Materialize from "materialize-css";
 
+const nextUpdateActions = [];
+
 export default {
   name: "anime-player",
   props: {
@@ -146,6 +148,11 @@ export default {
         "End",
       ],
     };
+  },
+  updated() {
+    while (nextUpdateActions.length) {
+      nextUpdateActions.pop()();
+    }
   },
   mounted() {
     this.video = this.$refs.video;
@@ -246,6 +253,15 @@ export default {
         this.changeFullscreenState();
       }
     },
+    initTranslationsSelect() {
+      const elements = document.querySelectorAll(".translations-dropdown");
+      Materialize.Dropdown.init(elements, {
+        coverTrigger: false,
+        closeOnClick: false,
+        constrainWidth: false,
+        // alignment: "right",
+      });
+    },
     changeMuteState() {
       this.video.volume = this.video.volume === 1 ? 0 : 1;
       this.playbackInfo.volume = this.video.volume;
@@ -301,15 +317,8 @@ export default {
     },
   },
   watch: {
-    translations() {
-      console.log("translation changed");
-      // const elements = document.querySelectorAll(".translations-dropdown");
-      // Materialize.Dropdown.init(elements, {
-      //   coverTrigger: false,
-      //   closeOnClick: false,
-      //   constrainWidth: false,
-      //   // alignment: "right",
-      // });
+    "episode.source"() {
+      nextUpdateActions.push(this.initTranslationsSelect);
     },
     episode({ source }) {
       this.pauseVideo();
