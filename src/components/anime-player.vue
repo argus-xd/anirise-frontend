@@ -99,7 +99,7 @@
         <div
           class="mute-btn button"
           @click="changeMuteState"
-          :class="{ active: !!playbackInfo.volume }"
+          :class="{ active: !playbackInfo.volume }"
         >
           <span class="fa fa-volume-up"></span>
           <span class="fa fa-volume-mute"></span>
@@ -149,6 +149,7 @@ export default {
   },
   mounted() {
     this.video = this.$refs.video;
+    this.playbackInfo.volume = this.video.volume;
     document.addEventListener("mouseup", () => (this.timelineHold = false));
     document.addEventListener("mousemove", this.setVideoProgress);
     document.addEventListener("fullscreenchange", this.fullscreenListener);
