@@ -36,6 +36,8 @@
         ref="animePlayer"
         v-bind:translations="translations"
         v-bind:episode="episode"
+        v-on:translation-changed="loadTranslations(anime.id, $event)"
+        v-on:episode-changed="setEpisode"
       />
     </div>
   </div>
@@ -53,7 +55,7 @@ export default {
     return {
       anime: null,
       episode: {
-        current: this.$route.params.episode || 1,
+        current: Number(this.$route.params.episode) || 1,
         source: null,
       },
       translations: null,
@@ -73,8 +75,9 @@ export default {
     window.removeEventListener("keyup", this.keyUpListener);
   },
   watch: {
-    translations() {
-      this.setEpisode(this.episode.current);
+    translations(newVal, prevVal) {
+      const replaceRoute = !!prevVal;
+      this.setEpisode(this.episode.current, replaceRoute);
     },
   },
   methods: {
@@ -83,7 +86,7 @@ export default {
         .animeTranslations(animeId, translation)
         .then(data => (this.translations = data));
     },
-    setEpisode(episode) {
+    setEpisode(episode, replaceRoute) {
       episode = Number(episode) || 1;
 
       if (this.translations) {
@@ -93,6 +96,19 @@ export default {
 
         if (episodes.from > episode) episode = episodes.from;
         else if (episodes.to < episode) episode = episodes.to;
+      }
+
+      if (this.episode.current !== episode || replaceRoute) {
+        const params = { episode: episode };
+
+        if (this.translations.current.id !== this.translations.list[0].id) {
+          params.translation = this.translations.current.id;
+        }
+
+        this.$router.replace({
+          name: "anime:view",
+          params,
+        });
       }
 
       this.episode = {
@@ -107,9 +123,10 @@ export default {
     },
     showPlayerOverlay() {
       this.overlayShown = true;
-      this.$refs.animePlayer.focusVideoElement();
+      this.$refs.animePlayer.focusVideo();
     },
     hidePlayerOverlay() {
+      document.activeElement.blur();
       this.overlayShown = false;
       this.$refs.animePlayer.pauseVideo();
     },
@@ -206,6 +223,7 @@ export default {
     width: 70%;
     height: 70%;
     margin: auto;
+    min-height: 320px;
     position: absolute;
     left: 0;
     right: 0;

@@ -37,13 +37,14 @@
 <script>
 import api from "../../services/anime-rise";
 
+const animesPerCategory = 12;
+
 export default {
   name: "posts",
   data() {
     return {
-      animesPerCategory: 12,
       animeList: {
-        shown: Array.from({ length: this.animesPerCategory }, () => ({
+        shown: Array.from({ length: animesPerCategory }, () => ({
           title: "...",
           poster: require(`@/assets/preLoader.svg`),
         })),
@@ -57,7 +58,7 @@ export default {
     };
   },
   async mounted() {
-    api.animeList(this.animesPerCategory).then(animes => {
+    api.animeList(animesPerCategory).then(animes => {
       this.animeList.new = animes;
 
       this.setShownAnimeList(this.animeList.new);
