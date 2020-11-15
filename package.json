@@ -6,7 +6,7 @@
   "private": false,
   "scripts": {
     "serve": "rimraf -rf ./node_modules/.cache/vue-loader && vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --no-clean",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
