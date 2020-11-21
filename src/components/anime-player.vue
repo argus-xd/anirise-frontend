@@ -49,7 +49,7 @@
             :class="{
               disabled: episode.current <= translations.current.episodes.from,
             }"
-            @click="requestEpisode(episode.current - 1)"
+            @click="previousEpisode"
           >
             <span class="fa fa-chevron-left"></span>
           </div>
@@ -64,7 +64,7 @@
             :class="{
               disabled: episode.current >= translations.current.episodes.to,
             }"
-            @click="requestEpisode(episode.current + 1)"
+            @click="nextEpisode"
           >
             <span class="fa fa-chevron-right"></span>
           </div>
@@ -188,6 +188,12 @@ export default {
       this.mouse.calm = false;
       clearTimeout(this.mouse.timeout);
       this.mouse.timeout = setTimeout(() => (this.mouse.calm = true), 3000);
+    },
+    previousEpisode(){
+      this.requestEpisode(this.episode.current - 1)
+    },
+    nextEpisode(){
+      this.requestEpisode(this.episode.current + 1)
     },
     requestEpisode(episode) {
       this.pauseVideo();
