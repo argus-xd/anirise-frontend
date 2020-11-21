@@ -144,6 +144,8 @@ export default {
         "ArrowUp",
         "ArrowLeft",
         "ArrowRight",
+        "AltLeft",
+        "AltRight",
         "Home",
         "End",
       ],
@@ -189,11 +191,11 @@ export default {
       clearTimeout(this.mouse.timeout);
       this.mouse.timeout = setTimeout(() => (this.mouse.calm = true), 3000);
     },
-    previousEpisode(){
-      this.requestEpisode(this.episode.current - 1)
+    previousEpisode() {
+      this.requestEpisode(this.episode.current - 1);
     },
-    nextEpisode(){
-      this.requestEpisode(this.episode.current + 1)
+    nextEpisode() {
+      this.requestEpisode(this.episode.current + 1);
     },
     requestEpisode(episode) {
       this.pauseVideo();
