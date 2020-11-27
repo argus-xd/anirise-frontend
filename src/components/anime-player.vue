@@ -27,7 +27,7 @@
           class="dropdown translations-dropdown btn"
           href="#"
           data-target="translations"
-          >{{ translations.current.translator }}</a
+          >{{ selectedTranslation.translator }}</a
         >
         <div>
           <ul id="translations" class="dropdown-content">
@@ -49,7 +49,7 @@
           <div
             class="prev-episode episode-button"
             :class="{
-              disabled: episode.current <= translations.current.episodes.from,
+              disabled: episode.number <= selectedTranslation.episodes.from,
             }"
             @click="previousEpisode"
           >
@@ -64,7 +64,7 @@
           <div
             class="next-episode episode-button"
             :class="{
-              disabled: episode.current >= translations.current.episodes.to,
+              disabled: episode.number >= selectedTranslation.episodes.to,
             }"
             @click="nextEpisode"
           >
@@ -199,13 +199,15 @@ export default {
       this.mouse.timeout = setTimeout(() => (this.mouse.calm = true), 3000);
     },
     previousEpisode() {
-      this.requestEpisode(this.episode.current - 1);
+      this.requestEpisode(this.episode.index - 1);
     },
     nextEpisode() {
-      this.requestEpisode(this.episode.current + 1);
+      this.requestEpisode(this.episode.index + 1);
     },
-    requestEpisode(episode) {
+    requestEpisode(episodeIndex) {
+      const episode = this.selectedTranslation.episodes.list?.[episodeIndex] ?? 0;
       this.pauseVideo();
+      this.playbackInfo.duration = 0;
       setTimeout(() => this.$emit("episode-changed", episode), 50);
     },
     changeTranslation(event, translation) {
@@ -313,6 +315,11 @@ export default {
     },
   },
   computed: {
+    selectedTranslation() {
+      return this.translations.list.find(
+        it => it.id === this.translations.selected,
+      );
+    },
     elapsedTime() {
       return time.format(this.playbackInfo.currentTime);
     },

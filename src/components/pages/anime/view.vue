@@ -36,7 +36,7 @@
         ref="animePlayer"
         v-bind:translations="translations"
         v-bind:episode="episode"
-        v-on:translation-changed="loadTranslations(anime.id, $event)"
+        v-on:translation-changed="changeTranslation($event)"
         v-on:episode-changed="setEpisode"
       />
     </div>
@@ -55,54 +55,69 @@ export default {
     return {
       anime: null,
       episode: {
-        current: Number(this.$route.params.episode) || 1,
+        number: Number(this.$route.params.episode) || 1,
+        index: 0,
         source: null,
       },
-      translations: null,
+      translations: { list: null, selected: null },
       overlayShown: false,
     };
   },
   async mounted() {
     window.addEventListener("keyup", this.keyUpListener);
 
-    const { id: animeId, translation } = this.$route.params;
+    const animeId = this.$route.params.id;
 
     api.animeById(animeId).then(data => (this.anime = data));
 
-    this.loadTranslations(animeId, translation);
+    this.loadTranslations(animeId);
   },
   unmounted() {
     window.removeEventListener("keyup", this.keyUpListener);
   },
-  watch: {
-    translations(newVal, prevVal) {
-      const replaceRoute = !!prevVal;
-      this.setEpisode(this.episode.current, replaceRoute);
+  computed: {
+    selectedTranslation() {
+      return this.translations.list.find(
+        it => it.id === this.translations.selected,
+      );
     },
   },
   methods: {
-    loadTranslations(animeId, translation) {
-      api
-        .animeTranslations(animeId, translation)
-        .then(data => (this.translations = data));
+    loadTranslations(animeId) {
+      api.animeTranslations(animeId).then(translations => {
+        this.translations.list = translations;
+        this.changeTranslation(this.$route.params.translation);
+      });
     },
-    setEpisode(episode, replaceRoute) {
-      episode = Number(episode) || 1;
+    changeTranslation(translationId) {
+      const translation = this.translations.list.find(
+        it => it.id === translationId,
+      );
 
-      if (this.translations) {
-        const {
-          current: { episodes },
-        } = this.translations;
+      const replaceRoute = !!this.translations.selected;
 
-        if (episodes.from > episode) episode = episodes.from;
-        else if (episodes.to < episode) episode = episodes.to;
+      this.translations.selected = (
+        translation ?? this.translations.list[0]
+      ).id;
+
+      this.setEpisode(this.episode.number, replaceRoute);
+    },
+    setEpisode(episodeNumber, replaceRoute) {
+      episodeNumber = Number(episodeNumber) || 1;
+      let episodeIndex = this.selectedTranslation.episodes.list.findIndex(
+        episode => episode === episodeNumber,
+      );
+
+      if (episodeIndex < 0) {
+        episodeIndex = 0;
+        episodeNumber = this.selectedTranslation.episodes.list[0];
       }
 
-      if (this.episode.current !== episode || replaceRoute) {
-        const params = { episode: episode };
+      if (this.episode.number !== episodeNumber || replaceRoute) {
+        const params = { episode: episodeNumber };
 
-        if (this.translations.current.id !== this.translations.list[0].id) {
-          params.translation = this.translations.current.id;
+        if (this.translations.selected !== this.translations.list[0].id) {
+          params.translation = this.translations.selected;
         }
 
         this.$router.replace({
@@ -112,8 +127,9 @@ export default {
       }
 
       this.episode = {
-        current: episode,
-        source: api.episodeSource(episode, this.translations.current.id),
+        number: episodeNumber,
+        index: episodeIndex,
+        source: api.episodeSource(episodeNumber, this.translations.selected),
       };
     },
     keyUpListener(event) {

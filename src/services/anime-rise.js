@@ -30,7 +30,7 @@ export default {
   animeById: id => {
     return simpleGetRequest("/anime/" + id);
   },
-  animeTranslations: (id, translation) => {
-    return simpleGetRequest(`/anime/${id}/translations`, { translation });
+  animeTranslations: id => {
+    return simpleGetRequest(`/anime/${id}/translations`);
   },
 };
