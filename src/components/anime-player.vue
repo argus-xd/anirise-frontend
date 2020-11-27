@@ -108,7 +108,7 @@
         </div>
         <div
           class="picture-btn button one-state"
-          @click="video.requestPictureInPicture()"
+          @click="changePictureInPictureState"
           :class="{ active: pictureInPictureMode }"
         >
           <span class="fa fa-clone"></span>
@@ -294,6 +294,13 @@ export default {
         return this.playVideo();
       }
       this.pauseVideo();
+    },
+    changePictureInPictureState() {
+      if (document.pictureInPictureElement) {
+        return document.exitPictureInPicture();
+      }
+
+      this.video.requestPictureInPicture();
     },
     focusVideo() {
       this.video.focus();
