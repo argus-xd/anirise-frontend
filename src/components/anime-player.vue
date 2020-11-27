@@ -123,6 +123,12 @@ import time from "../utils/time";
 import Materialize from "materialize-css";
 
 const nextUpdateActions = [];
+const fullScreenEvents = [
+  "fullscreenchange",
+  "msfullscreenchange",
+  "mozfullscreenchange",
+  "webkitfullscreenchange",
+];
 
 export default {
   name: "anime-player",
@@ -161,25 +167,16 @@ export default {
     this.playbackInfo.volume = this.video.volume;
     document.addEventListener("mouseup", () => (this.timelineHold = false));
     document.addEventListener("mousemove", this.setVideoProgress);
-    document.addEventListener("fullscreenchange", this.fullscreenListener);
-    document.addEventListener("msfullscreenchange", this.fullscreenListener);
-    document.addEventListener("mozfullscreenchange", this.fullscreenListener);
-    document.addEventListener(
-      "webkitfullscreenchange",
-      this.fullscreenListener,
+
+    fullScreenEvents.forEach(eventName =>
+      document.addEventListener(eventName, this.fullscreenListener),
     );
   },
   unmounted() {
     document.removeEventListener("mousemove", this.setVideoProgress);
-    document.removeEventListener("fullscreenchange", this.fullscreenListener);
-    document.removeEventListener("msfullscreenchange", this.fullscreenListener);
-    document.removeEventListener(
-      "mozfullscreenchange",
-      this.fullscreenListener,
-    );
-    document.removeEventListener(
-      "webkitfullscreenchange",
-      this.fullscreenListener,
+
+    fullScreenEvents.forEach(eventName =>
+      document.removeEventListener(eventName, this.fullscreenListener),
     );
   },
   methods: {
