@@ -18,6 +18,8 @@
       @durationchange="this.playbackInfo.duration = this.video.duration"
       @timeupdate="videoProgressHandler"
       @keydown.stop="videoKeyDownEvents"
+      @enterpictureinpicture="pictureInPictureMode = true"
+      @leavepictureinpicture="pictureInPictureMode = false"
     ></video>
     <div class="controls" v-if="episode.source" @click.stop="focusVideo">
       <div class="top-controls">
@@ -105,6 +107,13 @@
           <span class="fa fa-volume-mute"></span>
         </div>
         <div
+          class="picture-btn button one-state"
+          @click="video.requestPictureInPicture()"
+          :class="{ active: pictureInPictureMode }"
+        >
+          <span class="fa fa-clone"></span>
+        </div>
+        <div
           class="expand-btn button"
           :class="{ active: fullscreen }"
           @click.stop="changeFullscreenState"
@@ -141,6 +150,7 @@ export default {
       hls: null,
       video: null,
       fullscreen: false,
+      pictureInPictureMode: false,
       timelineHold: false,
       mouse: { calm: true, timeout: null },
       playbackInfo: { progress: 0, currentTime: 0 },
@@ -383,7 +393,8 @@ export default {
     color: rgb(var(--color-gray-400));
 
     .button {
-      &:hover {
+      &:hover,
+      &.one-state.active {
         color: rgb(var(--color-blue));
       }
     }
@@ -437,7 +448,7 @@ export default {
       display: grid;
       grid-template-columns:
         var(--control-dimension) auto var(--control-dimension)
-        var(--control-dimension);
+        var(--control-dimension) var(--control-dimension);
 
       > div {
         height: 100%;
@@ -457,6 +468,12 @@ export default {
             display: none;
           }
           .fa:last-child {
+            display: unset;
+          }
+        }
+
+        &.one-state {
+          .fa {
             display: unset;
           }
         }
