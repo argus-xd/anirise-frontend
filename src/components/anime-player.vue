@@ -25,6 +25,24 @@
       <div class="top-controls">
         <div class="dropdown-select" @click.self="selectClicked">
           <div class="label">
+            Эпизод {{ episode.number }}
+            <span class="fa fa-chevron-down"></span>
+          </div>
+          <div class="items">
+            <div
+              v-for="(number, index) in episodes.list"
+              v-bind:key="number"
+              @click.stop="requestEpisode(index)"
+              :class="{
+                disabled: episode.number === number,
+              }"
+            >
+              Эпизод {{ number }}
+            </div>
+          </div>
+        </div>
+        <div class="dropdown-select" @click.self="selectClicked">
+          <div class="label">
             {{ translations.selected.translator }} [{{
               episodes.from + "-" + episodes.to
             }}]
