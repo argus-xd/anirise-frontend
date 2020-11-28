@@ -32,7 +32,10 @@
             <div
               v-for="(number, index) in episodes.list"
               v-bind:key="number"
-              @click.stop="requestEpisode(index)"
+              @click.stop="
+                closeSelects();
+                requestEpisode(index);
+              "
               :class="{
                 disabled: episode.number === number,
               }"
@@ -52,7 +55,10 @@
             <div
               v-for="translation in translations.list"
               v-bind:key="translation.id"
-              @click.stop="changeTranslation(translation.id)"
+              @click.stop="
+                closeSelects();
+                changeTranslation(translation.id);
+              "
               :class="{
                 disabled: translations.selected.id === translation.id,
               }"
@@ -153,7 +159,6 @@
 import Hls from "hls.js";
 import time from "../utils/time";
 
-const nextUpdateActions = [];
 const fullScreenEvents = [
   "fullscreenchange",
   "msfullscreenchange",
@@ -189,11 +194,6 @@ export default {
       ],
     };
   },
-  updated() {
-    while (nextUpdateActions.length) {
-      nextUpdateActions.pop()();
-    }
-  },
   mounted() {
     this.video = this.$refs.video;
     this.playbackInfo.volume = this.video.volume;
@@ -213,7 +213,19 @@ export default {
   },
   methods: {
     selectClicked(event) {
-      event.target.classList.toggle("active");
+      const item = event.target;
+      const isActive = item.classList.contains("active");
+
+      if (isActive) {
+        return this.closeSelects();
+      }
+      this.closeSelects();
+      item.classList.add("active");
+    },
+    closeSelects() {
+      document
+        .querySelectorAll(".dropdown-select")
+        .forEach(select => select.classList.remove("active"));
     },
     fullscreenListener() {
       this.fullscreen = !!document.fullscreenElement;
