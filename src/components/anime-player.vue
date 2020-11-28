@@ -23,25 +23,30 @@
     ></video>
     <div class="controls" v-if="episode.source" @click.stop="focusVideo">
       <div class="top-controls">
-        <a
-          class="dropdown translations-dropdown btn"
-          href="#"
-          data-target="translations"
-          >{{ translations.selected.translator }}</a
-        >
-        <div>
-          <ul id="translations" class="dropdown-content">
-            <li
+        <div class="dropdown-select" @click.self="selectClicked">
+          <div class="label">
+            {{ translations.selected.translator }} [{{
+              episodes.from + "-" + episodes.to
+            }}]
+            <span class="fa fa-chevron-down"></span>
+          </div>
+          <div class="items">
+            <div
               v-for="translation in translations.list"
               v-bind:key="translation.id"
+              @click.stop="changeTranslation(translation.id)"
+              :class="{
+                disabled: translations.selected.id === translation.id,
+              }"
             >
-              <a
-                @click.stop="changeTranslation($event, translation.id)"
-                href="javascript: void(0);"
-                >{{ translation.translator }}</a
+              {{ translation.translator }}
+              <span
+                >[{{
+                  translation.episodes.from + "-" + translation.episodes.to
+                }}]</span
               >
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
       </div>
       <div class="middle-controls">
@@ -129,7 +134,6 @@
 <script>
 import Hls from "hls.js";
 import time from "../utils/time";
-import Materialize from "materialize-css";
 
 const nextUpdateActions = [];
 const fullScreenEvents = [
@@ -190,6 +194,9 @@ export default {
     );
   },
   methods: {
+    selectClicked(event) {
+      event.target.classList.toggle("active");
+    },
     fullscreenListener() {
       this.fullscreen = !!document.fullscreenElement;
     },
@@ -210,19 +217,8 @@ export default {
       this.playbackInfo.duration = 0;
       setTimeout(() => this.$emit("episode-changed", number), 50);
     },
-    changeTranslation(event, translation) {
-      for (const node of event.path) {
-        if (node.tagName === "UL") {
-          const instance = Materialize.Dropdown.getInstance(
-            node.previousSibling,
-          );
-          if (instance.isOpen) {
-            instance.close();
-          }
-          this.$emit("translation-changed", translation);
-          break;
-        }
-      }
+    changeTranslation(translation) {
+      this.$emit("translation-changed", translation);
     },
     setVideoProgress(event) {
       if (this.timelineHold) {
@@ -270,15 +266,6 @@ export default {
         this.changeFullscreenState();
       }
     },
-    initTranslationsSelect() {
-      const elements = document.querySelectorAll(".translations-dropdown");
-      Materialize.Dropdown.init(elements, {
-        coverTrigger: false,
-        closeOnClick: false,
-        constrainWidth: false,
-        // alignment: "right",
-      });
-    },
     changeMuteState() {
       this.video.volume = this.video.volume === 1 ? 0 : 1;
       this.playbackInfo.volume = this.video.volume;
@@ -315,7 +302,7 @@ export default {
     },
   },
   computed: {
-    episodes(){
+    episodes() {
       return this.translations.selected.episodes;
     },
     elapsedTime() {
@@ -344,9 +331,6 @@ export default {
     },
   },
   watch: {
-    "episode.source"() {
-      nextUpdateActions.push(this.initTranslationsSelect);
-    },
     episode({ source }) {
       this.pauseVideo();
       if (this.hls) {
@@ -411,7 +395,63 @@ export default {
       }
     }
 
+    .top-controls {
+      z-index: 3;
+      .dropdown-select {
+        display: inline-block;
+        vertical-align: top;
+        background: rgba(51, 51, 51, 0.8);
+        min-width: 88px;
+        margin-top: 10px;
+        margin-left: 10px;
+        line-height: 34px;
+
+        .label {
+          pointer-events: none;
+          height: 34px;
+          padding: 0 10px;
+          display: flex;
+          justify-content: space-between;
+
+          span {
+            font-size: 12px;
+            line-height: inherit;
+            padding-left: 10px;
+          }
+        }
+
+        .items {
+          max-height: 200px;
+          overflow-x: hidden;
+          overflow-y: auto;
+
+          > div {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            &.disabled {
+              pointer-events: none;
+              color: gray;
+            }
+
+            span {
+              color: gray;
+              font-size: 14px;
+              padding-left: 10px;
+            }
+          }
+        }
+
+        &:not(.active) {
+          .items {
+            display: none;
+          }
+        }
+      }
+    }
+
     .middle-controls {
+      z-index: 2;
       display: grid;
       grid-template-columns: 50px auto 50px;
 
