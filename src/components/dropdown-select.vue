@@ -28,6 +28,7 @@
           }"
         >
           {{ item.value }}
+          <span v-if="item.secondaryValue">{{ item.secondaryValue }}</span>
         </div>
       </div>
     </div>

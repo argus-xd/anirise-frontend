@@ -286,7 +286,8 @@ export default {
     dropdownTranslations() {
       return this.translations.list.map(it => ({
         key: it.id,
-        value: `${it.translator}`,
+        value: it.translator,
+        secondaryValue: `[${it.episodes.from}-${it.episodes.to}]`,
       }));
     },
     dropdownEpisodes() {
