@@ -49,7 +49,7 @@
           <div
             class="prev-episode episode-button"
             :class="{
-              disabled: episode.number <= translations.selected.episodes.from,
+              disabled: episode.number <= episodes.from,
             }"
             @click="previousEpisode"
           >
@@ -64,7 +64,7 @@
           <div
             class="next-episode episode-button"
             :class="{
-              disabled: episode.number >= translations.selected.episodes.to,
+              disabled: episode.number >= episodes.to,
             }"
             @click="nextEpisode"
           >
@@ -205,7 +205,7 @@ export default {
       this.requestEpisode(this.episode.index + 1);
     },
     requestEpisode(index) {
-      const number = this.translations.selected.episodes.list?.[index] ?? 0;
+      const number = this.episodes.list?.[index] ?? 0;
       this.pauseVideo();
       this.playbackInfo.duration = 0;
       setTimeout(() => this.$emit("episode-changed", number), 50);
@@ -315,6 +315,9 @@ export default {
     },
   },
   computed: {
+    episodes(){
+      return this.translations.selected.episodes;
+    },
     elapsedTime() {
       return time.format(this.playbackInfo.currentTime);
     },
