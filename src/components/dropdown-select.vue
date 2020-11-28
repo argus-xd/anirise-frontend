@@ -7,6 +7,9 @@
     <div class="dropdown">
       <div v-if="searchEnabled" class="search-box">
         <input
+          :style="{
+            width: searchWidth,
+          }"
           @click.stop
           v-model="searchText"
           type="text"
@@ -36,6 +39,7 @@ export default {
   name: "dropdown-select",
   props: {
     searchEnabled: { type: Boolean, default: false },
+    searchWidth: { type: String, default: "120px" },
     items: Array,
     activeItem: [String, Number],
     label: String,
