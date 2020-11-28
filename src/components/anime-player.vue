@@ -26,20 +26,14 @@
         <dropdown-select
           v-bind:label="`${translations.selected.translator} [${episodes.from}-${episodes.to}]`"
           v-bind:activeItem="translations.selected.id"
-          v-bind:items="
-            translations.list.map(it => ({
-              key: it.id,
-              value: `${it.translator}`,
-            }))
-          "
+          v-bind:items="dropdownTranslations"
           v-on:item-selected="changeTranslation($event.key)"
         />
         <dropdown-select
+          :search-enabled="true"
           v-bind:label="`Эпизод ${episode.number}`"
           v-bind:activeItem="episode.number"
-          v-bind:items="
-            episodes.list.map(it => ({ key: it, value: `Эпизод ${it}` }))
-          "
+          v-bind:items="dropdownEpisodes"
           v-on:item-selected="requestEpisode($event.index)"
         />
       </div>
@@ -289,6 +283,15 @@ export default {
     },
   },
   computed: {
+    dropdownTranslations() {
+      return this.translations.list.map(it => ({
+        key: it.id,
+        value: `${it.translator}`,
+      }));
+    },
+    dropdownEpisodes() {
+      return this.episodes.list.map(it => ({ key: it, value: `Эпизод ${it}` }));
+    },
     episodes() {
       return this.translations.selected.episodes;
     },

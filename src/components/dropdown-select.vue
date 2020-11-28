@@ -4,17 +4,28 @@
       {{ label }}
       <span class="fa fa-chevron-down"></span>
     </div>
-    <div class="items">
-      <div
-        v-for="(item, index) in items"
-        v-bind:key="item.key"
-        @click.stop="itemSelected(item.key, index)"
-        :data-index="index"
-        :class="{
-          active: activeItem === item.key,
-        }"
-      >
-        {{ item.value }}
+    <div class="dropdown">
+      <div v-if="searchEnabled" class="search-box">
+        <input
+          @click.stop
+          v-model="searchText"
+          type="text"
+          class="browser-default"
+        />
+      </div>
+      <div class="items">
+        <div
+          v-for="(item, index) in items"
+          v-bind:key="item.key"
+          @click.stop="itemSelected(item.key, index)"
+          :data-index="index"
+          :class="{
+            active: activeItem === item.key,
+            hide: item.value.indexOf(searchText) < 0,
+          }"
+        >
+          {{ item.value }}
+        </div>
       </div>
     </div>
   </div>
@@ -24,9 +35,15 @@
 export default {
   name: "dropdown-select",
   props: {
+    searchEnabled: { type: Boolean, default: false },
     items: Array,
     activeItem: [String, Number],
     label: String,
+  },
+  data() {
+    return {
+      searchText: "",
+    };
   },
   methods: {
     selectClicked(event) {
@@ -52,6 +69,7 @@ export default {
     },
     itemSelected(key, index) {
       this.closeSelects();
+      this.searchText = "";
       this.$emit("item-selected", { key, index });
     },
   },
@@ -83,10 +101,25 @@ export default {
     }
   }
 
+  &:not(.active) {
+    .dropdown {
+      display: none;
+    }
+  }
+
+  .search-box {
+    padding: 0 10px;
+
+    input {
+      outline: none;
+    }
+  }
+
   .items {
-    max-height: 200px;
+    max-height: 170px;
     overflow-x: hidden;
     overflow-y: auto;
+    position: relative;
 
     > div {
       display: flex;
@@ -107,12 +140,6 @@ export default {
         font-size: 14px;
         padding-left: 10px;
       }
-    }
-  }
-
-  &:not(.active) {
-    .items {
-      display: none;
     }
   }
 }
