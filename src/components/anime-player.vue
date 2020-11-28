@@ -23,55 +23,25 @@
     ></video>
     <div class="controls" v-if="episode.source" @click.stop="focusVideo">
       <div class="top-controls">
-        <div class="dropdown-select" @click.self="selectClicked">
-          <div class="label">
-            Эпизод {{ episode.number }}
-            <span class="fa fa-chevron-down"></span>
-          </div>
-          <div class="items">
-            <div
-              v-for="(number, index) in episodes.list"
-              v-bind:key="number"
-              @click.stop="
-                closeSelects();
-                requestEpisode(index);
-              "
-              :class="{
-                disabled: episode.number === number,
-              }"
-            >
-              Эпизод {{ number }}
-            </div>
-          </div>
-        </div>
-        <div class="dropdown-select" @click.self="selectClicked">
-          <div class="label">
-            {{ translations.selected.translator }} [{{
-              episodes.from + "-" + episodes.to
-            }}]
-            <span class="fa fa-chevron-down"></span>
-          </div>
-          <div class="items">
-            <div
-              v-for="translation in translations.list"
-              v-bind:key="translation.id"
-              @click.stop="
-                closeSelects();
-                changeTranslation(translation.id);
-              "
-              :class="{
-                disabled: translations.selected.id === translation.id,
-              }"
-            >
-              {{ translation.translator }}
-              <span
-                >[{{
-                  translation.episodes.from + "-" + translation.episodes.to
-                }}]</span
-              >
-            </div>
-          </div>
-        </div>
+        <dropdown-select
+          v-bind:label="`${translations.selected.translator} [${episodes.from}-${episodes.to}]`"
+          v-bind:activeItem="translations.selected.id"
+          v-bind:items="
+            translations.list.map(it => ({
+              key: it.id,
+              value: `${it.translator}`,
+            }))
+          "
+          v-on:item-selected="changeTranslation($event.key)"
+        />
+        <dropdown-select
+          v-bind:label="`Эпизод ${episode.number}`"
+          v-bind:activeItem="episode.number"
+          v-bind:items="
+            episodes.list.map(it => ({ key: it, value: `Эпизод ${it}` }))
+          "
+          v-on:item-selected="requestEpisode($event.index)"
+        />
       </div>
       <div class="middle-controls">
         <div>
@@ -157,6 +127,7 @@
 
 <script>
 import Hls from "hls.js";
+import dropdownSelect from "./dropdown-select";
 import time from "../utils/time";
 
 const fullScreenEvents = [
@@ -172,6 +143,7 @@ export default {
     translations: Object,
     episode: Object,
   },
+  components: { dropdownSelect },
   data() {
     return {
       hls: null,
@@ -212,21 +184,6 @@ export default {
     );
   },
   methods: {
-    selectClicked(event) {
-      const item = event.target;
-      const isActive = item.classList.contains("active");
-
-      if (isActive) {
-        return this.closeSelects();
-      }
-      this.closeSelects();
-      item.classList.add("active");
-    },
-    closeSelects() {
-      document
-        .querySelectorAll(".dropdown-select")
-        .forEach(select => select.classList.remove("active"));
-    },
     fullscreenListener() {
       this.fullscreen = !!document.fullscreenElement;
     },
@@ -427,66 +384,10 @@ export default {
 
     .top-controls {
       z-index: 3;
+
       .dropdown-select {
-        display: inline-block;
-        vertical-align: top;
-        background: rgba(51, 51, 51, 0.8);
-        min-width: 88px;
         margin-top: 10px;
         margin-left: 10px;
-        line-height: 34px;
-
-        &.active,
-        &:hover {
-          background: rgb(51, 51, 51);
-        }
-
-        .label {
-          pointer-events: none;
-          height: 34px;
-          padding: 0 10px;
-          display: flex;
-          justify-content: space-between;
-
-          span {
-            font-size: 12px;
-            line-height: inherit;
-            padding-left: 10px;
-          }
-        }
-
-        .items {
-          max-height: 200px;
-          overflow-x: hidden;
-          overflow-y: auto;
-
-          > div {
-            display: flex;
-            justify-content: space-between;
-            padding: 0 10px;
-
-            &:hover {
-              background: rgba(255, 255, 255, 0.1);
-            }
-
-            &.disabled {
-              pointer-events: none;
-              color: gray;
-            }
-
-            span {
-              color: gray;
-              font-size: 14px;
-              padding-left: 10px;
-            }
-          }
-        }
-
-        &:not(.active) {
-          .items {
-            display: none;
-          }
-        }
       }
     }
 
