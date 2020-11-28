@@ -9,8 +9,9 @@
         v-for="(item, index) in items"
         v-bind:key="item.key"
         @click.stop="itemSelected(item.key, index)"
+        :data-index="index"
         :class="{
-          disabled: activeItem === item.key,
+          active: activeItem === item.key,
         }"
       >
         {{ item.value }}
@@ -29,14 +30,20 @@ export default {
   },
   methods: {
     selectClicked(event) {
-      const item = event.target;
-      const isActive = item.classList.contains("active");
+      const select = event.target;
+      const isOpened = select.classList.contains("active");
+      const activeItem = select.querySelector(".active");
 
-      if (isActive) {
+      if (isOpened) {
         return this.closeSelects();
       }
       this.closeSelects();
-      item.classList.add("active");
+      select.classList.add("active");
+
+      const index = activeItem.dataset.index - 2;
+
+      select.querySelector(".items").scrollTop =
+        (index || 0) * activeItem.offsetHeight;
     },
     closeSelects() {
       document
@@ -90,7 +97,7 @@ export default {
         background: rgba(255, 255, 255, 0.1);
       }
 
-      &.disabled {
+      &.active {
         pointer-events: none;
         color: gray;
       }
