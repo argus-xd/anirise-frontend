@@ -27,7 +27,7 @@
           class="dropdown translations-dropdown btn"
           href="#"
           data-target="translations"
-          >{{ selectedTranslation.translator }}</a
+          >{{ translations.selected.translator }}</a
         >
         <div>
           <ul id="translations" class="dropdown-content">
@@ -49,7 +49,7 @@
           <div
             class="prev-episode episode-button"
             :class="{
-              disabled: episode.number <= selectedTranslation.episodes.from,
+              disabled: episode.number <= translations.selected.episodes.from,
             }"
             @click="previousEpisode"
           >
@@ -64,7 +64,7 @@
           <div
             class="next-episode episode-button"
             :class="{
-              disabled: episode.number >= selectedTranslation.episodes.to,
+              disabled: episode.number >= translations.selected.episodes.to,
             }"
             @click="nextEpisode"
           >
@@ -204,11 +204,11 @@ export default {
     nextEpisode() {
       this.requestEpisode(this.episode.index + 1);
     },
-    requestEpisode(episodeIndex) {
-      const episode = this.selectedTranslation.episodes.list?.[episodeIndex] ?? 0;
+    requestEpisode(index) {
+      const number = this.translations.selected.episodes.list?.[index] ?? 0;
       this.pauseVideo();
       this.playbackInfo.duration = 0;
-      setTimeout(() => this.$emit("episode-changed", episode), 50);
+      setTimeout(() => this.$emit("episode-changed", number), 50);
     },
     changeTranslation(event, translation) {
       for (const node of event.path) {
@@ -315,11 +315,6 @@ export default {
     },
   },
   computed: {
-    selectedTranslation() {
-      return this.translations.list.find(
-        it => it.id === this.translations.selected,
-      );
-    },
     elapsedTime() {
       return time.format(this.playbackInfo.currentTime);
     },

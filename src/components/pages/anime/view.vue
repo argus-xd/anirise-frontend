@@ -75,13 +75,6 @@ export default {
   unmounted() {
     window.removeEventListener("keyup", this.keyUpListener);
   },
-  computed: {
-    selectedTranslation() {
-      return this.translations.list.find(
-        it => it.id === this.translations.selected,
-      );
-    },
-  },
   methods: {
     loadTranslations(animeId) {
       api.animeTranslations(animeId).then(translations => {
@@ -96,28 +89,26 @@ export default {
 
       const replaceRoute = !!this.translations.selected;
 
-      this.translations.selected = (
-        translation ?? this.translations.list[0]
-      ).id;
+      this.translations.selected = translation ?? this.translations.list[0];
 
       this.setEpisode(this.episode.number, replaceRoute);
     },
     setEpisode(episodeNumber, replaceRoute) {
       episodeNumber = Number(episodeNumber) || 1;
-      let episodeIndex = this.selectedTranslation.episodes.list.findIndex(
+      let episodeIndex = this.translations.selected.episodes.list.findIndex(
         episode => episode === episodeNumber,
       );
 
       if (episodeIndex < 0) {
         episodeIndex = 0;
-        episodeNumber = this.selectedTranslation.episodes.list[0];
+        episodeNumber = this.translations.selected.episodes.list[0];
       }
 
       if (this.episode.number !== episodeNumber || replaceRoute) {
         const params = { episode: episodeNumber };
 
-        if (this.translations.selected !== this.translations.list[0].id) {
-          params.translation = this.translations.selected;
+        if (this.translations.selected.id !== this.translations.list[0].id) {
+          params.translation = this.translations.selected.id;
         }
 
         this.$router.replace({
@@ -129,7 +120,7 @@ export default {
       this.episode = {
         number: episodeNumber,
         index: episodeIndex,
-        source: api.episodeSource(episodeNumber, this.translations.selected),
+        source: api.episodeSource(episodeNumber, this.translations.selected.id),
       };
     },
     keyUpListener(event) {
