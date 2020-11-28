@@ -424,6 +424,11 @@ export default {
         margin-left: 10px;
         line-height: 34px;
 
+        &.active,
+        &:hover {
+          background: rgb(51, 51, 51);
+        }
+
         .label {
           pointer-events: none;
           height: 34px;
@@ -447,6 +452,11 @@ export default {
             display: flex;
             justify-content: space-between;
             padding: 0 10px;
+
+            &:hover {
+              background: rgba(255, 255, 255, 0.1);
+            }
+
             &.disabled {
               pointer-events: none;
               color: gray;
@@ -499,7 +509,7 @@ export default {
         }
 
         &:hover {
-          background: rgba(51, 51, 51, 1);
+          background: rgb(51, 51, 51);
         }
 
         &.prev-episode {
