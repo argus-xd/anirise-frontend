@@ -10,7 +10,7 @@
               <a
                 target="_blank"
                 :href="
-                  anime.shikimoriData?.url ||
+                  anime.shikimoriUrl ||
                   `https://shikimori.one/animes/${anime.id}`
                 "
                 class="action shikimori-link waves-effect"
@@ -22,8 +22,10 @@
             </div>
           </div>
           <div class="content">
-            <h1>{{ anime.title }} / {{ anime.titleEnglish}}</h1>
-            <p class="description">{{ anime.shikimoriData?.description || anime.description }}</p>
+            <h1>{{ anime.title }} / {{ anime.titleEnglish }}</h1>
+            <p class="description">
+              {{ anime.description }}
+            </p>
           </div>
         </div>
       </div>
