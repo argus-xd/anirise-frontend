@@ -1,7 +1,14 @@
 <template>
   <div v-if="anime">
     <div class="head-wrap">
-      <div class="anime-wallpaper"></div>
+      <div
+        class="anime-wallpaper"
+        :style="{
+          'background-image': `url('${anime.banner}')`,
+        }"
+      >
+        <div class="shadow"></div>
+      </div>
       <div class="head">
         <div class="container">
           <div class="cover">
@@ -156,7 +163,15 @@ export default {
     background-size: cover;
     height: 400px;
     margin-top: -64px;
-    background-image: url("https://w.wallhaven.cc/full/lq/wallhaven-lq51ll.png");
+    .shadow {
+      background: linear-gradient(
+        180deg,
+        rgba(var(--color-shadow-dark), 0) 40%,
+        rgba(var(--color-shadow-dark), 0.6)
+      );
+      height: 100%;
+      width: 100%;
+    }
   }
 
   .head {
