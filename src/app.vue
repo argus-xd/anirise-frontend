@@ -1,5 +1,9 @@
 <template>
-  <nav>
+  <nav
+    :class="{
+      transparency: $route.name === 'anime:view',
+    }"
+  >
     <div class="nav-wrapper container">
       <router-link to="/" class="brand-logo">AnimeRise</router-link>
     </div>
@@ -45,7 +49,7 @@ export default {
 
 <style lang="scss" rel="stylesheet/scss">
 #app {
-  margin-top: 64px;
+  padding-top: 64px;
   overflow: hidden;
 }
 nav {
@@ -55,11 +59,12 @@ nav {
   background-color: rgb(var(--color-header));
   color: #bcbedc;
   transition: background 0.8s ease 0s, top 0.5s ease 0s;
+
   &.hidden {
     top: -100px;
   }
-  &.transparent {
-    background-color: rgba(var(--color-header), 0.8);
+  &.transparency:not(:hover) {
+    background-color: rgba(var(--color-header), 0.5);
   }
 
   .brand-logo {
