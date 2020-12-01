@@ -23,10 +23,7 @@
               <div class="actions">
                 <a
                   target="_blank"
-                  :href="
-                    anime.shikimoriUrl ||
-                    `https://shikimori.one/animes/${anime.id}`
-                  "
+                  :href="anime.shikimoriUrl"
                   class="action shikimori-link waves-effect"
                   >Shikimori <span class="fa fa-external-link-alt"></span
                 ></a>
