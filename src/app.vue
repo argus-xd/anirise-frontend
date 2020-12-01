@@ -1,9 +1,5 @@
 <template>
-  <nav
-    :class="{
-      transparency: $route.name === 'anime:view',
-    }"
-  >
+  <nav>
     <div class="nav-wrapper container">
       <router-link to="/" class="brand-logo">AnimeRise</router-link>
     </div>

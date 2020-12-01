@@ -1,7 +1,13 @@
 <template>
   <div v-if="anime">
-    <div class="head-wrap">
+    <div
+      class="head-wrap"
+      :class="{
+        'with-wallpaper': !!anime.banner,
+      }"
+    >
       <div
+        v-if="anime.banner"
         class="anime-wallpaper"
         :style="{
           'background-image': `url('${anime.banner}')`,
@@ -12,19 +18,24 @@
       <div class="head">
         <div class="container">
           <div class="cover">
-            <img :src="anime.poster" />
-            <div class="actions">
-              <a
-                target="_blank"
-                :href="
-                  anime.shikimoriUrl ||
-                  `https://shikimori.one/animes/${anime.id}`
-                "
-                class="action shikimori-link waves-effect"
-                >Shikimori <span class="fa fa-external-link-alt"></span
-              ></a>
-              <div class="action play waves-effect" @click="showPlayerOverlay">
-                <span class="fa fa-play"></span>
+            <div class="cover-inner">
+              <img :src="anime.poster" />
+              <div class="actions">
+                <a
+                  target="_blank"
+                  :href="
+                    anime.shikimoriUrl ||
+                    `https://shikimori.one/animes/${anime.id}`
+                  "
+                  class="action shikimori-link waves-effect"
+                  >Shikimori <span class="fa fa-external-link-alt"></span
+                ></a>
+                <div
+                  class="action play waves-effect"
+                  @click="showPlayerOverlay"
+                >
+                  <span class="fa fa-play"></span>
+                </div>
               </div>
             </div>
           </div>
@@ -80,11 +91,18 @@ export default {
 
     const animeId = this.$route.params.id;
 
-    api.animeById(animeId).then(data => (this.anime = data));
+    api.animeById(animeId).then(anime => {
+      this.anime = anime;
+
+      if (anime.banner) {
+        document.querySelector("nav").classList.add("transparency");
+      }
+    });
 
     this.loadTranslations(animeId);
   },
   unmounted() {
+    document.querySelector("nav").classList.remove("transparency");
     window.removeEventListener("keyup", this.keyUpListener);
   },
   methods: {
@@ -177,18 +195,35 @@ export default {
   .head {
     background: rgb(var(--color-foreground));
     position: relative;
+
     .container {
       min-height: 250px;
+    }
+    .content {
+      min-height: 280px;
+    }
+  }
+
+  &.with-wallpaper {
+    .cover {
+      margin-top: -110px;
+
+      .cover-inner {
+        position: static;
+      }
     }
   }
 
   .cover {
-    margin-top: -110px;
-    img {
-      width: 100%;
-      display: block;
-      border-radius: 2px;
-      box-shadow: 0 0 29px rgba(49, 54, 68, 0.25);
+    margin-top: 15px;
+    .cover-inner {
+      position: absolute;
+      img {
+        width: 100%;
+        display: block;
+        border-radius: 2px;
+        box-shadow: 0 0 29px rgba(49, 54, 68, 0.25);
+      }
     }
   }
 
