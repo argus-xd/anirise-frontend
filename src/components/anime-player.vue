@@ -49,10 +49,7 @@
             <span class="fa fa-chevron-left"></span>
           </div>
         </div>
-        <div
-          @click.self="changePlayState"
-          @dblclick.self="changeFullscreenState"
-        ></div>
+        <div @click.self="playAreaClickHandler"></div>
         <div>
           <div
             class="next-episode episode-button"
@@ -145,7 +142,7 @@ export default {
       fullscreen: false,
       pictureInPictureMode: false,
       timelineHold: false,
-      mouse: { calm: true, calmTimeout: null },
+      mouse: { calm: true, calmTimeout: null, clickTimeout: null },
       playbackInfo: { progress: 0, currentTime: 0 },
       preventDefaultKeys: [
         "Space",
@@ -178,6 +175,14 @@ export default {
     );
   },
   methods: {
+    playAreaClickHandler({ detail: clicks }) {
+      if (clicks === 1) {
+        this.mouse.clickTimeout = setTimeout(this.changePlayState, 250);
+        return;
+      }
+      clearTimeout(this.mouse.clickTimeout);
+      this.changeFullscreenState();
+    },
     fullscreenListener() {
       this.fullscreen = !!document.fullscreenElement;
     },
