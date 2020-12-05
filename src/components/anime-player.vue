@@ -145,7 +145,7 @@ export default {
       fullscreen: false,
       pictureInPictureMode: false,
       timelineHold: false,
-      mouse: { calm: true, timeout: null },
+      mouse: { calm: true, calmTimeout: null },
       playbackInfo: { progress: 0, currentTime: 0 },
       preventDefaultKeys: [
         "Space",
@@ -183,8 +183,8 @@ export default {
     },
     calmDisturb() {
       this.mouse.calm = false;
-      clearTimeout(this.mouse.timeout);
-      this.mouse.timeout = setTimeout(() => (this.mouse.calm = true), 3000);
+      clearTimeout(this.mouse.calmTimeout);
+      this.mouse.calmTimeout = setTimeout(() => (this.mouse.calm = true), 3000);
     },
     previousEpisode() {
       this.requestEpisode(this.episode.index - 1);
