@@ -97,7 +97,7 @@
           <span class="fa fa-volume-mute"></span>
         </div>
         <div
-          class="picture-btn button one-state"
+          class="picture-btn button one-icon"
           @click="changePictureInPictureState"
           :class="{ active: pictureInPictureMode }"
         >
@@ -386,7 +386,7 @@ export default {
 
     .button {
       &:hover,
-      &.one-state.active {
+      &.one-icon.active {
         color: rgb(var(--color-blue));
       }
     }
@@ -474,7 +474,7 @@ export default {
           }
         }
 
-        &.one-state {
+        &.one-icon {
           .fa {
             display: unset;
           }
