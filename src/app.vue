@@ -12,26 +12,14 @@
       <div class="row">
         <div class="col l6 s12">
           <h5>AnimeRise</h5>
-          <p>Complete and completely free anime database with online player.</p>
+          <p>Let's watch together</p>
         </div>
         <div class="col l4 offset-l2 s12">
-          <h5>Links</h5>
           <ul>
-            <li><a href="#">First</a></li>
-            <li><a href="#">Another</a></li>
+            <li><a href="#">First Link</a></li>
+            <li><a href="#">Another?</a></li>
           </ul>
         </div>
-      </div>
-    </div>
-    <div class="footer-copyright">
-      <div class="container">
-        © Powered by Kodik
-        <a
-          class="right"
-          target="_blank"
-          href="https://github.com/argus-xd/anirise-frontend"
-          >SourceCode</a
-        >
       </div>
     </div>
   </footer>
@@ -77,6 +65,7 @@ nav {
 }
 
 .page-footer {
+  padding: 20px 0;
   background-color: rgb(var(--color-footer));
   color: #bcbedc;
   font-size: 1.8rem;
