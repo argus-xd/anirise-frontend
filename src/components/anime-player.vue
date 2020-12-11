@@ -226,6 +226,13 @@ export default {
       this.playbackInfo.currentTime = this.video.currentTime;
       this.playbackInfo.progress =
         (this.video.currentTime * 100) / this.video.duration || 0;
+
+      this.$emit("progress-changed", {
+        timeStamp: this.playbackInfo.currentTime,
+        progress: this.playbackInfo.progress,
+        episodeIndex: this.episode.index,
+        translation: this.translations.selected.id,
+      });
     },
     videoKeyDownEvents(event) {
       if (this.preventDefaultKeys.includes(event.code)) {
