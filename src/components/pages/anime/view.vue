@@ -58,6 +58,7 @@
         v-bind:episode="episode"
         v-on:translation-changed="changeTranslation($event)"
         v-on:episode-changed="setEpisode"
+        v-on:progress-changed="rememberEpisodeProgress"
       />
     </div>
   </div>
@@ -149,6 +150,12 @@ export default {
         index: episodeIndex,
         source: api.episodeSource(episodeNumber, this.translations.selected.id),
       };
+    },
+    rememberEpisodeProgress(episodeInfo) {
+      localStorage.setItem(
+        `anime-${this.anime.id}:last-seen`,
+        JSON.stringify(episodeInfo),
+      );
     },
     keyUpListener(event) {
       if (event.key === "Escape") {
