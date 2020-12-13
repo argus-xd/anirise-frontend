@@ -38,25 +38,23 @@
         />
       </div>
       <div class="middle-controls">
-        <div>
+        <div class="episode-button-wrap" @click="previousEpisode">
           <div
             class="prev-episode episode-button"
             :class="{
               disabled: episode.number <= episodes.from,
             }"
-            @click="previousEpisode"
           >
             <span class="fa fa-chevron-left"></span>
           </div>
         </div>
         <div @click.self="playAreaClickHandler"></div>
-        <div>
+        <div class="episode-button-wrap" @click="nextEpisode">
           <div
             class="next-episode episode-button"
             :class="{
               disabled: episode.number >= episodes.to,
             }"
-            @click="nextEpisode"
           >
             <span class="fa fa-chevron-right"></span>
           </div>
@@ -416,6 +414,12 @@ export default {
         position: relative;
       }
 
+      .episode-button-wrap:hover {
+        .episode-button {
+          background: rgb(51, 51, 51);
+        }
+      }
+
       .episode-button {
         position: absolute;
         width: var(--control-dimension);
@@ -435,10 +439,6 @@ export default {
         &.disabled {
           pointer-events: none;
           color: dimgray;
-        }
-
-        &:hover {
-          background: rgb(51, 51, 51);
         }
 
         &.prev-episode {
