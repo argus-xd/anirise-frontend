@@ -48,7 +48,18 @@
             <span class="fa fa-chevron-left"></span>
           </div>
         </div>
-        <div @click.self="playAreaClickHandler"></div>
+        <div @click.self="playAreaClickHandler">
+          <div
+            class="play-state-indicator"
+            v-bind:class="{
+              playing: playbackInfo.isPlaying,
+              'recently-changed': playbackInfo.playStateRecentlyChanged,
+            }"
+          >
+            <span class="fa fa-play"></span>
+            <span class="fa fa-pause"></span>
+          </div>
+        </div>
         <div class="episode-button-wrap" @click="nextEpisode">
           <div
             class="next-episode episode-button"
@@ -141,7 +152,11 @@ export default {
       pictureInPictureMode: false,
       timelineHold: false,
       mouse: { calm: true, calmTimeout: null, clickTimeout: null },
-      playbackInfo: { progress: 0, currentTime: 0 },
+      playbackInfo: {
+        progress: 0,
+        currentTime: 0,
+        playStateRecentlyChanged: false,
+      },
       preventDefaultKeys: [
         "Space",
         "ArrowDown",
@@ -270,6 +285,12 @@ export default {
       this.focusVideo();
     },
     changePlayState() {
+      this.playbackInfo.playStateRecentlyChanged = true;
+      clearTimeout(this.playbackInfo.playStateRecentlyChangedTimeout);
+      this.playbackInfo.playStateRecentlyChangedTimeout = setTimeout(() => {
+        this.playbackInfo.playStateRecentlyChanged = false;
+      }, 300);
+
       if (this.video.paused) {
         return this.playVideo();
       }
@@ -412,6 +433,53 @@ export default {
 
       > div {
         position: relative;
+      }
+
+      .play-state-indicator {
+        border: 1px solid #fff;
+        text-align: center;
+        border-radius: 2px;
+        position: absolute;
+        margin: auto;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        opacity: 0;
+        display: none;
+
+        &:not(.playing) {
+          .fa-play {
+            display: none;
+          }
+        }
+
+        &.playing {
+          .fa-pause {
+            display: none;
+          }
+        }
+      }
+
+      .play-state-indicator.recently-changed {
+        animation: fadeout 0.5s;
+        display: block;
+      }
+
+      @keyframes fadeout {
+        0% {
+          width: 80px;
+          height: 80px;
+          line-height: 80px;
+          opacity: 1;
+        }
+        100% {
+          width: 30px;
+          height: 30px;
+          line-height: 30px;
+          opacity: 0;
+        }
       }
 
       .episode-button-wrap:hover {
