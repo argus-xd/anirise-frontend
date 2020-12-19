@@ -142,6 +142,7 @@ export default {
   props: {
     translations: Object,
     episode: Object,
+    lastSeenEpisode: Object,
   },
   components: { dropdownSelect },
   data() {

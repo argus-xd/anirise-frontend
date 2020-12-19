@@ -56,6 +56,7 @@
         ref="animePlayer"
         v-bind:translations="translations"
         v-bind:episode="episode"
+        v-bind:has-remember-episode="lastSeenEpisode"
         v-on:translation-changed="changeTranslation($event)"
         v-on:episode-changed="setEpisode"
         v-on:progress-changed="rememberEpisodeProgress"
@@ -80,6 +81,7 @@ export default {
         index: 0,
         source: null,
       },
+      lastSeenEpisode: null,
       translations: { list: null, selected: null },
       overlayShown: false,
     };
@@ -88,6 +90,12 @@ export default {
     window.addEventListener("keyup", this.keyUpListener);
 
     const animeId = this.$route.params.id;
+
+    const lastSeenEpisode = localStorage.getItem(`anime-${animeId}:last-seen`);
+
+    if (lastSeenEpisode) {
+      this.lastSeenEpisode = JSON.parse(lastSeenEpisode);
+    }
 
     api.animeById(animeId).then(anime => {
       this.anime = anime;
