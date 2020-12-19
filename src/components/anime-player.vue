@@ -153,6 +153,7 @@ export default {
       timelineHold: false,
       mouse: { calm: true, calmTimeout: null, clickTimeout: null },
       playbackInfo: {
+        firstPlayback: true,
         progress: 0,
         currentTime: 0,
         playStateRecentlyChanged: false,
@@ -236,6 +237,7 @@ export default {
       }
     },
     videoProgressHandler() {
+      this.playbackInfo.firstPlayback = false;
       this.playbackInfo.currentTime = this.video.currentTime;
       this.playbackInfo.progress =
         (this.video.currentTime * 100) / this.video.duration || 0;
