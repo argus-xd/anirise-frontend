@@ -48,16 +48,30 @@
             <span class="fa fa-chevron-left"></span>
           </div>
         </div>
-        <div @click.self="playAreaClickHandler">
+        <div @click.stop="playAreaClickHandler">
           <div
             class="play-state-indicator"
             v-bind:class="{
               playing: playbackInfo.isPlaying,
+              'first-playback': playbackInfo.firstPlayback,
               'recently-changed': playbackInfo.playStateRecentlyChanged,
             }"
           >
             <span class="fa fa-play"></span>
             <span class="fa fa-pause"></span>
+          </div>
+          <div
+            v-if="playbackInfo.firstPlayback && lastSeenEpisode"
+            class="resume-button"
+            @click.stop.self="requestResume"
+          >
+            Продолжить с {{ lastEpisodeTime }}<br />
+            Эпизод {{ lastSeenEpisode.episode }},
+            {{
+              translations.list.find(
+                it => it.id === lastSeenEpisode.translation,
+              ).translator
+            }}
           </div>
         </div>
         <div class="episode-button-wrap" @click="nextEpisode">
@@ -152,6 +166,7 @@ export default {
       fullscreen: false,
       pictureInPictureMode: false,
       timelineHold: false,
+      resumeRequested: false,
       mouse: { calm: true, calmTimeout: null, clickTimeout: null },
       playbackInfo: {
         firstPlayback: true,
@@ -190,6 +205,10 @@ export default {
     );
   },
   methods: {
+    requestResume() {
+      this.resumeRequested = true;
+      this.$emit("resume-requested");
+    },
     playAreaClickHandler({ detail: clicks }) {
       if (clicks === 1) {
         this.mouse.clickTimeout = setTimeout(this.changePlayState, 250);
@@ -244,9 +263,8 @@ export default {
         (this.video.currentTime * 100) / this.video.duration || 0;
 
       this.$emit("progress-changed", {
-        timeStamp: this.playbackInfo.currentTime,
-        progress: this.playbackInfo.progress,
-        episodeIndex: this.episode.index,
+        timestamp: this.playbackInfo.currentTime,
+        episode: this.episode.number,
         translation: this.translations.selected.id,
       });
     },
@@ -336,6 +354,9 @@ export default {
     durationTime() {
       return time.format(this.playbackInfo.duration);
     },
+    lastEpisodeTime() {
+      return time.format(this.lastSeenEpisode.timestamp);
+    },
     exitFullScreenMethod() {
       return (
         document.exitFullscreen ||
@@ -364,6 +385,12 @@ export default {
       this.hls = new Hls();
       this.hls.attachMedia(this.video);
       this.hls.loadSource(source);
+
+      if (this.resumeRequested) {
+        this.resumeRequested = false;
+        this.video.currentTime = this.lastSeenEpisode.timestamp;
+        this.playVideo();
+      }
     },
   },
 };
@@ -439,7 +466,9 @@ export default {
       }
 
       .play-state-indicator {
-        border: 1px solid #fff;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(51, 51, 51, 0.7);
+        color: rgb(var(--color-gray-400));
         text-align: center;
         border-radius: 2px;
         position: absolute;
@@ -448,9 +477,27 @@ export default {
         right: 0;
         top: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
         opacity: 0;
         display: none;
+
+        &.first-playback {
+          display: block;
+          width: 70px;
+          height: 70px;
+          line-height: 70px;
+          opacity: 1;
+
+          .fa-play {
+            display: unset !important;
+          }
+          .fa-pause {
+            display: none;
+          }
+
+          &:hover {
+            background: rgb(51, 51, 51);
+          }
+        }
 
         &:not(.playing) {
           .fa-play {
@@ -462,6 +509,25 @@ export default {
           .fa-pause {
             display: none;
           }
+        }
+      }
+
+      .resume-button {
+        width: 200px;
+        height: 44px;
+        line-height: 20px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(51, 51, 51, 0.7);
+        position: absolute;
+        margin: auto;
+        left: 0;
+        top: 125px;
+        right: 0;
+        bottom: 0;
+
+        &:hover {
+          background: rgb(51, 51, 51);
         }
       }
 

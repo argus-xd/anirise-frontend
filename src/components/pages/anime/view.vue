@@ -56,10 +56,11 @@
         ref="animePlayer"
         v-bind:translations="translations"
         v-bind:episode="episode"
-        v-bind:has-remember-episode="lastSeenEpisode"
+        v-bind:last-seen-episode="lastSeenEpisode"
         v-on:translation-changed="changeTranslation($event)"
         v-on:episode-changed="setEpisode"
         v-on:progress-changed="rememberEpisodeProgress"
+        v-on:resume-requested="resumeRequested"
       />
     </div>
   </div>
@@ -118,7 +119,7 @@ export default {
         this.changeTranslation(this.$route.params.translation);
       });
     },
-    changeTranslation(translationId) {
+    changeTranslation(translationId, episodeNumber) {
       const translation = this.translations.list.find(
         it => it.id === translationId,
       );
@@ -127,7 +128,7 @@ export default {
 
       this.translations.selected = translation ?? this.translations.list[0];
 
-      this.setEpisode(this.episode.number, replaceRoute);
+      this.setEpisode(episodeNumber || this.episode.number, replaceRoute);
     },
     setEpisode(episodeNumber, replaceRoute) {
       episodeNumber = Number(episodeNumber) || 1;
@@ -164,6 +165,13 @@ export default {
         `anime-${this.anime.id}:last-seen`,
         JSON.stringify(episodeInfo),
       );
+    },
+    async resumeRequested() {
+      if (!this.lastSeenEpisode) return;
+
+      const { translation, episode } = this.lastSeenEpisode;
+
+      this.changeTranslation(translation, episode);
     },
     keyUpListener(event) {
       if (event.key === "Escape") {
