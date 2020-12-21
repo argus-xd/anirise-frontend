@@ -85,7 +85,7 @@
           </div>
         </div>
       </div>
-      <div class="bottom-controls" v-if="playbackInfo.duration">
+      <div class="bottom-controls" v-if="!isLoading">
         <div
           class="play-btn button"
           v-bind:class="{ active: playbackInfo.isPlaying }"
@@ -207,6 +207,7 @@ export default {
   methods: {
     requestResume() {
       this.resumeRequested = true;
+      this.playbackInfo.duration = 0;
       this.$emit("resume-requested");
     },
     playAreaClickHandler({ detail: clicks }) {
@@ -335,6 +336,9 @@ export default {
     },
   },
   computed: {
+    isLoading(){
+      return !this.playbackInfo.duration;
+    },
     dropdownTranslations() {
       return this.translations.list.map(it => ({
         key: it.id,
