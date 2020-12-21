@@ -307,6 +307,8 @@ export default {
       this.focusVideo();
     },
     changePlayState() {
+      if (this.isLoading) return;
+
       this.playbackInfo.playStateRecentlyChanged = true;
       clearTimeout(this.playbackInfo.playStateRecentlyChangedTimeout);
       this.playbackInfo.playStateRecentlyChangedTimeout = setTimeout(() => {
@@ -336,7 +338,7 @@ export default {
     },
   },
   computed: {
-    isLoading(){
+    isLoading() {
       return !this.playbackInfo.duration;
     },
     dropdownTranslations() {
