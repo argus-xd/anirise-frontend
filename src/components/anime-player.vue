@@ -38,13 +38,14 @@
         />
       </div>
       <div class="middle-controls">
-        <div class="episode-button-wrap" @click="previousEpisode">
-          <div
-            class="prev-episode episode-button"
-            :class="{
-              disabled: episode.number <= episodes.from,
-            }"
-          >
+        <div
+          class="episode-button-wrap"
+          @click="previousEpisode"
+          :class="{
+            disabled: episode.number <= episodes.from,
+          }"
+        >
+          <div class="prev-episode episode-button">
             <span class="fa fa-chevron-left"></span>
           </div>
         </div>
@@ -74,13 +75,14 @@
             }}
           </div>
         </div>
-        <div class="episode-button-wrap" @click="nextEpisode">
-          <div
-            class="next-episode episode-button"
-            :class="{
-              disabled: episode.number >= episodes.to,
-            }"
-          >
+        <div
+          class="episode-button-wrap"
+          @click="nextEpisode"
+          :class="{
+            disabled: episode.number >= episodes.to,
+          }"
+        >
+          <div class="next-episode episode-button">
             <span class="fa fa-chevron-right"></span>
           </div>
         </div>
@@ -465,7 +467,7 @@ export default {
     .middle-controls {
       z-index: 2;
       display: grid;
-      grid-template-columns: 50px auto 50px;
+      grid-template-columns: 60px auto 60px;
 
       > div {
         position: relative;
@@ -557,6 +559,13 @@ export default {
         }
       }
 
+      .episode-button-wrap {
+        &.disabled {
+          pointer-events: none;
+          color: dimgray;
+        }
+      }
+
       .episode-button-wrap:hover {
         .episode-button {
           background: rgb(51, 51, 51);
@@ -579,18 +588,13 @@ export default {
         right: 0;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
-        &.disabled {
-          pointer-events: none;
-          color: dimgray;
-        }
-
         &.prev-episode {
-          margin-right: -10px;
+          margin-right: 0;
           padding-right: 4px;
         }
 
         &.next-episode {
-          margin-left: -10px;
+          margin-left: 0;
           padding-left: 4px;
         }
       }
