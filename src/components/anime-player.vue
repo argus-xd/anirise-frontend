@@ -49,7 +49,7 @@
             <span class="fa fa-chevron-left"></span>
           </div>
         </div>
-        <div @click.stop="playAreaClickHandler">
+        <div @click="playAreaClickHandler">
           <div
             class="play-state-indicator"
             v-bind:class="{
