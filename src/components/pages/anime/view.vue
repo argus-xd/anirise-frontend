@@ -236,6 +236,7 @@ export default {
 
   .cover {
     margin-top: 15px;
+    position: relative;
     .cover-inner {
       position: absolute;
       img {
