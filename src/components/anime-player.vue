@@ -168,6 +168,7 @@ export default {
       fullscreen: false,
       pictureInPictureMode: false,
       timelineHold: false,
+      autoplay: false,
       resumeRequested: false,
       mouse: { calm: true, calmTimeout: null, clickTimeout: null },
       playbackInfo: {
@@ -235,6 +236,7 @@ export default {
       this.requestEpisode(this.episode.index + 1);
     },
     requestEpisode(index) {
+      this.autoplay = true;
       const number = this.episodes.list?.[index] ?? 0;
       this.pauseVideo();
       this.playbackInfo.duration = 0;
@@ -394,7 +396,10 @@ export default {
       this.hls.attachMedia(this.video);
       this.hls.loadSource(source);
 
-      if (this.resumeRequested) {
+      if (this.autoplay) {
+        this.autoplay = false;
+        this.playVideo();
+      } else if (this.resumeRequested) {
         this.resumeRequested = false;
         this.video.currentTime = this.lastSeenEpisode.timestamp;
         this.playVideo();
