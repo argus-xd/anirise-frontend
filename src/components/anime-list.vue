@@ -1,7 +1,7 @@
 <template>
   <div class="anime-list">
     <router-link
-      v-for="(item, index) in this.animeList.shown"
+      v-for="(item, index) in this.animeList"
       :key="index"
       class="anime-card"
       :to="{
