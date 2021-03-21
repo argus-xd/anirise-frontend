@@ -2,12 +2,22 @@
   <nav>
     <div class="nav-wrapper container">
       <router-link to="/" class="brand-logo">AnimeRise</router-link>
-      <div ref="searchWrap" class="search-wrap">
-        <input
-          class="form-control"
-          v-model="search.text"
-          placeholder="Search..."
-        />
+      <div class="search-wrap">
+        <div
+          ref="searchPlate"
+          class="search-plate"
+          :class="{
+            focused: search.focused,
+          }"
+        >
+          <input
+            class="form-control"
+            v-model="search.text"
+            v-on:focus="search.focused = true"
+            v-on:blur="search.focused = false"
+            placeholder="Search..."
+          />
+        </div>
       </div>
     </div>
   </nav>
@@ -75,14 +85,27 @@ nav {
     background-color: rgba(var(--color-header), 0.5);
   }
 
+  .nav-wrapper {
+    display: grid;
+    grid-template-columns: 130px auto;
+    grid-gap: 15px;
+  }
+
   .brand-logo {
+    position: static;
     font-family: var(--font-family-overpass);
     font-size: 2.6rem;
     font-weight: 600;
     color: #fff;
+    text-align: center;
   }
 
   .search-wrap {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+
+  .search-plate {
     background: rgb(var(--color-background-100));
     border-radius: 6px;
     box-shadow: 0 14px 30px rgba(var(--color-shadow-blue), 0.1),
@@ -95,6 +118,13 @@ nav {
     letter-spacing: 0.03rem;
     padding: 6px 12px;
     margin: 10px 0;
+    max-width: 700px;
+    width: 200px;
+    transition: width 0.5s;
+
+    &.focused {
+      width: 80%;
+    }
 
     input {
       background: 0 0;
